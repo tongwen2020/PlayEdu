@@ -4,6 +4,8 @@
   "version": "2.2.0",
   "type": "module",
   "scripts": {
+    "test:question-bank": "node --test tests/question-bank-import.test.mjs",
+    "test:exam-paper": "node --test tests/exam-paper-import.test.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"

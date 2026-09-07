@@ -60,6 +60,17 @@ const items = [
     null
   ),
   getItem(
+    "考试中心",
+    "exams",
+    <i className="iconfont icon-icon-study" />,
+    [
+      getItem("试题库", "/question-bank", null, null, null, "question-bank-view"),
+      getItem("试卷库", "/exam-paper", null, null, null, "exam-paper-view"),
+    ],
+    null,
+    null
+  ),
+  getItem(
     "学员管理",
     "user",
     <i className="iconfont icon-icon-user" />,
@@ -116,6 +127,8 @@ export const LeftMenu: React.FC = () => {
     "^/member": ["user"],
     "^/department": ["user"],
     "^/course": ["courses"],
+    "^/question-bank": ["exams"],
+    "^/exam-paper": ["exams"],
     "^/system": ["system"],
   };
 

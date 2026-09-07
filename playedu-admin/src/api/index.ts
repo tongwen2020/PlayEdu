@@ -16,3 +16,5 @@ export * as appConfig from "./app-config";
 export * as dashboard from "./dashboard";
 export * as adminLog from "./admin-log";
 export * as ldap from "./ldap";
+export * as questionBank from "./question-bank";
+export * as examPaper from "./exam-paper";

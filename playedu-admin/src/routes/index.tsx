@@ -25,6 +25,8 @@ const ResourceCoursewarePage = lazy(
 );
 //课程相关
 const CoursePage = lazy(() => import("../pages/course/index"));
+const QuestionBankPage = lazy(() => import("../pages/question-bank"));
+const ExamPaperPage = lazy(() => import("../pages/exam-paper"));
 const CourseUserPage = lazy(() => import("../pages/course/user"));
 //学员相关
 const MemberPage = lazy(() => import("../pages/member"));
@@ -114,6 +116,14 @@ const routes: RouteObject[] = [
           {
             path: "/course",
             element: <PrivateRoute Component={<CoursePage />} />,
+          },
+          {
+            path: "/question-bank",
+            element: <PrivateRoute Component={<QuestionBankPage />} />,
+          },
+          {
+            path: "/exam-paper",
+            element: <PrivateRoute Component={<ExamPaperPage />} />,
           },
           {
             path: "/course/user/:courseId",
