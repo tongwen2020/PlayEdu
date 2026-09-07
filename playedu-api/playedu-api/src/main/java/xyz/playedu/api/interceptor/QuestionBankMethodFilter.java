@@ -42,13 +42,14 @@ public class QuestionBankMethodFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getServletPath();
         if ((path.startsWith("/backend/v1/question-bank/")
-                        || path.startsWith("/api/v1/question-bank/"))
+                        || path.startsWith("/api/v1/question-bank/")
+                        || path.startsWith("/backend/v1/exam-paper/"))
                 && !request.getMethod().equals("POST")
                 && !request.getMethod().equals("OPTIONS")) {
             response.setStatus(405);
             response.setHeader("Allow", "POST");
             response.setContentType("application/json;charset=UTF-8");
-            json.writeValue(response.getWriter(), JsonResponse.error("题库接口仅支持 POST", 405));
+            json.writeValue(response.getWriter(), JsonResponse.error("考试模块接口仅支持 POST", 405));
             return;
         }
         chain.doFilter(request, response);

@@ -35,6 +35,46 @@ public class AdminPermissionCheck implements CommandLineRunner {
                             BPermissionConstant.TYPE_ACTION,
                             new HashMap<>() {
                                 {
+                                    put(
+                                            "试卷库",
+                                            new AdminPermission[] {
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(0);
+                                                        setName("查看试卷与答案");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .EXAM_PAPER_VIEW);
+                                                    }
+                                                },
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(10);
+                                                        setName("维护试卷与分类");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .EXAM_PAPER_EDIT);
+                                                    }
+                                                },
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(20);
+                                                        setName("发布与归档试卷");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .EXAM_PAPER_PUBLISH);
+                                                    }
+                                                },
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(30);
+                                                        setName("导出试卷与答案");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .EXAM_PAPER_EXPORT);
+                                                    }
+                                                }
+                                            });
                                     // Question bank v1: action permissions; data ownership is
                                     // checked by the service.
                                     put(

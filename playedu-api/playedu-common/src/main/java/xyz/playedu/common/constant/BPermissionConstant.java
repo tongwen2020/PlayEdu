@@ -46,6 +46,10 @@ public class BPermissionConstant {
     public static final String QUESTION_BANK_VIEW = "question-bank-view";
     public static final String QUESTION_BANK_EDIT = "question-bank-edit";
     public static final String QUESTION_BANK_EXPORT = "question-bank-export";
+    public static final String EXAM_PAPER_VIEW = "exam-paper-view";
+    public static final String EXAM_PAPER_EDIT = "exam-paper-edit";
+    public static final String EXAM_PAPER_PUBLISH = "exam-paper-publish";
+    public static final String EXAM_PAPER_EXPORT = "exam-paper-export";
 
     // ##### 友情分割线 ##################################################
 
