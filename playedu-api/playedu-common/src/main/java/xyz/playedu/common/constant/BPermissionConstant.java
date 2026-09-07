@@ -43,6 +43,9 @@ public class BPermissionConstant {
     public static final String SYSTEM_CONFIG = "system-config";
     public static final String UPLOAD = "upload";
     public static final String CACHE_MANAGE = "cache-manage";
+    public static final String QUESTION_BANK_VIEW = "question-bank-view";
+    public static final String QUESTION_BANK_EDIT = "question-bank-edit";
+    public static final String QUESTION_BANK_EXPORT = "question-bank-export";
 
     // ##### 友情分割线 ##################################################
 

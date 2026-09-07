@@ -18,6 +18,7 @@ package xyz.playedu.api.controller;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -45,6 +46,12 @@ public class ExceptionController {
     @ExceptionHandler(ServiceException.class)
     public JsonResponse serviceExceptionHandler(ServiceException e) {
         return JsonResponse.error(e.getMessage(), 1);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public JsonResponse dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
+        log.error("数据约束校验失败", e);
+        return JsonResponse.error("数据约束校验失败，请检查重复数据或关联记录", 409);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

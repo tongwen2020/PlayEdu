@@ -35,6 +35,39 @@ public class AdminPermissionCheck implements CommandLineRunner {
                             BPermissionConstant.TYPE_ACTION,
                             new HashMap<>() {
                                 {
+                                    // Question bank v1: action permissions; data ownership is
+                                    // checked by the service.
+                                    put(
+                                            "试题库",
+                                            new AdminPermission[] {
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(0);
+                                                        setName("查看题库与答案");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .QUESTION_BANK_VIEW);
+                                                    }
+                                                },
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(10);
+                                                        setName("维护题库与试题");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .QUESTION_BANK_EDIT);
+                                                    }
+                                                },
+                                                new AdminPermission() {
+                                                    {
+                                                        setSort(20);
+                                                        setName("导出题目与答案");
+                                                        setSlug(
+                                                                BPermissionConstant
+                                                                        .QUESTION_BANK_EXPORT);
+                                                    }
+                                                }
+                                            });
                                     // 分类管理
                                     put(
                                             "分类管理",

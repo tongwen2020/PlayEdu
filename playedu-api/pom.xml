@@ -22,6 +22,7 @@
         <module>playedu-system</module>
         <module>playedu-course</module>
         <module>playedu-resource</module>
+        <module>playedu-exam</module>
     </modules>
 
     <properties>
