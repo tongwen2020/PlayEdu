@@ -1,0 +1,104 @@
+<!doctype html>
+<!-- 新增说明（2026-09-05）：根据当前仓库的路由、页面及后端接口梳理功能，生成独立离线功能框图。 -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayEdu · 项目功能全景框图</title>
+<style>
+:root{color-scheme:light;--ink:#172b47;--muted:#62728a;--line:#c8d6e6;--blue:#2864d7;--paper:#f4f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.65 "Microsoft YaHei","PingFang SC",sans-serif}header,main,footer{max-width:1500px;margin:auto;padding:32px 40px}header{padding-bottom:20px}.eyebrow{font-size:12px;letter-spacing:2px;color:var(--blue);font-weight:700}h1{font-size:32px;letter-spacing:-1px;margin:7px 0}p{margin:8px 0;color:var(--muted)}.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}input,button{font:inherit;border:1px solid var(--line);border-radius:8px;background:white;padding:9px 14px;color:var(--ink)}input{width:310px;max-width:100%}button{cursor:pointer}button:hover{background:#eaf1ff}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}:focus-visible{outline:3px solid #81abff;outline-offset:3px}.count{font-size:13px;color:var(--muted)}main{padding-top:0}.root{max-width:520px;margin:10px auto 0;text-align:center;padding:20px;background:#172b47;color:white;border-radius:12px;box-shadow:0 8px 24px #172b4714}.root strong{display:block;font-size:23px}.root span{color:#c3d6f0;font-size:13px}.stem{height:30px;width:1px;background:var(--line);margin:auto}.overview{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative;padding-top:22px;margin:0 0 36px}.overview:before{content:"";height:1px;background:var(--line);position:absolute;top:0;left:12.5%;right:12.5%}.overview a{position:relative;border:1px solid var(--line);border-top:3px solid var(--blue);background:white;border-radius:8px;padding:14px;text-align:center;color:var(--ink)}.overview a:before{content:"";position:absolute;top:-25px;height:22px;width:1px;background:var(--line);left:50%}.overview small{display:block;color:var(--muted)}.section-heading{display:flex;align-items:baseline;gap:12px;margin:30px 0 15px}.section-heading h2{font-size:22px;margin:0}.section-heading span{font-size:12px;color:var(--muted)}.module{display:grid;grid-template-columns:200px 1fr;position:relative;margin-bottom:18px;scroll-margin-top:20px}.module-head{background:var(--tint);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;padding:18px;align-self:start;position:relative}.module-head:after{content:"";position:absolute;right:-22px;top:30px;width:21px;height:1px;background:var(--line)}.module-head h3{font-size:17px;margin:0 0 5px}.module-head span{font-size:12px;color:var(--muted)}.branches{border-left:1px solid var(--line);margin-left:21px;padding-left:21px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.feature{position:relative;background:white;border:1px solid var(--line);border-radius:9px;min-width:0;align-self:start}.feature:before{content:"";position:absolute;left:-23px;top:29px;width:22px;height:1px;background:var(--line)}.feature summary{cursor:pointer;font-weight:700;padding:16px 14px;color:var(--accent)}.feature summary small{font-weight:400;color:var(--muted);font-size:11px;margin-left:8px}.leaves{list-style:none;padding:0 14px 12px 29px;margin:0}.leaves li{position:relative;border:1px solid #e2e9f1;border-radius:5px;padding:6px 9px;margin:7px 0;font-size:13px;background:#fbfcfe}.leaves li:before{content:"";position:absolute;left:-12px;top:-9px;bottom:50%;width:11px;border-left:1px solid var(--line);border-bottom:1px solid var(--line)}.source{border-top:1px dashed #e1e7ee;margin:0 14px;padding:8px 0 11px;font-size:11px;overflow-wrap:anywhere}.source summary{padding:0;font-size:11px;font-weight:400;color:var(--muted)}.source a{display:block;margin-top:5px}.flow{display:flex;gap:0;align-items:stretch;flex-wrap:wrap;margin:18px 0 28px}.flow div{flex:1;min-width:150px;background:white;border:1px solid var(--line);border-radius:8px;padding:14px}.flow b{display:block;font-size:14px}.flow small{color:var(--muted)}.flow .arrow{flex:0;min-width:28px;align-self:center;border:0;padding:0;background:none;text-align:center;color:var(--blue)}.note{background:#eaf0f8;border-radius:9px;padding:17px 20px;font-size:13px;color:var(--muted)}footer{padding-top:10px;font-size:12px;color:var(--muted)}[hidden]{display:none!important}#empty{text-align:center;padding:30px}mark{background:#fff0a8;color:inherit}
+@media(min-width:1250px){.branches{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:950px){header,main,footer{padding-left:22px;padding-right:22px}.module{grid-template-columns:160px 1fr}.branches{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){header,main,footer{padding-left:16px;padding-right:16px}h1{font-size:25px}.overview{grid-template-columns:repeat(2,1fr);gap:10px}.overview:before,.overview a:before{display:none}.module{display:block}.module-head:after{display:none}.branches{grid-template-columns:1fr;margin:12px 0 0 14px;padding-left:14px}.feature:before{left:-16px;width:15px}.section-heading{display:block}.tools input{width:100%}.flow{display:block}.flow .arrow{transform:rotate(90deg);height:24px}.root strong{font-size:20px}}
+@media print{@page{size:A3 landscape;margin:12mm}body{background:white;font-size:12px}header,main,footer{max-width:none;padding:10px}.tools{display:none}.module{break-inside:avoid;grid-template-columns:165px 1fr}.branches{grid-template-columns:repeat(4,minmax(0,1fr))}.source{display:none}.leaves li{font-size:11px;padding:4px}.section-heading{margin-top:20px}.overview{margin-bottom:16px}h1{font-size:24px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">PLAYEDU / FUNCTION MAP</div>
+<h1>项目功能全景框图</h1>
+<p>从组织与内容管理，到双端学习和进度追踪。根据当前工作区源码梳理，核对日期：2026-09-05。</p>
+<div class="tools"><input id="search" type="search" aria-label="搜索功能" placeholder="搜索功能，例如：LDAP、附件、进度"><button id="expand" type="button">全部展开</button><button id="collapse" type="button">收起细项</button><button id="print" type="button">打印 / 保存 PDF</button><span id="count" class="count" aria-live="polite"></span></div>
+</header>
+<main>
+<div class="root"><strong>PlayEdu 企业内部培训平台</strong><span>功能域 → 业务模块 → 具体能力</span></div><div class="stem"></div>
+<nav class="overview" aria-label="功能域导航"><a href="#admin">管理后台<small>组织 · 内容 · 数据</small></a><a href="#learner">学员端<small>PC · H5 · 在线学习</small></a><a href="#system">系统与集成<small>权限 · 配置 · LDAP</small></a><a href="#support">平台支撑<small>接口 · 存储 · 运维</small></a></nav>
+<div id="map"></div><p id="empty" hidden>没有匹配的功能，请尝试其他关键词。</p>
+<section id="workflow"><div class="section-heading"><h2>培训业务主流程</h2><span>箭头表示业务顺序；上方连线表示功能归属</span></div><div class="flow"><div><b>① 准备组织与学员</b><small>部门维护 / 批量导入 / LDAP 同步</small></div><span class="arrow">→</span><div><b>② 准备培训内容</b><small>上传资源 / 创建课程 / 编排课时</small></div><span class="arrow">→</span><div><b>③ 指派与上架</b><small>部门或学员范围 / 必选修 / 上架时间</small></div><span class="arrow">→</span><div><b>④ PC / H5 学习</b><small>视频播放 / 附件下载 / 进度上报</small></div><span class="arrow">→</span><div><b>⑤ 跟踪学习结果</b><small>课程与课时进度 / 时长统计 / 部门导出</small></div></div></section>
+<div class="note">范围说明：功能按业务能力归并，不将每个增删改查接口重复计为独立模块。标注“接口”的能力已在后端实现，但未发现对应独立管理页面。考试、证书、直播、付费购买、文档在线预览等商业版宣传能力不计入当前实现；当前课件能力为资源管理与附件下载。此图为静态源码梳理，不代表已完成生产环境验收。源码链接相对于本文件所在的 docs 目录。</div>
+<noscript><p>请启用浏览器 JavaScript 以显示完整功能框图。</p></noscript>
+</main>
+<footer>基于当前仓库：playedu-admin / playedu-pc / playedu-h5 / playedu-api。PlayEdu 原项目版权归杭州白书科技有限公司所有 · Designed By PlayEdu</footer>
+<script>
+const backend='playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/';
+const frontend='playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/';
+const group=(name,items,paths,badge='')=>({name,items,paths,badge});
+const domains=[
+{id:'admin',name:'管理后台',subtitle:'培训运营与内容管理',color:'#2864d7',tint:'#edf3ff',modules:[
+['工作台与统计','运营概览 / 学习分析',[
+group('平台概览',['学员总数及今日 / 昨日新增','线上课程、部门、管理员数量','视频、图片、课件资源数量','当前系统版本信息'],[backend+'DashboardController.java','playedu-admin/src/pages/dashboard/index.tsx']),
+group('学习数据看板',['今日 / 昨日学习时长','学员学习时长 Top 10'],[backend+'DashboardController.java']),
+group('学员学习档案',['学员学习时长统计','已学习课程 / 全部可学课程','课程完成进度与完成课时数','首次学习 / 完成时间','课时总时长、已学时长、完成状态'],['playedu-admin/src/pages/member/learn.tsx','playedu-admin/src/pages/member/compenents/progress.tsx',backend+'UserController.java']),
+group('部门与课程跟踪',['部门学员课程进度汇总','按课程查看学习学员及进度','部门进度表批量导出','公开课展示筛选','清除学员课程 / 课时学习记录'],['playedu-admin/src/pages/member/departmentUser.tsx','playedu-admin/src/pages/course/user.tsx',backend+'CourseUserController.java'])]],
+['组织与学员','人员维护 / 培训对象',[
+group('部门管理',['树形部门列表与层级展示','新增 / 编辑 / 删除部门','部门排序与父级调整','删除前关联数据检查','查看部门学员'],[backend+'DepartmentController.java','playedu-admin/src/pages/department/index.tsx']),
+group('学员管理',['学员查询、分页及部门筛选','新增 / 编辑 / 删除学员','姓名、邮箱、头像维护','设置 / 修改登录密码','学员关联一个或多个部门'],['playedu-admin/src/pages/member/index.tsx','playedu-admin/src/pages/member/compenents/update.tsx',backend+'UserController.java']),
+group('批量导入',['下载学员导入模板','读取 Excel 学员数据','批量创建学员及部门关系','导入结果与异常提示'],['playedu-admin/src/pages/member/import.tsx',backend+'UserController.java'])]],
+['课程与教学内容','课程 → 章节 → 课时 / 附件',[
+group('课程维护与分发',['课程列表、名称 / 分类 / 部门筛选','新增 / 编辑 / 删除课程','设置分类、名称、封面、简介','必修课 / 选修课设置','公开课程 / 指定部门与学员范围','设置上架时间'],['playedu-admin/src/pages/course/compenents/create.tsx',backend+'CourseController.java']),
+group('章节与课时编排',['章节新增 / 编辑 / 删除 / 排序','视频课时新增 / 编辑 / 删除','批量添加视频课时','课时关联视频资源','课时排序与章节编排'],['playedu-admin/src/pages/course/compenents/hour-update.tsx',backend+'CourseChapterController.java',backend+'CourseHourController.java']),
+group('课程附件',['单个 / 批量添加资源为附件','修改附件标题','附件删除及排序','学员按课程权限下载附件'],['playedu-admin/src/pages/course/compenents/attachment-update.tsx',backend+'CourseAttachmentController.java',frontend+'CourseController.java']),
+group('附件下载记录',['记录学员附件下载行为','按学员、课程、附件、资源筛选','分页与排序查询'],[backend+'CourseAttachmentDownloadLogController.java'],'接口')]],
+['资源中心','素材归档 / 上传与复用',[
+group('资源分类',['树形分类维护','新增 / 编辑 / 删除分类','调整分类顺序与父级','课程及资源使用分类筛选'],[backend+'ResourceCategoryController.java','playedu-admin/src/pages/resource/resource-category/index.tsx']),
+group('图片与视频',['图片上传与预览','视频上传与播放预览','视频名称 / 分类等信息维护','按名称、分类等条件查询','单个删除 / 批量删除资源'],['playedu-admin/src/pages/resource/images/index.tsx','playedu-admin/src/pages/resource/videos/index.tsx',backend+'ResourceController.java']),
+group('课件文件库',['PDF / Word / PPT / Excel 文件','ZIP / RAR / TXT 文件','上传、查询、编辑及删除','作为课程附件复用'],['playedu-admin/src/pages/resource/courseware/index.tsx',backend+'ResourceController.java']),
+group('上传与对象存储',['普通文件上传','大文件分片直传','获取分片预签名地址','查询并合并已上传分片','资源元数据及视频时长记录'],[backend+'UploadController.java'])]]]},
+{id:'learner',name:'学员端',subtitle:'PC 与 H5 共用学习服务，各自适配交互入口',color:'#127c72',tint:'#eaf7f4',modules:[
+['账号与学习入口','PC / H5',[
+group('登录与个人资料',['邮箱密码登录','LDAP 账号登录（配置启用后）','退出登录','查看个人信息与所属部门','更换头像、修改密码'],['playedu-pc/src/compenents/user-info/index.tsx','playedu-h5/src/pages/member/index.tsx',frontend+'LoginController.java',frontend+'UserController.java']),
+group('课程查找与筛选',['按所属部门切换课程视图','按课程分类查看','全部 / 必修 / 选修筛选','已学完 / 未学完筛选','查看个人学习时长及课程完成情况'],['playedu-pc/src/pages/index/index.tsx','playedu-h5/src/pages/index/index.tsx','playedu-h5/src/pages/study/index.tsx',frontend+'UserController.java']),
+group('PC 页面入口',['首页课程中心','课程详情与视频播放页','最近学习页面','顶部个人资料与部门切换入口'],['playedu-pc/src/routes/index.tsx','playedu-pc/src/compenents/header/index.tsx']),
+group('H5 页面入口',['首页 / 学习 / 我的底部导航','移动端课程详情与播放页','个人中心','独立修改密码页面','切换当前部门视图（不修改归属）'],['playedu-h5/src/routes/index.tsx','playedu-h5/src/pages/change-department/index.tsx'])]],
+['课程学习','内容访问 / 进度留存',[
+group('课程详情',['课程封面、简介和必选修信息','查看章节与课时目录','课时学习完成状态','查看课程附件列表并下载'],['playedu-pc/src/pages/course/index.tsx','playedu-h5/src/pages/course/index.tsx',frontend+'CourseController.java']),
+group('视频学习',['在线播放视频课时','恢复已有播放进度','课时切换与继续学习','播放器封面','按配置限制拖动进度条','按配置显示跑马灯水印'],['playedu-pc/src/pages/course/video.tsx','playedu-h5/src/pages/course/video.tsx',frontend+'HourController.java']),
+group('进度与时长',['周期性上报课时播放进度','学习心跳累计学习时长','课时完成状态判定','课程完成进度自动汇总','查看最近学习并继续学习'],[frontend+'HourController.java',frontend+'UserController.java','playedu-pc/src/pages/latest-learn/index.tsx'])]]]},
+{id:'system',name:'系统与集成',subtitle:'后台治理与企业账号接入',color:'#7955b4',tint:'#f3eefb',modules:[
+['管理员与权限','后台身份 / 审计',[
+group('管理员账号',['后台登录 / 退出','修改当前管理员密码','管理员新增 / 编辑 / 删除','为管理员分配角色'],[backend+'LoginController.java',backend+'AdminUserController.java','playedu-admin/src/pages/change-password/index.tsx']),
+group('角色与授权',['角色新增 / 编辑 / 删除','为角色分配权限','按权限显示菜单与操作按钮','后端接口权限校验'],[backend+'AdminRoleController.java','playedu-admin/src/pages/system/adminroles/index.tsx','playedu-api/playedu-system/src/main/java/xyz/playedu/system/aspectj/BackendPermissionAspect.java']),
+group('操作日志',['记录后台业务操作','分页查询及条件筛选','查看日志详情'],[backend+'AdminLogController.java','playedu-admin/src/pages/system/adminlog/index.tsx']),
+group('版本与许可信息',['查看当前版本说明','查看版权及使用说明','版本功能对比展示','企业版官网跳转入口'],['playedu-admin/src/pages/licensing/index.tsx'])]],
+['系统配置','站点外观 / 学习规则 / 连接配置',[
+group('网站与学员设置',['PC 学员端 Logo','PC / H5 学员端地址','学员端标题与页脚','默认学员头像'],['playedu-admin/src/pages/system/config/index.tsx',backend+'AppConfigController.java']),
+group('播放器设置',['禁止拖动进度条开关','跑马灯开关与文字内容','跑马灯颜色 / 透明度','播放器封面设置'],['playedu-admin/src/pages/system/config/index.tsx']),
+group('S3 存储设置',['AccessKey / SecretKey 配置','Bucket / Region 配置','Endpoint 地址配置','兼容 S3 / MinIO 对象存储'],['playedu-admin/src/pages/system/config/index.tsx']),
+group('LDAP 连接设置',['启用 / 关闭 LDAP','LDAP 服务地址','绑定用户名与密码','Base DN 配置'],['playedu-admin/src/pages/system/config/index.tsx'])]],
+['LDAP 组织同步','企业目录 → 本地组织与账号',[
+group('同步执行',['后台手动触发同步','每小时定时同步','部门与用户新增 / 更新 / 删除同步','维护 LDAP 与本地数据映射'],[backend+'DepartmentController.java','playedu-api/playedu-api/src/main/java/xyz/playedu/api/schedule/LDAPSchedule.java','playedu-api/playedu-common/src/main/java/xyz/playedu/common/util/ldap/LdapUtil.java']),
+group('同步记录与详情',['同步批次分页查询','同步状态、时间与操作人','部门 / 用户同步数量统计','新增 / 更新 / 删除明细查询','查看同步失败信息','下载同步结果'],[backend+'LdapController.java',backend+'LdapSyncDetailController.java','playedu-admin/src/pages/department/components/LdapSyncModal.tsx'])]]]},
+{id:'support',name:'平台支撑',subtitle:'代码中的后台服务能力',color:'#a46a22',tint:'#fcf4e8',modules:[
+['公共服务与运行','鉴权 / 数据 / 部署',[
+group('访问与登录保护',['前后台登录态校验','登录失败次数限制与临时锁定','课程 / 课时 / 附件访问范围校验','文件访问预签名地址','学员登录记录'],[frontend+'LoginController.java',backend+'LoginController.java',frontend+'CourseController.java',frontend+'HourController.java']),
+group('缓存维护',['缓存列表查看','清理指定缓存','清理全部缓存'],[backend+'CacheController.java'],'接口'),
+group('数据初始化与维护',['启动时执行数据库迁移','初始化系统配置及管理员数据','初始化 / 同步权限数据','删除业务对象时清理关联记录','课程完成事件驱动进度汇总'],['playedu-api/playedu-system/src/main/java/xyz/playedu/system/checks/MigrationCheck.java','playedu-api/playedu-system/src/main/java/xyz/playedu/system/checks/SystemDataCheck.java','playedu-api/playedu-system/src/main/java/xyz/playedu/system/checks/AdminPermissionCheck.java','playedu-api/playedu-api/src/main/java/xyz/playedu/api']),
+group('运行与部署支撑',['三个前端与统一后端 API','Docker 镜像 / Compose 部署','Nginx 静态页面与 API 转发','MySQL 数据持久化','环境变量配置与演示模式'],['Dockerfile','compose.yml','.env.example'])]]]}
+];
+const map=document.getElementById('map');
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
+let total=0,groups=0;
+domains.forEach(d=>{const section=el('section');section.id=d.id;section.style.setProperty('--accent',d.color);section.style.setProperty('--tint',d.tint);const h=el('div','section-heading');h.append(el('h2','',d.name),el('span','',d.subtitle));section.append(h);d.modules.forEach(([title,desc,features])=>{const m=el('article','module'),head=el('div','module-head'),branches=el('div','branches');head.append(el('h3','',title),el('span','',desc));features.forEach(f=>{groups++;total+=f.items.length;const box=el('details','feature');box.open=true;box.dataset.search=[d.name,title,f.name,...f.items].join(' ').toLowerCase();const summary=el('summary','',f.name);if(f.badge)summary.append(el('small','',f.badge));const list=el('ul','leaves');f.items.forEach(t=>list.append(el('li','',t)));const source=el('details','source');source.append(el('summary','','源码依据'));f.paths.forEach(p=>{const a=el('a','',p);a.href='../'+p;source.append(a)});box.append(summary,list,source);branches.append(box)});m.append(head,branches);section.append(m)});map.append(section)});
+const features=[...document.querySelectorAll('.feature')];const count=document.getElementById('count');
+function filter(){const q=document.getElementById('search').value.trim().toLowerCase();let visible=0;features.forEach(f=>{f.hidden=!f.dataset.search.includes(q);if(!f.hidden){visible++;if(q)f.open=true}});document.querySelectorAll('.module').forEach(m=>m.hidden=[...m.querySelectorAll('.feature')].every(f=>f.hidden));map.querySelectorAll('section').forEach(s=>s.hidden=[...s.querySelectorAll('.module')].every(m=>m.hidden));document.getElementById('empty').hidden=visible>0;count.textContent=q?`匹配 ${visible} / ${groups} 个业务模块`:`${domains.length} 个功能域 · ${groups} 个业务模块 · ${total} 项能力`;}
+document.getElementById('search').addEventListener('input',filter);
+document.getElementById('expand').addEventListener('click',()=>features.forEach(f=>f.open=true));
+document.getElementById('collapse').addEventListener('click',()=>features.forEach(f=>f.open=false));
+let printState;
+window.addEventListener('beforeprint',()=>{printState={q:document.getElementById('search').value,open:features.map(f=>f.open)};document.getElementById('search').value='';filter();features.forEach(f=>f.open=true)});
+window.addEventListener('afterprint',()=>{if(printState){document.getElementById('search').value=printState.q;filter();features.forEach((f,i)=>f.open=printState.open[i]);printState=null}});
+document.getElementById('print').addEventListener('click',()=>window.print());filter();
+</script>
+</body>
+</html>
