@@ -17,6 +17,9 @@ const CoursePage = lazy(() => import("../pages/course/index"));
 const CoursePlayPage = lazy(() => import("../pages/course/video"));
 //最近学习
 const LatestLearnPage = lazy(() => import("../pages/latest-learn"));
+//考试中心
+const ExamCenterPage = lazy(() => import("../pages/exam"));
+const ExamPracticePage = lazy(() => import("../pages/exam/practice"));
 //错误页面
 const ErrorPage = lazy(() => import("../pages/error"));
 
@@ -78,6 +81,10 @@ const routes: RouteObject[] = [
             path: "/latest-learn",
             element: <PrivateRoute Component={<LatestLearnPage />} />,
           },
+          {
+            path: "/exam",
+            element: <PrivateRoute Component={<ExamCenterPage />} />,
+          },
         ],
       },
       {
@@ -97,6 +104,10 @@ const routes: RouteObject[] = [
           {
             path: "/course/:courseId/hour/:hourId",
             element: <PrivateRoute Component={<CoursePlayPage />} />,
+          },
+          {
+            path: "/exam/practice/:bankId",
+            element: <PrivateRoute Component={<ExamPracticePage />} />,
           },
           {
             path: "/error",

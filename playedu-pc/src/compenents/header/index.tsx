@@ -174,7 +174,14 @@ export const Header: React.FC = () => {
       key: "/latest-learn",
       label: "最近学习",
     },
+    {
+      key: "/exam",
+      label: "考试中心",
+    },
   ];
+
+  const isActiveNav = (key: string) =>
+    key === "/" ? currentNav === "/" : currentNav.startsWith(key);
 
   return (
     <div className={styles["app-header"]}>
@@ -189,7 +196,7 @@ export const Header: React.FC = () => {
               <div
                 key={item.key}
                 className={
-                  item.key === currentNav
+                  isActiveNav(item.key)
                     ? styles["nav-active-item"]
                     : styles["nav-item"]
                 }
