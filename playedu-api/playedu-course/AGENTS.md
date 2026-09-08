@@ -4,6 +4,45 @@
 
 本模块维护课程、分类、章节、课时、附件、课程可见范围、学习记录和学习时长统计。它依赖 `playedu-common` 与 `playedu-resource`，不直接暴露 HTTP 接口。
 
+## 核心模型
+
+| 模型 | 用途 |
+| --- | --- |
+| `Course`、`CourseCategory` | 课程主数据与分类关系 |
+| `CourseChapter`、`CourseHour` | 章节和课时内容编排 |
+| `CourseDepartmentUser` | 课程对部门/用户的可见范围 |
+| `CourseAttachment`、`CourseAttachmentDownloadLog` | 课程附件和下载审计 |
+| `UserCourseRecord` | 用户的课程级进度 |
+| `UserCourseHourRecord` | 用户的课时级进度与完成状态 |
+| `UserLearnDurationRecord`、`UserLearnDurationStats` | 学习时长明细与统计 |
+| `UserLatestLearn` | 最近学习信息投影 |
+
+## 代码结构
+
+- `domain`：数据库实体和查询投影。
+- `mapper`、`resources/mapper`：CRUD、可见性、学习统计和分页 SQL。
+- `service`、`service/impl`：课程、章节、课时、附件、记录及统计逻辑。
+- `bus/UserBus`：集中判断用户是否可以查看课程。
+- `caches`：用户课程可见性与最近学习时间的内存缓存。
+
+## 主要业务流程
+
+### 课程维护
+
+管理端创建课程后配置分类和可见部门/用户，再按“课程—章节—课时”编排内容；课时通过资源 ID 关联资源模块。附件独立排序，并记录学员下载行为。
+
+### 学习进度
+
+学员请求播放信息后持续提交进度和心跳。`UserCourseHourRecordService` 更新课时记录，完成事件推动 `UserCourseRecordService` 汇总课程进度；学习时长同时写入明细并聚合到统计表。
+
+### 课程可见性
+
+`UserBus.canSeeCourse` 综合课程状态、公开范围、部门和指定用户判断访问权，`UserCanSeeCourseCache` 缓存结果。课程分配或组织关系改变时必须同步失效缓存。
+
+## 模块边界
+
+相关 HTTP 接口位于应用模块的课程、章节、课时、附件和用户学习 Controller。资源上传、元数据和播放地址由 `playedu-resource` 负责，本模块只保存资源关联；跨领域删除由应用模块事件监听器协调。
+
 ## 领域规则
 
 - 保持“课程 → 章节 → 课时”的归属校验，不能只按子对象 ID 操作。
@@ -30,4 +69,3 @@
 ```
 
 重点验证课程可见性、课时进度边界、重复心跳、完成事件、删除级联和学习统计。改变 Mapper SQL 时使用真实 MySQL 验证。
-
