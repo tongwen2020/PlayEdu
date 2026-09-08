@@ -463,3 +463,194 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员表';
+
+-- playedu.exam_bank_audit 定义
+
+CREATE TABLE `exam_bank_audit` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `admin_id` int NOT NULL COMMENT '管理员ID',
+  `action` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '操作',
+  `target_id` bigint NOT NULL COMMENT '操作对象ID',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题库操作审计表';
+
+-- playedu.exam_question_banks 定义
+
+CREATE TABLE `exam_question_banks` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题库名称',
+  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题库说明',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '状态',
+  `practice_enabled` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否开放练习',
+  `owner_id` int NOT NULL COMMENT '所有者管理员ID',
+  `revision` int NOT NULL DEFAULT '1' COMMENT '修订号',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题库表';
+
+-- playedu.exam_question_categories 定义
+
+CREATE TABLE `exam_question_categories` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `bank_id` bigint NOT NULL COMMENT '题库ID',
+  `parent_id` bigint NOT NULL DEFAULT '0' COMMENT '父分类ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分类名称',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_category` (`bank_id`,`parent_id`,`name`),
+  CONSTRAINT `fk_exam_category_bank` FOREIGN KEY (`bank_id`) REFERENCES `exam_question_banks` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题分类表';
+
+-- playedu.exam_questions 定义
+
+CREATE TABLE `exam_questions` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `bank_id` bigint NOT NULL COMMENT '题库ID',
+  `category_id` bigint DEFAULT NULL COMMENT '试题分类ID',
+  `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试题编码',
+  `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题型',
+  `difficulty` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '难度',
+  `stem` varchar(10000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题干',
+  `tags_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标签JSON',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '状态',
+  `current_version` int NOT NULL DEFAULT '1' COMMENT '当前版本',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_question_code` (`bank_id`,`code`),
+  KEY `fk_exam_question_category` (`category_id`),
+  CONSTRAINT `fk_exam_question_bank` FOREIGN KEY (`bank_id`) REFERENCES `exam_question_banks` (`id`),
+  CONSTRAINT `fk_exam_question_category` FOREIGN KEY (`category_id`) REFERENCES `exam_question_categories` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题表';
+
+-- playedu.exam_question_versions 定义
+
+CREATE TABLE `exam_question_versions` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `question_id` bigint NOT NULL COMMENT '试题ID',
+  `version_no` int NOT NULL COMMENT '版本号',
+  `content_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '版本内容JSON',
+  `created_by` int NOT NULL COMMENT '创建管理员ID',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_question_version` (`question_id`,`version_no`),
+  CONSTRAINT `fk_exam_version_question` FOREIGN KEY (`question_id`) REFERENCES `exam_questions` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题版本表';
+
+-- playedu.exam_practice_attempts 定义
+
+CREATE TABLE `exam_practice_attempts` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int NOT NULL COMMENT '学员ID',
+  `question_id` bigint NOT NULL COMMENT '试题ID',
+  `version_no` int NOT NULL COMMENT '试题版本号',
+  `answer_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '作答JSON',
+  `score` decimal(10,2) NOT NULL COMMENT '得分',
+  `max_score` decimal(10,2) NOT NULL COMMENT '满分',
+  `result` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '判题结果',
+  `request_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '幂等请求键',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_practice_request` (`user_id`,`request_key`),
+  KEY `fk_exam_practice_version` (`question_id`,`version_no`),
+  CONSTRAINT `fk_exam_practice_version` FOREIGN KEY (`question_id`, `version_no`) REFERENCES `exam_question_versions` (`question_id`, `version_no`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题练习记录表';
+
+-- playedu.exam_paper_audit 定义
+
+CREATE TABLE `exam_paper_audit` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `admin_id` int NOT NULL COMMENT '管理员ID',
+  `action` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '操作',
+  `target_id` bigint NOT NULL COMMENT '操作对象ID',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷库操作审计表';
+
+-- playedu.exam_paper_categories 定义
+
+CREATE TABLE `exam_paper_categories` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `owner_id` int NOT NULL COMMENT '所有者管理员ID',
+  `parent_id` bigint NOT NULL DEFAULT '0' COMMENT '父分类ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分类名称',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_paper_category` (`owner_id`,`parent_id`,`name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷分类表';
+
+-- playedu.exam_papers 定义
+
+CREATE TABLE `exam_papers` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `owner_id` int NOT NULL COMMENT '所有者管理员ID',
+  `category_id` bigint DEFAULT NULL COMMENT '试卷分类ID',
+  `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷编码',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷名称',
+  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷说明',
+  `tags_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标签JSON',
+  `mode` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'fixed' COMMENT '组卷模式',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft' COMMENT '状态',
+  `revision` int NOT NULL DEFAULT '1' COMMENT '修订号',
+  `current_version` int NOT NULL DEFAULT '0' COMMENT '当前正式版本',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_paper_code` (`owner_id`,`code`),
+  KEY `idx_exam_papers_owner_status` (`owner_id`,`status`),
+  KEY `idx_exam_papers_category` (`category_id`),
+  CONSTRAINT `fk_exam_paper_category` FOREIGN KEY (`category_id`) REFERENCES `exam_paper_categories` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷表';
+
+-- playedu.exam_paper_draft_sections 定义
+
+CREATE TABLE `exam_paper_draft_sections` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `paper_id` bigint NOT NULL COMMENT '试卷ID',
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '大题标题',
+  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '大题说明',
+  `position` int NOT NULL COMMENT '大题顺序',
+  `shuffle_questions` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否随机题序',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_paper_section_position` (`paper_id`,`position`),
+  CONSTRAINT `fk_exam_paper_section_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷草稿大题表';
+
+-- playedu.exam_paper_draft_items 定义
+
+CREATE TABLE `exam_paper_draft_items` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `paper_id` bigint NOT NULL COMMENT '试卷ID',
+  `section_id` bigint NOT NULL COMMENT '大题ID',
+  `question_id` bigint NOT NULL COMMENT '试题ID',
+  `question_version` int NOT NULL COMMENT '试题版本号',
+  `score` decimal(10,2) NOT NULL COMMENT '试卷分值',
+  `position` int NOT NULL COMMENT '题目顺序',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_paper_question` (`paper_id`,`question_id`),
+  UNIQUE KEY `uq_exam_paper_item_position` (`section_id`,`position`),
+  KEY `fk_exam_paper_item_question_version` (`question_id`,`question_version`),
+  CONSTRAINT `fk_exam_paper_item_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`),
+  CONSTRAINT `fk_exam_paper_item_section` FOREIGN KEY (`section_id`) REFERENCES `exam_paper_draft_sections` (`id`),
+  CONSTRAINT `fk_exam_paper_item_question_version` FOREIGN KEY (`question_id`, `question_version`) REFERENCES `exam_question_versions` (`question_id`, `version_no`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷草稿题目表';
+
+-- playedu.exam_paper_versions 定义
+
+CREATE TABLE `exam_paper_versions` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `paper_id` bigint NOT NULL COMMENT '试卷ID',
+  `version_no` int NOT NULL COMMENT '版本号',
+  `content_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '不可变试卷快照JSON',
+  `question_count` int NOT NULL COMMENT '题目数量',
+  `total_score` decimal(10,2) NOT NULL COMMENT '总分',
+  `objective_score` decimal(10,2) NOT NULL COMMENT '客观题分值',
+  `subjective_score` decimal(10,2) NOT NULL COMMENT '主观题分值',
+  `requires_manual_grading` tinyint(1) NOT NULL COMMENT '是否需要人工评分',
+  `created_by` int NOT NULL COMMENT '发布管理员ID',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_paper_version` (`paper_id`,`version_no`),
+  CONSTRAINT `fk_exam_paper_version_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷正式版本表';
