@@ -1,0 +1,24 @@
+{
+  "name": "playedu-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:admin": "playwright test --project=admin",
+    "test:pc": "playwright test --project=pc",
+    "test:h5": "playwright test --project=h5",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "typecheck": "tsc --noEmit",
+    "report": "playwright show-report",
+    "install:browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.0",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.9.2"
+  }
+}

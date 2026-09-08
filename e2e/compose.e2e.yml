@@ -1,0 +1,42 @@
+name: playedu-e2e
+
+services:
+  mysql:
+    build: ../docker/mysql
+    environment:
+      MYSQL_DATABASE: ${E2E_DB_NAME:-playedu}
+      MYSQL_ROOT_PASSWORD: ${E2E_DB_PASSWORD:-playedu-e2e}
+      TZ: Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${E2E_DB_PASSWORD:-playedu-e2e}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - mysql-e2e-data:/var/lib/mysql
+
+  playedu:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${E2E_DB_NAME:-playedu}
+      DB_USER: root
+      DB_PASS: ${E2E_DB_PASSWORD:-playedu-e2e}
+      SA_TOKEN_JWT_SECRET_KEY: ${E2E_JWT_KEY:-playedu-e2e-only}
+      SA_TOKEN_IS_CONCURRENT: "false"
+      DEMO_MODE: "true"
+      TZ: Asia/Shanghai
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "${E2E_API_PORT:-9700}:9898"
+      - "${E2E_PC_PORT:-9800}:9800"
+      - "${E2E_H5_PORT:-9801}:9801"
+      - "${E2E_ADMIN_PORT:-9900}:9900"
+
+volumes:
+  mysql-e2e-data:
