@@ -42,6 +42,18 @@ export const TabBarFooter: React.FC = () => {
         ),
     },
     {
+      key: "/exam",
+      title: "考试",
+      icon: (active: boolean) => (
+        <span
+          className={styles["exam-icon"]}
+          style={{ color: active ? "#FF4D4F" : "#cccccc" }}
+        >
+          题
+        </span>
+      ),
+    },
+    {
       key: "/member",
       title: "我的",
       icon: (active: boolean) =>

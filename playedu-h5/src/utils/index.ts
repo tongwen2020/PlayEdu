@@ -69,6 +69,17 @@ export function durationFormat(dateStr: number) {
   return hour + minute + second;
 }
 
+export function generateUUID(): string {
+  let guid = "";
+  for (let i = 1; i <= 32; i++) {
+    guid += Math.floor(Math.random() * 16).toString(16);
+    if (i === 8 || i === 12 || i === 16 || i === 20) {
+      guid += "-";
+    }
+  }
+  return guid;
+}
+
 export function isMobile() {
   let flag = window.navigator.userAgent.match(
     /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i

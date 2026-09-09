@@ -23,6 +23,9 @@ const StudyPage = lazy(() => import("../pages/study/index"));
 //课程页面
 const CoursePage = lazy(() => import("../pages/course/index"));
 const CoursePlayPage = lazy(() => import("../pages/course/video"));
+//考试中心
+const ExamCenterPage = lazy(() => import("../pages/exam/index"));
+const ExamPracticePage = lazy(() => import("../pages/exam/practice"));
 
 import PrivateRoute from "../components/private-route";
 
@@ -79,6 +82,10 @@ const routes: RouteObject[] = [
             path: "/study",
             element: <PrivateRoute Component={<StudyPage />} />,
           },
+          {
+            path: "/exam",
+            element: <PrivateRoute Component={<ExamCenterPage />} />,
+          },
         ],
       },
       {
@@ -104,6 +111,10 @@ const routes: RouteObject[] = [
           {
             path: "/course/:courseId/hour/:hourId",
             element: <PrivateRoute Component={<CoursePlayPage />} />,
+          },
+          {
+            path: "/exam/practice/:bankId",
+            element: <PrivateRoute Component={<ExamPracticePage />} />,
           },
         ],
       },

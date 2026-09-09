@@ -8,9 +8,9 @@
 
 `playedu-h5` 是 PlayEdu 企业培训系统面向手机浏览器和微信内置浏览器的学员端。它只调用 `/api/v1/**` 学员 API，不直接访问管理后台 API、数据库或对象存储。
 
-当前业务闭环为：学员登录 → 选择所属部门 → 浏览被分配的课程 → 查看目录或下载附件 → 观看视频并上报学习进度 → 在最近学习和个人中心查看学习情况。
+当前业务闭环为：学员登录 → 选择所属部门 → 浏览被分配的课程 → 查看目录或下载附件 → 观看视频并上报学习进度 → 在最近学习和个人中心查看学习情况；学员也可以进入考试中心选择开放题库、完成客观题练习并查看作答记录。
 
-本模块当前不包含注册、找回密码、课程搜索、考试中心、评论、收藏或付费能力。PC 学员端已有的题库练习也尚未接入 H5；不要用静态数据或纯前端逻辑将未接入的能力描述为可用功能。
+本模块当前不包含注册、找回密码、课程搜索、正式考试组织、限时答卷、人工阅卷、评论、收藏或付费能力。考试中心目前只支持后台明确开放的题库及单选、多选、判断题即时练习；不要用静态数据或纯前端逻辑将未接入的能力描述为可用功能。
 
 ## 技术基线
 
@@ -91,6 +91,18 @@ Token 使用 `localStorage` 键 `playedu-h5-token`，请求头格式为 `Authori
 
 “学习”页 `/study` 调用 `/api/v1/user/latest-learn`，按课时记录更新时间分为“今日”“昨日”“更早”，并展示课程进度。点击课程进入课程详情，支持下拉刷新和空态。
 
+### 考试中心
+
+“考试”页 `/exam` 提供开放题库和个人作答记录：
+
+- 题库列表只展示后台状态正常且开启练习的题库，并显示可练习客观题数量。
+- 练习页 `/exam/practice/:bankId` 支持单选、多选和判断题，可通过上一题、下一题和答题卡切换。
+- 学员提交单题后由服务端即时判分，并展示标准答案、得分和解析；提交后的答案不可修改。
+- 每次提交使用 8～64 位请求标识保证幂等，同一道题因网络失败重试时复用原请求标识。
+- 离开页面前提示未提交答案不会保存；已提交结果可在“我的作答”中分页查看。
+
+题目列表响应不应包含标准答案和解析，前端也不得自行判分；只有提交接口的结果可以作为正确性依据。当前不展示简答题，因为它依赖人工评分能力。
+
 ### 个人中心
 
 “我的”页 `/member` 展示：
@@ -109,11 +121,13 @@ Token 使用 `localStorage` 键 `playedu-h5-token`，请求头格式为 `Authori
 | `/login` | 普通密码或 LDAP 登录 | 否 | 否 |
 | `/` | 课程首页 | 是 | 是 |
 | `/study` | 最近学习 | 是 | 是 |
+| `/exam` | 开放题库与个人作答记录 | 是 | 是 |
 | `/member` | 个人中心与学习统计 | 是 | 是 |
 | `/change-department` | 切换当前部门 | 是 | 否 |
 | `/change-password` | 修改密码 | 是 | 否 |
 | `/course/:courseId` | 课程详情、目录、附件 | 是 | 否 |
 | `/course/:courseId/hour/:hourId` | 视频播放和课时切换 | 是 | 否 |
+| `/exam/practice/:bankId` | 客观题练习、判分和解析 | 是 | 否 |
 
 首页、学习、我的共用 `pages/layouts/with-footer`；其余页面使用 `without-footer`。新增一级底部入口时同步更新 `components/bar-footer` 的路由键和选中逻辑。
 
@@ -139,6 +153,10 @@ Token 使用 `localStorage` 键 `playedu-h5-token`，请求头格式为 `Authori
 | 课时 | `POST /api/v1/course/:courseId/hour/:hourId/record` | 上报播放位置 |
 | 课时 | `POST /api/v1/course/:courseId/hour/:hourId/ping` | 播放心跳 |
 | 附件 | `GET /api/v1/course/:courseId/attach/:id/download` | 获取授权下载地址 |
+| 考试 | `POST /api/v1/question-bank/banks/list` | 获取开放练习题库 |
+| 考试 | `POST /api/v1/question-bank/questions/list` | 获取不含答案的客观题列表 |
+| 考试 | `POST /api/v1/question-bank/practice/submit` | 幂等提交答案并获取判分解析 |
+| 考试 | `POST /api/v1/question-bank/practice/history` | 分页获取个人作答记录 |
 
 新增接口继续使用学员端 `/api/v1/**`，不得从 H5 调用 `/backend/v1/**`。请求和响应应补充 TypeScript 类型，避免继续扩大页面中的 `any`。
 
@@ -207,6 +225,7 @@ pnpm build
 - 改课程列表：验证分类、五种状态筛选、URL 参数、下拉刷新、默认封面和空态。
 - 改播放：在真机或移动端模拟器验证续播、10 秒进度上报、心跳、禁拖动、播放结束、下一课时和播放器销毁。
 - 改附件：分别验证普通浏览器、iOS 和微信环境；不要只确认按钮可点击。
+- 改考试中心：验证题库/历史空态、三种客观题、提交防重复、服务端判分、解析、答题卡、分页及未提交退出提示。
 
 后端联调入口位于 `playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/`。修改接口契约时同步检查对应 Controller、DTO/record、PC 学员端调用方以及后端测试。
 

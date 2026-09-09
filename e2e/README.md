@@ -39,10 +39,13 @@ pnpm test
 pnpm test:admin
 pnpm test:pc
 pnpm test:h5
+pnpm test:h5:local
 pnpm test:headed
 pnpm typecheck
 pnpm report
 ```
+
+`test:h5:local` 会启动仓库中的 H5 Vite 应用，并在浏览器层 Mock 学员 API 和 DPlayer，覆盖登录、课程、学习记录、个人中心、部门/密码/头像、附件、视频上报以及考试中心。它不需要 `.env`、验收账号或数据库，适合开发阶段快速回归；`test:h5` 仍用于验证真实验收环境的前后端集成。
 
 ## 数据和安全
 

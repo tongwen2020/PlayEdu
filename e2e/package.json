@@ -8,6 +8,7 @@
     "test:admin": "playwright test --project=admin",
     "test:pc": "playwright test --project=pc",
     "test:h5": "playwright test --project=h5",
+    "test:h5:local": "playwright test --config=playwright.h5-local.config.ts",
     "test:smoke": "playwright test --grep @smoke",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
