@@ -1,0 +1,4002 @@
+[
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_001",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 的中文常用名称是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "可编程逻辑控制器"
+      },
+      {
+        "id": "B",
+        "text": "比例积分控制器"
+      },
+      {
+        "id": "C",
+        "text": "电力线路控制器"
+      },
+      {
+        "id": "D",
+        "text": "过程负载计算器"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PLC 通常译为可编程逻辑控制器。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_002",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 最典型的工作方式是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "循环扫描"
+      },
+      {
+        "id": "B",
+        "text": "只执行一次"
+      },
+      {
+        "id": "C",
+        "text": "随机执行"
+      },
+      {
+        "id": "D",
+        "text": "完全并行执行"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PLC 通常按输入采样、程序执行、输出刷新等阶段循环扫描。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_003",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 扫描周期通常不包括以下哪个阶段？",
+    "options": [
+      {
+        "id": "A",
+        "text": "机械触点打磨"
+      },
+      {
+        "id": "B",
+        "text": "输入采样"
+      },
+      {
+        "id": "C",
+        "text": "用户程序执行"
+      },
+      {
+        "id": "D",
+        "text": "输出刷新"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "机械触点打磨不是 PLC 扫描周期的组成阶段。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_004",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 中 CPU 模块的主要作用是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "执行用户程序并协调各模块"
+      },
+      {
+        "id": "B",
+        "text": "直接驱动所有大功率负载"
+      },
+      {
+        "id": "C",
+        "text": "仅存储接线图"
+      },
+      {
+        "id": "D",
+        "text": "只提供网络布线"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "CPU 负责逻辑运算、程序执行和系统协调。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_005",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 数字量输入模块主要接收哪类信号？",
+    "options": [
+      {
+        "id": "A",
+        "text": "开关状态信号"
+      },
+      {
+        "id": "B",
+        "text": "连续变化的模拟量"
+      },
+      {
+        "id": "C",
+        "text": "视频信号"
+      },
+      {
+        "id": "D",
+        "text": "音频信号"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "数字量输入用于接收通断、0/1 等离散状态。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_006",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 模拟量输入模块常用于采集什么信号？",
+    "options": [
+      {
+        "id": "A",
+        "text": "4～20 mA 电流信号"
+      },
+      {
+        "id": "B",
+        "text": "继电器常开触点状态"
+      },
+      {
+        "id": "C",
+        "text": "以太网数据帧"
+      },
+      {
+        "id": "D",
+        "text": "机械位移本身"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "4～20 mA 是工业现场常用模拟量标准信号。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_007",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "工业现场常用的标准模拟电压信号是哪一种？",
+    "options": [
+      {
+        "id": "A",
+        "text": "0～10 V"
+      },
+      {
+        "id": "B",
+        "text": "0～220 V"
+      },
+      {
+        "id": "C",
+        "text": "380～500 V"
+      },
+      {
+        "id": "D",
+        "text": "1～1000 V"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "0～10 V 是常见的 PLC 模拟量电压输入范围。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_008",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "与 0～20 mA 相比，4～20 mA 信号的一个优点是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "可利用 4 mA 活零点检测断线"
+      },
+      {
+        "id": "B",
+        "text": "不需要供电"
+      },
+      {
+        "id": "C",
+        "text": "永远不受干扰"
+      },
+      {
+        "id": "D",
+        "text": "能直接驱动电机"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "低于正常活零点的电流可用于识别断线或故障。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_009",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 的数字量输出模块不适合直接驱动哪种负载？",
+    "options": [
+      {
+        "id": "A",
+        "text": "大功率三相电动机"
+      },
+      {
+        "id": "B",
+        "text": "小型指示灯"
+      },
+      {
+        "id": "C",
+        "text": "中间继电器线圈"
+      },
+      {
+        "id": "D",
+        "text": "小功率电磁阀"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "大功率电机应通过接触器或驱动器等功率器件控制。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_010",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "继电器输出型 PLC 的突出特点是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "可切换交流或直流负载"
+      },
+      {
+        "id": "B",
+        "text": "开关速度最高"
+      },
+      {
+        "id": "C",
+        "text": "没有机械寿命限制"
+      },
+      {
+        "id": "D",
+        "text": "只能输出模拟量"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "继电器触点可切换 AC/DC，但速度和寿命通常不及晶体管输出。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_011",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "晶体管输出型 PLC 最适合哪种应用？",
+    "options": [
+      {
+        "id": "A",
+        "text": "高速直流脉冲输出"
+      },
+      {
+        "id": "B",
+        "text": "直接切换大功率交流负载"
+      },
+      {
+        "id": "C",
+        "text": "测量热电偶温度"
+      },
+      {
+        "id": "D",
+        "text": "接收编码器模拟电压"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "晶体管输出速度快，常用于高速脉冲和直流负载。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_012",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "晶闸管输出型 PLC 通常用于控制什么负载？",
+    "options": [
+      {
+        "id": "A",
+        "text": "交流负载"
+      },
+      {
+        "id": "B",
+        "text": "直流高速脉冲负载"
+      },
+      {
+        "id": "C",
+        "text": "热电偶"
+      },
+      {
+        "id": "D",
+        "text": "电阻应变片"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "晶闸管输出一般用于交流负载。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_013",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PLC 输入端的光电隔离主要用于什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "隔离现场与内部电路并增强抗干扰性"
+      },
+      {
+        "id": "B",
+        "text": "提高机械强度"
+      },
+      {
+        "id": "C",
+        "text": "增大程序容量"
+      },
+      {
+        "id": "D",
+        "text": "降低网络地址数量"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "光耦可实现电气隔离并减少现场干扰进入控制器。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_014",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "在梯形图中，常开触点指令为真时通常表示什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "对应逻辑条件成立"
+      },
+      {
+        "id": "B",
+        "text": "物理触点必然断开"
+      },
+      {
+        "id": "C",
+        "text": "输出模块损坏"
+      },
+      {
+        "id": "D",
+        "text": "程序停止扫描"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "常开触点指令在对应位为 1 时导通逻辑。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_015",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "在梯形图中，线圈通常用于什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "写入一个逻辑结果"
+      },
+      {
+        "id": "B",
+        "text": "读取模拟量"
+      },
+      {
+        "id": "C",
+        "text": "定义网络地址"
+      },
+      {
+        "id": "D",
+        "text": "设置 CPU 电源"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "线圈把梯级逻辑结果写入输出位或内部位。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_016",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "梯形图中串联触点通常表示哪种逻辑关系？",
+    "options": [
+      {
+        "id": "A",
+        "text": "与（AND）"
+      },
+      {
+        "id": "B",
+        "text": "或（OR）"
+      },
+      {
+        "id": "C",
+        "text": "非（NOT）"
+      },
+      {
+        "id": "D",
+        "text": "异或（XOR）"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "串联路径要求各条件同时成立，相当于 AND。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_017",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "梯形图中并联支路通常表示哪种逻辑关系？",
+    "options": [
+      {
+        "id": "A",
+        "text": "或（OR）"
+      },
+      {
+        "id": "B",
+        "text": "与（AND）"
+      },
+      {
+        "id": "C",
+        "text": "恒假"
+      },
+      {
+        "id": "D",
+        "text": "移位"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "任一并联支路成立即可导通，相当于 OR。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_018",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "自保持回路中，与启动按钮并联的通常是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "输出的常开辅助触点"
+      },
+      {
+        "id": "B",
+        "text": "停止按钮常闭触点"
+      },
+      {
+        "id": "C",
+        "text": "熔断器"
+      },
+      {
+        "id": "D",
+        "text": "模拟量输入"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "输出辅助触点闭合后可绕过瞬时启动按钮保持回路。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_019",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "停止按钮在典型启停控制回路中常选用什么触点？",
+    "options": [
+      {
+        "id": "A",
+        "text": "常闭触点"
+      },
+      {
+        "id": "B",
+        "text": "常开触点"
+      },
+      {
+        "id": "C",
+        "text": "模拟触点"
+      },
+      {
+        "id": "D",
+        "text": "高速计数触点"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "常闭停止触点有利于断线时使控制回路停止，具有失效安全特性。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_020",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "互锁控制的主要目的是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "防止互斥输出同时动作"
+      },
+      {
+        "id": "B",
+        "text": "增加扫描周期"
+      },
+      {
+        "id": "C",
+        "text": "扩大存储器"
+      },
+      {
+        "id": "D",
+        "text": "提高模拟量分辨率"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "互锁用于避免正反转等互斥设备同时接通。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_021",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "电动机正反转控制中必须防止哪种情况？",
+    "options": [
+      {
+        "id": "A",
+        "text": "正转与反转接触器同时吸合"
+      },
+      {
+        "id": "B",
+        "text": "两个停止按钮同时断开"
+      },
+      {
+        "id": "C",
+        "text": "热继电器处于正常状态"
+      },
+      {
+        "id": "D",
+        "text": "PLC 处于运行状态"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "正反转接触器同时吸合可能造成相间短路。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_022",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "IEC 61131-3 标准中的 LD 指什么语言？",
+    "options": [
+      {
+        "id": "A",
+        "text": "梯形图"
+      },
+      {
+        "id": "B",
+        "text": "功能块图"
+      },
+      {
+        "id": "C",
+        "text": "结构化文本"
+      },
+      {
+        "id": "D",
+        "text": "顺序功能图"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "LD 是 Ladder Diagram，即梯形图。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_023",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "IEC 61131-3 标准中的 ST 指什么语言？",
+    "options": [
+      {
+        "id": "A",
+        "text": "结构化文本"
+      },
+      {
+        "id": "B",
+        "text": "语句表"
+      },
+      {
+        "id": "C",
+        "text": "梯形图"
+      },
+      {
+        "id": "D",
+        "text": "状态表"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "ST 是 Structured Text，即结构化文本。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_024",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "IEC 61131-3 标准中的 FBD 指什么语言？",
+    "options": [
+      {
+        "id": "A",
+        "text": "功能块图"
+      },
+      {
+        "id": "B",
+        "text": "流程数据库"
+      },
+      {
+        "id": "C",
+        "text": "现场总线定义"
+      },
+      {
+        "id": "D",
+        "text": "故障位诊断"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "FBD 是 Function Block Diagram，即功能块图。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_025",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "IEC 61131-3 标准中的 SFC 主要用于描述什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "顺序控制流程"
+      },
+      {
+        "id": "B",
+        "text": "模拟量接线"
+      },
+      {
+        "id": "C",
+        "text": "网络拓扑"
+      },
+      {
+        "id": "D",
+        "text": "电源容量"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "SFC 用步、转换等元素描述顺序过程。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_026",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "TON 定时器通常表示什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "接通延时定时器"
+      },
+      {
+        "id": "B",
+        "text": "断开延时定时器"
+      },
+      {
+        "id": "C",
+        "text": "保持型计数器"
+      },
+      {
+        "id": "D",
+        "text": "脉冲输出模块"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "TON 在使能条件成立后延时置位完成位。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_027",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "TOF 定时器通常表示什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "断开延时定时器"
+      },
+      {
+        "id": "B",
+        "text": "接通延时定时器"
+      },
+      {
+        "id": "C",
+        "text": "加计数器"
+      },
+      {
+        "id": "D",
+        "text": "数据转换器"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "TOF 在输入条件撤销后延时复位输出。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_028",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "TP 定时器通常用于产生什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "固定宽度脉冲"
+      },
+      {
+        "id": "B",
+        "text": "无限保持信号"
+      },
+      {
+        "id": "C",
+        "text": "模拟斜坡"
+      },
+      {
+        "id": "D",
+        "text": "网络校验码"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "TP 在触发后产生预设时长的脉冲。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_029",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "CTU 功能块的典型作用是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "向上计数"
+      },
+      {
+        "id": "B",
+        "text": "向下计数"
+      },
+      {
+        "id": "C",
+        "text": "时间累计"
+      },
+      {
+        "id": "D",
+        "text": "模拟量滤波"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "CTU 是加计数器，通常按输入上升沿累加。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_030",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "CTD 功能块的典型作用是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "向下计数"
+      },
+      {
+        "id": "B",
+        "text": "向上计数"
+      },
+      {
+        "id": "C",
+        "text": "脉冲调宽"
+      },
+      {
+        "id": "D",
+        "text": "通讯诊断"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "CTD 是减计数器。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_031",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "计数器通常在输入信号的什么变化时计数？",
+    "options": [
+      {
+        "id": "A",
+        "text": "上升沿"
+      },
+      {
+        "id": "B",
+        "text": "持续高电平的每次扫描"
+      },
+      {
+        "id": "C",
+        "text": "任意模拟值"
+      },
+      {
+        "id": "D",
+        "text": "电源下降"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "典型计数输入对由 0 到 1 的上升沿计数。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_032",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "上升沿检测指令通常只在什么时间为真？",
+    "options": [
+      {
+        "id": "A",
+        "text": "信号由 0 变为 1 后的一个扫描周期"
+      },
+      {
+        "id": "B",
+        "text": "信号保持为 1 的全部时间"
+      },
+      {
+        "id": "C",
+        "text": "信号由 1 变为 0 后"
+      },
+      {
+        "id": "D",
+        "text": "PLC 停止时"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "上升沿检测产生一个扫描周期宽的脉冲。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_033",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "下降沿检测对应哪种信号变化？",
+    "options": [
+      {
+        "id": "A",
+        "text": "由 1 变为 0"
+      },
+      {
+        "id": "B",
+        "text": "由 0 变为 1"
+      },
+      {
+        "id": "C",
+        "text": "模拟量增大"
+      },
+      {
+        "id": "D",
+        "text": "网络速度降低"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "下降沿就是布尔信号从真变为假。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_034",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "保持型存储位在断电后的典型特性是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "可按配置保留原值"
+      },
+      {
+        "id": "B",
+        "text": "一定清零"
+      },
+      {
+        "id": "C",
+        "text": "一定置位"
+      },
+      {
+        "id": "D",
+        "text": "变为模拟量"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "保持区是否保留由硬件和项目配置决定。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_035",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PLC 看门狗定时器主要用于检测什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "程序扫描超时或 CPU 异常"
+      },
+      {
+        "id": "B",
+        "text": "现场温度偏低"
+      },
+      {
+        "id": "C",
+        "text": "按钮机械磨损"
+      },
+      {
+        "id": "D",
+        "text": "以太网线颜色"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "扫描超出看门狗限制通常会触发 CPU 故障处理。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_036",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PLC 进入 STOP 模式后，通常会发生什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "停止执行用户程序并按配置处理输出"
+      },
+      {
+        "id": "B",
+        "text": "继续无条件控制设备"
+      },
+      {
+        "id": "C",
+        "text": "自动删除程序"
+      },
+      {
+        "id": "D",
+        "text": "自动提高输出电压"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "STOP 模式下用户程序不再正常循环，输出遵循系统设定。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_037",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "在调试 PLC 程序时，强制（Force）功能应如何使用？",
+    "options": [
+      {
+        "id": "A",
+        "text": "谨慎使用并在结束后解除"
+      },
+      {
+        "id": "B",
+        "text": "长期代替现场传感器"
+      },
+      {
+        "id": "C",
+        "text": "不经风险评估直接启用"
+      },
+      {
+        "id": "D",
+        "text": "用于提高电源电压"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "强制会覆盖正常逻辑，遗留强制可能导致危险动作。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_038",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "修改在线运行程序前最重要的措施是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "评估对设备和人员的影响"
+      },
+      {
+        "id": "B",
+        "text": "先删除所有注释"
+      },
+      {
+        "id": "C",
+        "text": "关闭所有报警"
+      },
+      {
+        "id": "D",
+        "text": "增大扫描周期"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "在线修改可能立即改变控制行为，应先完成风险评估和现场协调。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_039",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "急停功能通常不应仅依赖什么实现？",
+    "options": [
+      {
+        "id": "A",
+        "text": "普通 PLC 软件逻辑"
+      },
+      {
+        "id": "B",
+        "text": "安全继电器"
+      },
+      {
+        "id": "C",
+        "text": "安全 PLC"
+      },
+      {
+        "id": "D",
+        "text": "硬接线安全回路"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "普通 PLC 软件不具备所需安全完整性时，不能作为唯一急停措施。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_040",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "安全 PLC 与普通 PLC 的核心区别之一是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "具备面向功能安全的诊断和认证机制"
+      },
+      {
+        "id": "B",
+        "text": "不需要编程"
+      },
+      {
+        "id": "C",
+        "text": "无需输入输出模块"
+      },
+      {
+        "id": "D",
+        "text": "只能用于照明"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "安全 PLC 通过冗余、诊断及认证支持功能安全应用。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_041",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "在 PLC 控制柜中，保护接地的主要目的是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "降低触电风险并提供故障电流通路"
+      },
+      {
+        "id": "B",
+        "text": "增加程序容量"
+      },
+      {
+        "id": "C",
+        "text": "改变逻辑地址"
+      },
+      {
+        "id": "D",
+        "text": "提高通信速率"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "可靠保护接地是电气安全的重要措施。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_042",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "屏蔽电缆的屏蔽层通常用于什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "降低电磁干扰耦合"
+      },
+      {
+        "id": "B",
+        "text": "承载正常负载电流"
+      },
+      {
+        "id": "C",
+        "text": "替代熔断器"
+      },
+      {
+        "id": "D",
+        "text": "存储程序"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "屏蔽层可将电磁噪声引导至参考地，减少信号干扰。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_043",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "模拟量信号线布线时宜采取哪种做法？",
+    "options": [
+      {
+        "id": "A",
+        "text": "与动力电缆分开敷设"
+      },
+      {
+        "id": "B",
+        "text": "与变频器输出线紧贴并行"
+      },
+      {
+        "id": "C",
+        "text": "取消屏蔽"
+      },
+      {
+        "id": "D",
+        "text": "与接触器线圈共用导线"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "分开敷设有助于降低动力线路对模拟信号的干扰。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_044",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "感性直流负载线圈两端常并联续流二极管，其目的是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "抑制断电反向电压"
+      },
+      {
+        "id": "B",
+        "text": "增大线圈电流"
+      },
+      {
+        "id": "C",
+        "text": "产生交流信号"
+      },
+      {
+        "id": "D",
+        "text": "测量绝缘电阻"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "续流二极管为线圈断电时的电流提供通路并抑制浪涌。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_045",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "交流接触器线圈常使用什么器件抑制浪涌？",
+    "options": [
+      {
+        "id": "A",
+        "text": "RC 吸收回路或压敏电阻"
+      },
+      {
+        "id": "B",
+        "text": "普通发光二极管串联"
+      },
+      {
+        "id": "C",
+        "text": "热电偶"
+      },
+      {
+        "id": "D",
+        "text": "编码器"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "RC 或压敏器件可吸收交流线圈开断产生的浪涌。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_046",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "24 VDC PNP 传感器导通时通常向 PLC 输入端提供什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "正电压"
+      },
+      {
+        "id": "B",
+        "text": "0 V 下拉"
+      },
+      {
+        "id": "C",
+        "text": "交流高压"
+      },
+      {
+        "id": "D",
+        "text": "电阻测量值"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PNP 输出为源型，动作时向负载提供正电位。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_047",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "24 VDC NPN 传感器导通时通常做什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "将信号端拉向 0 V"
+      },
+      {
+        "id": "B",
+        "text": "输出正弦交流"
+      },
+      {
+        "id": "C",
+        "text": "产生 4～20 mA"
+      },
+      {
+        "id": "D",
+        "text": "切断保护地"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "NPN 输出为漏型，动作时将负载电流引向 0 V。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_048",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "选择 PLC 输入接线方式时，PNP/NPN 最需要与什么匹配？",
+    "options": [
+      {
+        "id": "A",
+        "text": "输入模块的源型/漏型特性"
+      },
+      {
+        "id": "B",
+        "text": "CPU 程序容量"
+      },
+      {
+        "id": "C",
+        "text": "机柜颜色"
+      },
+      {
+        "id": "D",
+        "text": "HMI 分辨率"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "传感器输出类型必须与 PLC 输入公共端接法兼容。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_049",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "两线制 4～20 mA 变送器的电流回路特点是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "供电与信号共用两根线"
+      },
+      {
+        "id": "B",
+        "text": "不需要任何供电"
+      },
+      {
+        "id": "C",
+        "text": "只能传数字信号"
+      },
+      {
+        "id": "D",
+        "text": "必须使用四根信号线"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "两线制变送器在同一电流回路中获得供电并传送测量值。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_050",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "模拟量模块的分辨率越高通常意味着什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "可区分的量化级数更多"
+      },
+      {
+        "id": "B",
+        "text": "测量范围一定更大"
+      },
+      {
+        "id": "C",
+        "text": "扫描时间一定为零"
+      },
+      {
+        "id": "D",
+        "text": "完全没有误差"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "更高位数通常提供更多数字量化级别，但不代表没有误差。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_051",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "将原始模拟量转换为工程量的过程称为什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "量程换算"
+      },
+      {
+        "id": "B",
+        "text": "边沿检测"
+      },
+      {
+        "id": "C",
+        "text": "互锁"
+      },
+      {
+        "id": "D",
+        "text": "循环移位"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "量程换算把模块原始数值映射为温度、压力等工程单位。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_052",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "若 0～10 V 对应 0～100 ℃，输入为 5 V 时理想工程值是多少？",
+    "options": [
+      {
+        "id": "A",
+        "text": "50 ℃"
+      },
+      {
+        "id": "B",
+        "text": "5 ℃"
+      },
+      {
+        "id": "C",
+        "text": "10 ℃"
+      },
+      {
+        "id": "D",
+        "text": "100 ℃"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "线性对应关系下，5 V 是满量程的一半，即 50 ℃。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_053",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "若 4～20 mA 对应 0～160 kPa，12 mA 时理想压力是多少？",
+    "options": [
+      {
+        "id": "A",
+        "text": "80 kPa"
+      },
+      {
+        "id": "B",
+        "text": "12 kPa"
+      },
+      {
+        "id": "C",
+        "text": "96 kPa"
+      },
+      {
+        "id": "D",
+        "text": "120 kPa"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "12 mA 位于 4～20 mA 有效跨度的中点，对应 80 kPa。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_054",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "模拟量低通滤波的主要效果是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "减小高频噪声和数值抖动"
+      },
+      {
+        "id": "B",
+        "text": "提高物理传感器量程"
+      },
+      {
+        "id": "C",
+        "text": "改变数字量地址"
+      },
+      {
+        "id": "D",
+        "text": "产生急停信号"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "低通滤波能平滑高频噪声，但也可能增加响应延迟。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_055",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "对快速变化信号过度滤波可能造成什么问题？",
+    "options": [
+      {
+        "id": "A",
+        "text": "响应滞后"
+      },
+      {
+        "id": "B",
+        "text": "分辨率无限提高"
+      },
+      {
+        "id": "C",
+        "text": "通信地址自动改变"
+      },
+      {
+        "id": "D",
+        "text": "输出永久锁定"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "滤波强度过大可能使真实变化被延迟。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_056",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "热电偶输入模块通常需要哪种补偿？",
+    "options": [
+      {
+        "id": "A",
+        "text": "冷端补偿"
+      },
+      {
+        "id": "B",
+        "text": "功率因数补偿"
+      },
+      {
+        "id": "C",
+        "text": "机械间隙补偿"
+      },
+      {
+        "id": "D",
+        "text": "网络时延补偿"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "热电偶测温需要参考端温度，即冷端补偿。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_057",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "三线制热电阻接法主要用于补偿什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "引线电阻"
+      },
+      {
+        "id": "B",
+        "text": "电源频率"
+      },
+      {
+        "id": "C",
+        "text": "网络丢包"
+      },
+      {
+        "id": "D",
+        "text": "接触器抖动"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "三线制测量通过桥路或算法减小引线电阻影响。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_058",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "高频计数器常用于连接哪种设备？",
+    "options": [
+      {
+        "id": "A",
+        "text": "增量式编码器"
+      },
+      {
+        "id": "B",
+        "text": "普通温度变送器"
+      },
+      {
+        "id": "C",
+        "text": "交流接触器主触点"
+      },
+      {
+        "id": "D",
+        "text": "照明灯"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "编码器脉冲频率可能很高，通常接 PLC 高速计数输入。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_059",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "增量式编码器 A、B 两相信号的相位关系可用于判断什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "旋转方向"
+      },
+      {
+        "id": "B",
+        "text": "绝缘等级"
+      },
+      {
+        "id": "C",
+        "text": "供电功率"
+      },
+      {
+        "id": "D",
+        "text": "温度量程"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "A/B 正交相位的先后关系可判定方向。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_060",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "编码器 Z 相脉冲通常代表什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "每转一次的基准脉冲"
+      },
+      {
+        "id": "B",
+        "text": "持续模拟输出"
+      },
+      {
+        "id": "C",
+        "text": "电源故障"
+      },
+      {
+        "id": "D",
+        "text": "网络广播"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "Z 相通常每转出现一次，可用于回零或基准定位。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_061",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "高速脉冲输出常用于控制哪类设备？",
+    "options": [
+      {
+        "id": "A",
+        "text": "步进或伺服驱动器"
+      },
+      {
+        "id": "B",
+        "text": "热电偶"
+      },
+      {
+        "id": "C",
+        "text": "液位浮球开关"
+      },
+      {
+        "id": "D",
+        "text": "普通熔断器"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "脉冲与方向信号常用于步进或伺服定位控制。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_062",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PWM 输出通过改变什么调节平均输出？",
+    "options": [
+      {
+        "id": "A",
+        "text": "占空比"
+      },
+      {
+        "id": "B",
+        "text": "IP 地址"
+      },
+      {
+        "id": "C",
+        "text": "程序密码"
+      },
+      {
+        "id": "D",
+        "text": "输入公共端"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PWM 通过改变一个周期内导通时间比例调节平均值。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_063",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PID 控制中 P 表示什么作用？",
+    "options": [
+      {
+        "id": "A",
+        "text": "比例作用"
+      },
+      {
+        "id": "B",
+        "text": "预测作用"
+      },
+      {
+        "id": "C",
+        "text": "脉冲作用"
+      },
+      {
+        "id": "D",
+        "text": "保护作用"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "P 项与当前偏差成比例。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_064",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PID 控制中积分作用主要用于什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "消除稳态误差"
+      },
+      {
+        "id": "B",
+        "text": "抑制所有噪声"
+      },
+      {
+        "id": "C",
+        "text": "判断网络拓扑"
+      },
+      {
+        "id": "D",
+        "text": "限制程序容量"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "积分累积偏差，有助于消除稳态余差。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_065",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PID 控制中微分作用对什么最敏感？",
+    "options": [
+      {
+        "id": "A",
+        "text": "误差变化率"
+      },
+      {
+        "id": "B",
+        "text": "累计运行时间"
+      },
+      {
+        "id": "C",
+        "text": "设备铭牌"
+      },
+      {
+        "id": "D",
+        "text": "网络地址"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "微分项根据误差变化速度产生作用，也较容易放大噪声。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_066",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PID 参数整定不当、比例增益过大时可能出现什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "系统振荡"
+      },
+      {
+        "id": "B",
+        "text": "输入模块自动扩容"
+      },
+      {
+        "id": "C",
+        "text": "通信线自动修复"
+      },
+      {
+        "id": "D",
+        "text": "程序语言改变"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "比例增益过大容易造成超调甚至持续振荡。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_067",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "Modbus RTU 最常见的物理层之一是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "RS-485"
+      },
+      {
+        "id": "B",
+        "text": "HDMI"
+      },
+      {
+        "id": "C",
+        "text": "USB 音频"
+      },
+      {
+        "id": "D",
+        "text": "VGA"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "Modbus RTU 常运行在 RS-485 串行链路上。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_068",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "RS-485 总线两端使用终端电阻的主要目的是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "减小信号反射"
+      },
+      {
+        "id": "B",
+        "text": "提高直流供电电压"
+      },
+      {
+        "id": "C",
+        "text": "增加站号数量"
+      },
+      {
+        "id": "D",
+        "text": "保存通信参数"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "匹配终端阻抗有助于抑制高速长线传输中的反射。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_069",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "Modbus 通信中从站地址的作用是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "标识总线上的目标设备"
+      },
+      {
+        "id": "B",
+        "text": "确定模拟量量程"
+      },
+      {
+        "id": "C",
+        "text": "设置 PLC 扫描顺序"
+      },
+      {
+        "id": "D",
+        "text": "决定接地方式"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "主站通过从站地址选择要访问的设备。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_070",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "Modbus TCP 默认使用哪个传输层协议？",
+    "options": [
+      {
+        "id": "A",
+        "text": "TCP"
+      },
+      {
+        "id": "B",
+        "text": "UDP 广播"
+      },
+      {
+        "id": "C",
+        "text": "ICMP"
+      },
+      {
+        "id": "D",
+        "text": "ARP"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "Modbus TCP 基于 TCP 连接传输应用数据。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_071",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "以太网设备处于同一子网时，通信前必须避免什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "IP 地址冲突"
+      },
+      {
+        "id": "B",
+        "text": "程序注释重复"
+      },
+      {
+        "id": "C",
+        "text": "输入点相同状态"
+      },
+      {
+        "id": "D",
+        "text": "输出端接继电器"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "重复 IP 会导致地址解析混乱和通信异常。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_072",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PROFINET 属于哪一类技术？",
+    "options": [
+      {
+        "id": "A",
+        "text": "工业以太网"
+      },
+      {
+        "id": "B",
+        "text": "液压传动"
+      },
+      {
+        "id": "C",
+        "text": "模拟传感器"
+      },
+      {
+        "id": "D",
+        "text": "机械制图"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PROFINET 是面向工业自动化的以太网通信技术。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_073",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PROFIBUS DP 主要面向什么通信？",
+    "options": [
+      {
+        "id": "A",
+        "text": "分布式外设现场总线通信"
+      },
+      {
+        "id": "B",
+        "text": "互联网网页访问"
+      },
+      {
+        "id": "C",
+        "text": "视频传输"
+      },
+      {
+        "id": "D",
+        "text": "办公打印"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PROFIBUS DP 常连接 PLC 与分布式 I/O、驱动器等设备。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_074",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "OPC UA 的一个主要用途是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "实现跨平台工业数据交换"
+      },
+      {
+        "id": "B",
+        "text": "直接切断主电源"
+      },
+      {
+        "id": "C",
+        "text": "替代所有现场传感器"
+      },
+      {
+        "id": "D",
+        "text": "提高接触器机械寿命"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "OPC UA 提供平台无关、带信息模型的工业互操作能力。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_075",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 与 HMI 通信时，HMI 变量通常需要关联什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "PLC 中的地址或符号变量"
+      },
+      {
+        "id": "B",
+        "text": "控制柜门锁"
+      },
+      {
+        "id": "C",
+        "text": "电缆颜色"
+      },
+      {
+        "id": "D",
+        "text": "熔断器额定电流"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "HMI 标签需映射到 PLC 数据地址或符号名。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_076",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "使用符号变量编程的主要优点是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "提高程序可读性和维护性"
+      },
+      {
+        "id": "B",
+        "text": "消除所有硬件故障"
+      },
+      {
+        "id": "C",
+        "text": "无需下载程序"
+      },
+      {
+        "id": "D",
+        "text": "自动完成电气接线"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "有意义的符号名比裸地址更易理解和维护。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_077",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 程序中增加清晰注释的主要价值是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "便于调试、交接和维护"
+      },
+      {
+        "id": "B",
+        "text": "提高输出电压"
+      },
+      {
+        "id": "C",
+        "text": "增大模拟量范围"
+      },
+      {
+        "id": "D",
+        "text": "替代安全回路"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "注释能记录控制意图和边界条件。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_078",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "结构化程序设计中，将重复逻辑封装成功能块的好处是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "便于复用和测试"
+      },
+      {
+        "id": "B",
+        "text": "保证程序永不出错"
+      },
+      {
+        "id": "C",
+        "text": "取消 I/O 接线"
+      },
+      {
+        "id": "D",
+        "text": "提升电源功率"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "封装重复逻辑能降低重复代码并改善维护性。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_079",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "功能块实例通常为什么需要独立实例数据？",
+    "options": [
+      {
+        "id": "A",
+        "text": "保存各实例自己的内部状态"
+      },
+      {
+        "id": "B",
+        "text": "共享同一个输出端子"
+      },
+      {
+        "id": "C",
+        "text": "改变 CPU 型号"
+      },
+      {
+        "id": "D",
+        "text": "自动设置站号"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "含定时器、状态等内部数据的功能块需要各实例独立存储。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_080",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "状态机程序中，“状态”变量的主要作用是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "记录当前所处步骤或工况"
+      },
+      {
+        "id": "B",
+        "text": "测量输入电压"
+      },
+      {
+        "id": "C",
+        "text": "设定通信波特率"
+      },
+      {
+        "id": "D",
+        "text": "替代急停按钮"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "状态变量让程序明确当前阶段及允许的转换。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_081",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "顺序控制中的转换条件应在何时切换到下一步？",
+    "options": [
+      {
+        "id": "A",
+        "text": "当前步有效且转换条件满足时"
+      },
+      {
+        "id": "B",
+        "text": "PLC 上电后无条件"
+      },
+      {
+        "id": "C",
+        "text": "任意输入变化时"
+      },
+      {
+        "id": "D",
+        "text": "每个扫描周期都切换"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "规范的步进逻辑要求当前步有效并满足相应转换条件。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_082",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "上电初始化逻辑通常用于什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "设定安全且确定的初始状态"
+      },
+      {
+        "id": "B",
+        "text": "随机选择输出"
+      },
+      {
+        "id": "C",
+        "text": "删除故障记录"
+      },
+      {
+        "id": "D",
+        "text": "绕过互锁"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "初始化应使状态、计数和输出进入设计规定的确定状态。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_083",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "设备自动运行前设置启动条件检查的目的是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "确认安全条件和设备状态满足要求"
+      },
+      {
+        "id": "B",
+        "text": "减少程序注释"
+      },
+      {
+        "id": "C",
+        "text": "改变网络协议"
+      },
+      {
+        "id": "D",
+        "text": "扩大地址范围"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "启动许可应综合急停、门禁、压力等必要条件。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_084",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "报警锁存的典型目的是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "故障条件消失后仍保留报警供确认"
+      },
+      {
+        "id": "B",
+        "text": "永久禁止复位"
+      },
+      {
+        "id": "C",
+        "text": "提高模拟量精度"
+      },
+      {
+        "id": "D",
+        "text": "自动修改程序"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "锁存可避免瞬时故障消失后丢失报警信息。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_085",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "报警确认与故障复位通常应如何理解？",
+    "options": [
+      {
+        "id": "A",
+        "text": "确认不一定等同于故障已排除"
+      },
+      {
+        "id": "B",
+        "text": "确认后必须删除程序"
+      },
+      {
+        "id": "C",
+        "text": "两者永远完全相同"
+      },
+      {
+        "id": "D",
+        "text": "复位只用于模拟量"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "确认表示操作者知晓；复位还应满足故障原因已消除等条件。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_086",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "诊断一个数字量输入始终为 0 的问题时，首先宜检查什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "现场信号、电源和输入指示灯"
+      },
+      {
+        "id": "B",
+        "text": "立即更换 CPU"
+      },
+      {
+        "id": "C",
+        "text": "删除所有程序"
+      },
+      {
+        "id": "D",
+        "text": "改变通信协议"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "先从现场到模块逐段确认信号和供电能快速定位问题。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_087",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 输出指示灯亮但执行器不动作时，优先检查什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "输出回路电源、接线和执行器"
+      },
+      {
+        "id": "B",
+        "text": "输入映像区"
+      },
+      {
+        "id": "C",
+        "text": "程序注释"
+      },
+      {
+        "id": "D",
+        "text": "工程文件名称"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "PLC 已给出输出时，应重点检查模块外部的功率回路和负载。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_088",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PLC 输出在程序中为真但模块指示灯不亮，可能首先检查什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "输出是否被其他逻辑覆盖或模块故障"
+      },
+      {
+        "id": "B",
+        "text": "传感器量程"
+      },
+      {
+        "id": "C",
+        "text": "HMI 屏幕亮度"
+      },
+      {
+        "id": "D",
+        "text": "机柜油漆"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "重复写入、强制或模块诊断都可能造成逻辑与物理输出不一致。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_089",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "同一输出线圈在程序多处重复写入为什么不推荐？",
+    "options": [
+      {
+        "id": "A",
+        "text": "最终状态受扫描顺序影响，难以维护"
+      },
+      {
+        "id": "B",
+        "text": "会自动增加电压"
+      },
+      {
+        "id": "C",
+        "text": "必然提升性能"
+      },
+      {
+        "id": "D",
+        "text": "能够替代互锁"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "多处写同一位容易形成最后写入生效等隐蔽问题。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_090",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "扫描周期过长最可能带来什么影响？",
+    "options": [
+      {
+        "id": "A",
+        "text": "对快速输入事件响应不及时"
+      },
+      {
+        "id": "B",
+        "text": "模拟量自动更准确"
+      },
+      {
+        "id": "C",
+        "text": "网络地址增加"
+      },
+      {
+        "id": "D",
+        "text": "继电器寿命无限"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "扫描周期越长，常规循环逻辑对短脉冲和变化的响应越慢。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_091",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "捕获短于扫描周期的输入脉冲宜优先使用什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "高速输入或硬件中断"
+      },
+      {
+        "id": "B",
+        "text": "普通慢速轮询"
+      },
+      {
+        "id": "C",
+        "text": "增加程序注释"
+      },
+      {
+        "id": "D",
+        "text": "降低电源电压"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "高速输入或中断能降低常规扫描遗漏窄脉冲的风险。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_092",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "PLC 硬件中断程序的典型特点是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "由特定事件触发并优先执行"
+      },
+      {
+        "id": "B",
+        "text": "只能在断电时执行"
+      },
+      {
+        "id": "C",
+        "text": "永远低于主循环优先级"
+      },
+      {
+        "id": "D",
+        "text": "用于存储接线图"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "中断由硬件或事件触发，用于及时处理关键事件。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_093",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "循环中执行大量阻塞式通信可能导致什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "扫描时间增加"
+      },
+      {
+        "id": "B",
+        "text": "输出电压升高"
+      },
+      {
+        "id": "C",
+        "text": "I/O 点数增加"
+      },
+      {
+        "id": "D",
+        "text": "安全等级自动提高"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "同步等待或频繁通信会占用 CPU 时间并拉长扫描。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_094",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "PLC 数据类型 BOOL 通常表示什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "布尔真/假值"
+      },
+      {
+        "id": "B",
+        "text": "32 位浮点数"
+      },
+      {
+        "id": "C",
+        "text": "字符串"
+      },
+      {
+        "id": "D",
+        "text": "日期时间"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "BOOL 用于表示二值逻辑状态。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_095",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "16 位有符号整数的典型范围是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "-32768～32767"
+      },
+      {
+        "id": "B",
+        "text": "0～255"
+      },
+      {
+        "id": "C",
+        "text": "0～65535"
+      },
+      {
+        "id": "D",
+        "text": "-128～127"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "16 位二进制补码有符号整数范围为 -2^15 到 2^15-1。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_096",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "无符号 16 位整数的典型最大值是多少？",
+    "options": [
+      {
+        "id": "A",
+        "text": "65535"
+      },
+      {
+        "id": "B",
+        "text": "32767"
+      },
+      {
+        "id": "C",
+        "text": "255"
+      },
+      {
+        "id": "D",
+        "text": "2147483647"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "16 位无符号整数范围通常为 0～65535。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_097",
+    "type": "single_choice",
+    "difficulty": "easy",
+    "stem": "REAL 类型通常用于表示什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "浮点数"
+      },
+      {
+        "id": "B",
+        "text": "单个位"
+      },
+      {
+        "id": "C",
+        "text": "固定八字符文本"
+      },
+      {
+        "id": "D",
+        "text": "硬件地址"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "REAL 通常为单精度浮点类型，用于带小数的数据。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_098",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "整数除法与浮点除法最需要注意什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "整数除法可能舍弃小数部分"
+      },
+      {
+        "id": "B",
+        "text": "整数除法一定更精确"
+      },
+      {
+        "id": "C",
+        "text": "浮点数不能表示小数"
+      },
+      {
+        "id": "D",
+        "text": "二者结果永远相同"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "若操作数均为整数，许多 PLC 会执行整数除法并截去小数。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_099",
+    "type": "single_choice",
+    "difficulty": "medium",
+    "stem": "数据类型转换时为什么要检查溢出？",
+    "options": [
+      {
+        "id": "A",
+        "text": "目标类型可能无法表示源数值"
+      },
+      {
+        "id": "B",
+        "text": "会改变接线方式"
+      },
+      {
+        "id": "C",
+        "text": "会增大 CPU 电源"
+      },
+      {
+        "id": "D",
+        "text": "会删除网络配置"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "超出目标类型范围可能截断、回绕或触发异常。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  },
+  {
+    "bankId": 0,
+    "categoryId": null,
+    "code": "PLC_20260909_100",
+    "type": "single_choice",
+    "difficulty": "hard",
+    "stem": "BCD 码的特点是什么？",
+    "options": [
+      {
+        "id": "A",
+        "text": "每个十进制数字用一组二进制位表示"
+      },
+      {
+        "id": "B",
+        "text": "只能表示布尔值"
+      },
+      {
+        "id": "C",
+        "text": "等同于 ASCII 字符串"
+      },
+      {
+        "id": "D",
+        "text": "不需要位权"
+      }
+    ],
+    "standardAnswer": {
+      "optionIds": [
+        "A"
+      ]
+    },
+    "gradingRule": {
+      "strategy": "exact_match"
+    },
+    "suggestedScore": 1,
+    "analysis": "常见 BCD 用 4 位表示一个十进制数字 0～9。",
+    "tags": [
+      "PLC"
+    ],
+    "status": "enabled"
+  }
+]
