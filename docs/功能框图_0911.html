@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayEdu 当前项目功能架构图</title>
+<style>
+:root{color-scheme:light;--bg:#f3f6fa;--surface:#fff;--ink:#17263c;--muted:#637187;--line:#ccd6e3;--navy:#16365f;--blue:#2864d7;--teal:#087d72;--purple:#7654a8;--amber:#9a661d;--red:#aa3e42;--soft-blue:#edf3ff;--soft-teal:#e8f6f3;--soft-purple:#f2edfa;--soft-amber:#fbf2e4;--soft-red:#faeded}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Microsoft YaHei","PingFang SC",Arial,sans-serif}header,main,footer{max-width:1520px;margin:auto;padding:30px 36px}header{padding-bottom:20px}.eyebrow{color:var(--blue);font-size:12px;font-weight:700;letter-spacing:2px}h1{font-size:32px;line-height:1.25;margin:6px 0 8px}h2{font-size:22px;margin:0}h3{font-size:17px;margin:0 0 4px}p{color:var(--muted);margin:6px 0}.tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:19px}input,button{font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);padding:8px 13px}input{width:330px;max-width:100%}button{cursor:pointer}button:hover{background:#eaf1fb}:focus-visible{outline:3px solid #78a6ff;outline-offset:2px}.count{font-size:13px;color:var(--muted)}main{padding-top:0}.platform{background:var(--navy);color:#fff;border-radius:14px;text-align:center;padding:20px;box-shadow:0 8px 26px #16365f1f}.platform strong{display:block;font-size:23px}.platform span{color:#c7d8eb;font-size:13px}.stem{height:26px;width:1px;background:var(--line);margin:auto}.domain-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0 0 30px;position:relative}.domain-nav:before{content:"";position:absolute;height:1px;background:var(--line);top:-1px;left:10%;right:10%}.domain-nav a{position:relative;text-decoration:none;text-align:center;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:9px;padding:13px 8px}.domain-nav a:before{content:"";position:absolute;left:50%;top:-15px;width:1px;height:13px;background:var(--line)}.domain-nav small{display:block;color:var(--muted)}.section-title{display:flex;gap:12px;align-items:baseline;margin:30px 0 14px}.section-title span{color:var(--muted);font-size:13px}.architecture{display:grid;grid-template-columns:1fr 34px 1.35fr 34px 1fr;align-items:stretch;margin-bottom:30px}.arch-col{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px}.arch-col h3{color:var(--blue)}.arch-col ul{margin:7px 0 0;padding-left:20px}.arrow{display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:22px}.domain{display:grid;grid-template-columns:205px minmax(0,1fr);margin-bottom:20px;scroll-margin-top:15px}.domain-head{align-self:start;border:1px solid var(--line);border-left:5px solid var(--accent);background:var(--tint);border-radius:10px;padding:17px;position:relative}.domain-head:after{content:"";position:absolute;right:-22px;top:31px;width:21px;height:1px;background:var(--line)}.domain-head p{font-size:12px}.modules{border-left:1px solid var(--line);margin-left:21px;padding-left:21px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.module{background:var(--surface);border:1px solid var(--line);border-radius:10px;position:relative;min-width:0;align-self:start}.module:before{content:"";position:absolute;left:-23px;top:31px;width:22px;height:1px;background:var(--line)}.module summary{cursor:pointer;color:var(--accent);font-weight:700;padding:14px 14px 12px}.module summary small{font-weight:400;color:var(--muted);margin-left:5px}.capabilities{list-style:none;margin:0;padding:0 14px 12px 29px}.capabilities li{position:relative;border:1px solid #e2e8f0;background:#fbfcfe;border-radius:6px;padding:6px 8px;margin:7px 0;font-size:13px}.capabilities li:before{content:"";position:absolute;left:-11px;top:-8px;bottom:50%;width:10px;border-left:1px solid var(--line);border-bottom:1px solid var(--line)}.sources{border-top:1px dashed #dfe5ed;padding:8px 14px 11px;font-size:11px;overflow-wrap:anywhere}.sources summary{font-size:11px;font-weight:400;color:var(--muted);padding:0}.sources a{display:block;color:var(--blue);text-decoration:none;margin-top:3px}.sources a:hover{text-decoration:underline}.flows{display:grid;grid-template-columns:1fr 1fr;gap:16px}.flow{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px}.flow h3{margin-bottom:12px}.flowline{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}.step{flex:1;min-width:115px;border-top:3px solid var(--blue);background:#f8faff;padding:10px;border-radius:6px}.step b{display:block;font-size:13px}.step small{color:var(--muted)}.flow-arrow{align-self:center;padding:0 7px;color:var(--blue)}.scope{display:grid;grid-template-columns:1fr 1fr;gap:16px}.scope-box{border-radius:10px;padding:16px;border:1px solid var(--line)}.scope-box.current{background:var(--soft-teal)}.scope-box.boundary{background:var(--soft-red)}.scope-box ul{margin:7px 0 0;padding-left:20px}.note{margin-top:18px;background:#e9eff7;border-radius:10px;padding:15px 18px;color:var(--muted);font-size:13px}#empty{text-align:center;padding:30px;color:var(--muted)}mark{background:#ffec9c;color:inherit}footer{padding-top:5px;color:var(--muted);font-size:12px}
+@media(min-width:1280px){.modules{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:980px){header,main,footer{padding-left:20px;padding-right:20px}.domain{grid-template-columns:170px 1fr}.modules{grid-template-columns:repeat(2,minmax(0,1fr))}.domain-nav{grid-template-columns:repeat(3,1fr)}.domain-nav:before,.domain-nav a:before{display:none}.flows,.scope{grid-template-columns:1fr}}
+@media(max-width:640px){header,main,footer{padding-left:14px;padding-right:14px}h1{font-size:25px}.domain-nav{grid-template-columns:repeat(2,1fr)}.architecture{grid-template-columns:1fr}.architecture .arrow{height:28px;transform:rotate(90deg)}.domain{display:block}.domain-head:after{display:none}.modules{grid-template-columns:1fr;margin:11px 0 0 13px;padding-left:13px}.module:before{left:-15px;width:14px}.section-title{display:block}.flowline{display:block}.flow-arrow{text-align:center;transform:rotate(90deg);height:24px}.tools input{width:100%}}
+@media print{@page{size:A3 landscape;margin:10mm}body{background:#fff;font-size:12px}header,main,footer{max-width:none;padding:8px}.tools{display:none}.architecture,.domain,.flow,.scope-box{break-inside:avoid}.domain{grid-template-columns:175px 1fr}.modules{grid-template-columns:repeat(4,minmax(0,1fr))}.sources{display:none}.capabilities li{font-size:11px;padding:4px}.domain-nav{margin-bottom:12px}h1{font-size:24px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">PLAYEDU / CURRENT FUNCTION ARCHITECTURE</div>
+  <h1>当前项目功能架构图</h1>
+  <p>依据当前工作区页面、路由、Controller 与领域服务重新梳理。核对日期：2026-09-11。</p>
+  <div class="tools">
+    <input id="search" type="search" aria-label="搜索功能" placeholder="搜索功能，例如：自动阅卷、LDAP、学习进度">
+    <button id="expand" type="button">全部展开</button>
+    <button id="collapse" type="button">收起细项</button>
+    <button id="print" type="button">打印 / 保存 PDF</button>
+    <span id="count" class="count" aria-live="polite"></span>
+  </div>
+</header>
+<main>
+  <div class="platform"><strong>PlayEdu 企业内部培训与考试平台</strong><span>管理后台 · PC 学员端 · H5 学员端 · 统一 Spring Boot API</span></div>
+  <div class="stem"></div>
+  <nav class="domain-nav" aria-label="功能域导航">
+    <a href="#admin">管理运营<small>组织 · 内容 · 数据</small></a>
+    <a href="#learning">学习中心<small>PC · H5 · 进度</small></a>
+    <a href="#exam">考试中心<small>题库 · 试卷 · 阅卷</small></a>
+    <a href="#governance">系统治理<small>权限 · 配置 · LDAP</small></a>
+    <a href="#platform">平台支撑<small>存储 · 数据 · 部署</small></a>
+  </nav>
+
+  <section aria-labelledby="architecture-title">
+    <div class="section-title"><h2 id="architecture-title">运行架构</h2><span>请求入口、业务模块与基础设施的实际边界</span></div>
+    <div class="architecture">
+      <div class="arch-col"><h3>交互端</h3><ul><li>React 管理后台</li><li>React PC 学员端</li><li>React H5 学员端</li></ul></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="arch-col"><h3>统一 API 与领域层</h3><ul><li><code>/backend/v1/**</code> 管理接口</li><li><code>/api/v1/**</code> 学员接口</li><li>鉴权 / 校验 / 权限 / 日志 / 限流</li><li>common、course、resource、exam、system 模块</li></ul></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="arch-col"><h3>数据与外部服务</h3><ul><li>MySQL 业务数据与历史快照</li><li>S3 / MinIO 兼容对象存储</li><li>LDAP 企业目录</li><li>内存缓存、锁与限流状态</li></ul></div>
+    </div>
+  </section>
+
+  <div id="map"></div>
+  <p id="empty" hidden>没有匹配的功能，请尝试其他关键词。</p>
+
+  <section aria-labelledby="flow-title">
+    <div class="section-title"><h2 id="flow-title">核心业务闭环</h2><span>当前代码已实现的两条主流程</span></div>
+    <div class="flows">
+      <div class="flow"><h3>培训学习闭环</h3><div class="flowline"><div class="step"><b>组织学员</b><small>部门 / 学员 / LDAP</small></div><span class="flow-arrow">→</span><div class="step"><b>准备内容</b><small>资源 / 课程 / 课时</small></div><span class="flow-arrow">→</span><div class="step"><b>分配学习</b><small>公开 / 部门 / 学员</small></div><span class="flow-arrow">→</span><div class="step"><b>学习留痕</b><small>播放 / 心跳 / 进度</small></div><span class="flow-arrow">→</span><div class="step"><b>统计跟踪</b><small>完成度 / 时长 / 导出</small></div></div></div>
+      <div class="flow"><h3>题库自动阅卷闭环</h3><div class="flowline"><div class="step"><b>维护题库</b><small>客观题 / 答案 / 分值</small></div><span class="flow-arrow">→</span><div class="step"><b>开放练习</b><small>启用题库与题目</small></div><span class="flow-arrow">→</span><div class="step"><b>整卷作答</b><small>PC / H5 答题卡</small></div><span class="flow-arrow">→</span><div class="step"><b>统一交卷</b><small>幂等请求 / 未答计零</small></div><span class="flow-arrow">→</span><div class="step"><b>自动评分</b><small>总分 / 逐题 / 解析</small></div></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="scope-title">
+    <div class="section-title"><h2 id="scope-title">范围边界</h2><span>区分“当前可用”和“尚未形成完整产品闭环”</span></div>
+    <div class="scope">
+      <div class="scope-box current"><h3>当前已实现</h3><ul><li>企业培训内容生产、分配、学习、进度和统计闭环</li><li>题库管理、题目版本、客观题整卷交卷与自动评分</li><li>固定试卷组卷、校验、发布快照、复制和导入导出</li><li>PC 与 H5 学员端共享服务端可信评分结果</li></ul></div>
+      <div class="scope-box boundary"><h3>当前未形成完整闭环</h3><ul><li>正式考试活动、考生名单、考试时间与次数控制</li><li>简答题人工阅卷工作台、复核改分与成绩发布</li><li>试卷库发布版本尚未直接作为学员正式考试使用</li><li>证书、直播、评论、付费购买及文档在线预览</li></ul></div>
+    </div>
+  </section>
+
+  <div class="note">说明：本图按业务能力归并，不逐一枚举 CRUD 接口；“接口能力”表示后端已提供但当前页面未完整消费。自动阅卷覆盖单选、多选和判断题，简答题仍采用 manual 评分策略并排除在自动练习之外。图中源码链接均相对于 docs 目录。</div>
+  <noscript><p>请启用 JavaScript 以显示完整功能树。</p></noscript>
+</main>
+<footer>基于当前仓库 playedu-admin / playedu-pc / playedu-h5 / playedu-api 梳理 · PlayEdu 原项目版权归杭州白书科技有限公司所有</footer>
+
+<script>
+const group=(name,items,paths,badge='')=>({name,items,paths,badge});
+const domains=[
+{id:'admin',name:'管理运营',subtitle:'组织、内容、资源与学习数据',accent:'#2864d7',tint:'#edf3ff',modules:[
+['运营工作台','平台概览与学习分析',[
+group('平台概览',['学员、课程、部门和管理员数量','今日 / 昨日新增学员','视频、图片和课件资源数量','系统版本与学习时长概览'],['../playedu-admin/src/pages/dashboard/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/DashboardController.java']),
+group('学习数据',['学员学习时长统计与 Top 10','学员已学 / 可学课程','课时完成状态与课程进度','首次学习、完成时间及累计时长'],['../playedu-admin/src/pages/member/learn.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/UserController.java']),
+group('课程学员跟踪',['按课程查看学员及完成进度','部门学员课程进度汇总','部门进度批量导出','清除课程或课时学习记录'],['../playedu-admin/src/pages/course/user.tsx','../playedu-admin/src/pages/member/departmentUser.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CourseUserController.java'])]],
+['组织与身份','部门、学员与管理员',[
+group('部门管理',['树形部门维护与排序','父级调整和删除关联检查','查看部门下学员','LDAP 部门映射与同步'],['../playedu-admin/src/pages/department/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/DepartmentController.java']),
+group('学员管理',['学员查询、创建、编辑和删除','姓名、邮箱、头像与密码','多部门归属','Excel 模板和批量导入'],['../playedu-admin/src/pages/member/index.tsx','../playedu-admin/src/pages/member/import.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/UserController.java']),
+group('管理员与角色',['管理员账号维护','角色创建与授权','菜单及接口权限控制','后台登录、退出和修改密码'],['../playedu-admin/src/pages/system/administrator/index.tsx','../playedu-admin/src/pages/system/adminroles/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/AdminUserController.java'])]],
+['课程内容','课程、章节、课时与附件',[
+group('课程维护',['课程分类、名称、封面和简介','必修 / 选修设置','公开、部门或指定学员范围','上架时间与状态'],['../playedu-admin/src/pages/course/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CourseController.java']),
+group('章节与课时',['章节增删改与排序','视频课时增删改与排序','批量添加视频课时','课时关联资源'],['../playedu-admin/src/pages/course/compenents/hours.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CourseChapterController.java','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CourseHourController.java']),
+group('课程附件',['单个 / 批量添加附件','附件标题、删除和排序','按课程权限下载','附件下载行为记录与查询'],['../playedu-admin/src/pages/course/compenents/attachments.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CourseAttachmentController.java','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CourseAttachmentDownloadLogController.java'])]],
+['资源中心','上传、分类与素材复用',[
+group('资源分类',['树形分类维护','分类排序与父级调整','按分类筛选资源','删除前关联检查'],['../playedu-admin/src/pages/resource/resource-category/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/ResourceCategoryController.java']),
+group('媒体与课件',['图片、视频上传与预览','PDF / Word / PPT / Excel','ZIP / RAR / TXT 文件','资源查询、编辑、单删和批量删除'],['../playedu-admin/src/pages/resource/images/index.tsx','../playedu-admin/src/pages/resource/videos/index.tsx','../playedu-admin/src/pages/resource/courseware/index.tsx']),
+group('上传编排',['普通上传','大文件分片上传','预签名地址、分片查询与合并','资源元数据、视频时长与封面'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/UploadController.java','../playedu-api/playedu-resource/src/main/java/xyz/playedu/resource'])]]]},
+{id:'learning',name:'学习中心',subtitle:'PC 与 H5 的学员学习体验',accent:'#087d72',tint:'#e8f6f3',modules:[
+['账号与入口','登录、资料与部门上下文',[
+group('学员认证',['邮箱密码登录','配置启用后的 LDAP 登录','Bearer Token 鉴权','退出登录与失败次数限制'],['../playedu-pc/src/pages/login/index.tsx','../playedu-h5/src/pages/login/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/LoginController.java']),
+group('个人资料',['查看个人信息和所属部门','当前部门切换','更换头像','修改密码与学习统计'],['../playedu-h5/src/pages/member/index.tsx','../playedu-h5/src/pages/change-department/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/UserController.java']),
+group('双端入口',['PC：首页、最近学习、课程、考试','H5：首页、学习、考试、我的','深层路由鉴权与错误页','系统配置驱动端地址和外观'],['../playedu-pc/src/routes/index.tsx','../playedu-h5/src/routes/index.tsx'])]],
+['课程发现','筛选、详情与附件',[
+group('课程列表',['按当前部门获取可见课程','课程分类筛选','全部 / 必修 / 选修','已学完 / 未学完'],['../playedu-pc/src/pages/index/index.tsx','../playedu-h5/src/pages/index/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/UserController.java']),
+group('课程详情',['课程封面、简介和必选修标识','章节与课时目录','课时完成状态','课程附件授权下载'],['../playedu-pc/src/pages/course/index.tsx','../playedu-h5/src/pages/course/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/CourseController.java']),
+group('最近学习',['按最近课时继续学习','今日 / 昨日 / 更早分组','展示课程完成进度','PC 与 H5 独立适配'],['../playedu-pc/src/pages/latest-learn/index.tsx','../playedu-h5/src/pages/study/index.tsx'])]],
+['视频与进度','播放、心跳和完成判定',[
+group('视频播放',['授权获取播放地址','从已保存进度续播','切换上一 / 下一课时','配置限制首次学习拖动'],['../playedu-pc/src/pages/course/video.tsx','../playedu-h5/src/pages/course/video.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/HourController.java']),
+group('学习留痕',['周期上报播放进度','在线心跳累计学习时长','课时完成状态判定','完成事件汇总课程进度'],['../playedu-api/playedu-course/src/main/java/xyz/playedu/course/service','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/HourController.java']),
+group('播放保护',['配置化跑马灯水印','播放器封面','资源访问权限校验','前后台登录态与课程可见性校验'],['../playedu-admin/src/pages/system/config/index.tsx','../playedu-api/playedu-course/src/main/java/xyz/playedu/course/bus/UserBus.java'])]]]},
+{id:'exam',name:'考试中心',subtitle:'题库、试卷资产与自动阅卷',accent:'#7654a8',tint:'#f2edfa',modules:[
+['试题库管理','题库与题目全生命周期',[
+group('题库管理',['题库名称、说明和启停','按管理员所有权隔离','开放 / 关闭学员练习','删除前关联校验'],['../playedu-admin/src/pages/question-bank/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/QuestionBankController.java']),
+group('题目编辑',['单选、多选、判断和简答','题干、选项、答案与解析','难度、标签和建议分值','分类与状态管理'],['../playedu-admin/src/pages/question-bank/question-editor.tsx','../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/QuestionBankTypes.java']),
+group('版本与交换',['题目不可变版本记录','乐观版本校验','批量导入 / 导出','草稿删除、启用、停用与归档'],['../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/QuestionBankService.java','../playedu-admin/src/pages/question-bank/transfer-dialog.tsx'])]],
+['试卷库管理','固定组卷与发布快照',[
+group('试卷编排',['试卷分类、编码、名称和标签','大题分区与题目排序','从题库选择指定版本','逐题设置实际分值'],['../playedu-admin/src/pages/exam-paper/paper-editor.tsx','../playedu-admin/src/pages/exam-paper/question-picker.tsx']),
+group('校验与发布',['校验空分区、题目状态与版本','汇总客观分、主观分和总分','发布为不可变版本快照','发布、停用和归档状态'],['../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/ExamPaperService.java','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/ExamPaperController.java']),
+group('复用与交换',['试卷预览','复制指定试卷版本','版本历史查看','试卷导入 / 导出'],['../playedu-admin/src/pages/exam-paper/index.tsx','../playedu-admin/src/pages/exam-paper/transfer-dialog.tsx'])]],
+['学员整卷作答','开放题库的 PC / H5 练习',[
+group('答题体验',['加载题库内全部启用客观题','单选、多选与判断作答','上一题 / 下一题与答题卡','未答数量和交卷确认'],['../playedu-pc/src/pages/exam/practice.tsx','../playedu-h5/src/pages/exam/practice.tsx']),
+group('统一交卷',['整卷答案一次提交','未答题自动按零分计算','8～64 位请求键保证幂等','题目版本变化时拒绝旧卷'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/QuestionPracticeController.java','../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/QuestionBankService.java']),
+group('结果展示',['提交后立即显示总分与满分','答对题数和逐题得分','标准答案与解析','交卷后答案锁定不可修改'],['../playedu-pc/src/pages/exam/practice.tsx','../playedu-h5/src/pages/exam/practice.tsx'])]],
+['评分与记录','服务端可信判分',[
+group('自动评分',['选择题按选项集合精确匹配','判断题保留 false 有效答案','使用题目分值累计总分','判分逻辑只在服务端执行'],['../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/QuestionGrader.java']),
+group('答卷持久化',['保存整卷答案 JSON','保存不可变阅卷结果 JSON','记录总分、满分、题数与正确数','学员请求键唯一约束'],['../playedu-api/sql/create_tables.sql','../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/PracticeAutoGradingMigration.java']),
+group('历史查询',['原单题练习历史接口','整卷成绩历史接口','按学员隔离查询','整卷历史接口暂未接入成绩列表页'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/frontend/QuestionPracticeController.java'],'接口能力')]]]},
+{id:'governance',name:'系统治理',subtitle:'权限、配置、审计和企业集成',accent:'#9a661d',tint:'#fbf2e4',modules:[
+['权限与审计','后台治理与访问控制',[
+group('RBAC 权限',['管理员分配角色','角色分配行为权限','后台菜单按权限显示','Controller 接口权限切面校验'],['../playedu-api/playedu-system/src/main/java/xyz/playedu/system/aspectj/BackendPermissionAspect.java','../playedu-api/playedu-system/src/main/java/xyz/playedu/system/checks/AdminPermissionCheck.java']),
+group('操作日志',['记录后台业务操作','按条件分页查询','查看请求与结果详情','避免记录密码和密钥等敏感信息'],['../playedu-admin/src/pages/system/adminlog/index.tsx','../playedu-api/playedu-system/src/main/java/xyz/playedu/system/aspectj/AdminLogAspect.java']),
+group('访问防护',['管理端与学员端独立拦截器','JWT / Bearer Token','登录限流与临时锁定','题库特殊方法限制'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/interceptor','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/interceptor/QuestionBankMethodFilter.java'])]],
+['系统配置','站点、播放器与存储',[
+group('站点设置',['PC Logo 与学员端标题','PC / H5 地址','页脚与默认头像','系统配置学员端只读下发'],['../playedu-admin/src/pages/system/config/index.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/AppConfigController.java']),
+group('播放器设置',['禁止拖动开关','跑马灯开关、内容和样式','播放器封面','配置驱动双端播放器行为'],['../playedu-admin/src/pages/system/config/index.tsx']),
+group('对象存储',['AccessKey / SecretKey','Bucket、Region 与 Endpoint','兼容 S3 / MinIO','预签名上传和访问地址'],['../playedu-api/playedu-common/src/main/java/xyz/playedu/common/util/S3Util.java','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/UploadController.java'])]],
+['LDAP 集成','企业目录同步',[
+group('目录连接',['LDAP 启停与连接参数','绑定账号与 Base DN','学员 LDAP 登录','LDAP 与本地账号映射'],['../playedu-admin/src/pages/system/config/index.tsx','../playedu-api/playedu-common/src/main/java/xyz/playedu/common/util/ldap/LdapUtil.java']),
+group('同步任务',['后台手动触发同步','每小时定时同步','部门与用户增改删同步','映射关系维护'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/schedule/LDAPSchedule.java','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/DepartmentController.java']),
+group('同步记录',['同步批次、状态和统计','用户 / 部门变更明细','失败信息查看','同步结果下载'],['../playedu-admin/src/pages/department/components/LdapSyncModal.tsx','../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/LdapController.java'])]]]},
+{id:'platform',name:'平台支撑',subtitle:'工程运行、数据与部署能力',accent:'#aa3e42',tint:'#faeded',modules:[
+['后端模块化','Spring Boot 多模块单体',[
+group('应用装配',['Controller、拦截器和请求适配','统一 JsonResponse','事件监听和定时任务','聚合 common / course / resource / exam / system'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api','../playedu-api/pom.xml']),
+group('数据访问',['课程等领域使用 MyBatis-Plus','复杂统计使用 XML Mapper','考试模块使用 JdbcTemplate','参数绑定与事务边界'],['../playedu-api/playedu-course/src/main/java','../playedu-api/playedu-exam/src/main/java']),
+group('领域事件',['删除业务对象时清理关联数据','课时完成推动课程进度汇总','课程分配变化时失效可见性缓存','模块依赖保持单向'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/event','../playedu-api/playedu-course/src/main/java'])]],
+['数据与初始化','表结构和启动治理',[
+group('数据库初始化',['完整表结构集中在 create_tables.sql','默认管理员与角色初始化','工业机器人示例题库脚本','MySQL 8 数据持久化'],['../playedu-api/sql/create_tables.sql','../playedu-api/sql/init_data.sql','../playedu-api/sql/industrial_robot_questions.sql']),
+group('启动检查',['核心数据库迁移','系统必要数据补齐','默认配置更新','后台权限补齐和版本升级处理'],['../playedu-api/playedu-system/src/main/java/xyz/playedu/system/checks','../playedu-api/playedu-exam/src/main/java/xyz/playedu/exam/PracticeAutoGradingMigration.java']),
+group('缓存与锁',['缓存列表和清理接口','课程可见性与最近学习内存缓存','JVM 内存锁抽象','多实例下不具备共享一致性'],['../playedu-api/playedu-api/src/main/java/xyz/playedu/api/controller/backend/CacheController.java','../playedu-api/playedu-common/src/main/java/xyz/playedu/common/util'])]],
+['交付与运维','构建、容器与配置',[
+group('前端交付',['管理后台、PC、H5 独立 Vite 构建','TypeScript + React','Nginx 静态站点与 API 转发','桌面与移动端响应式页面'],['../playedu-admin/package.json','../playedu-pc/package.json','../playedu-h5/package.json']),
+group('后端交付',['Java 17 / Spring Boot 3.3','Maven Wrapper 多模块构建','单一可执行 playedu-api JAR','默认 API 端口 9898'],['../playedu-api/pom.xml','../playedu-api/playedu-api/pom.xml']),
+group('容器部署',['Docker 多阶段构建','Compose 编排应用与 MySQL','SeaweedFS / S3 兼容存储','环境变量覆盖数据库、JWT 和端口'],['../Dockerfile','../compose.yml','../.env.example'])]]]}];
+
+const map=document.getElementById('map');
+const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node};
+function render(){
+  domains.forEach(domain=>{
+    const section=make('section','domain');section.id=domain.id;section.style.setProperty('--accent',domain.accent);section.style.setProperty('--tint',domain.tint);
+    const head=make('div','domain-head');head.append(make('h3','',domain.name),make('p','',domain.subtitle));section.append(head);
+    const modules=make('div','modules');
+    domain.modules.forEach(([title,moduleSubtitle,groups])=>groups.forEach(g=>{
+      const details=make('details','module');details.open=true;details.dataset.search=[domain.name,domain.subtitle,title,moduleSubtitle,g.name,...g.items].join(' ').toLowerCase();
+      const summary=make('summary','',g.name);const small=make('small','',g.badge||title);summary.append(small);details.append(summary);
+      const list=make('ul','capabilities');g.items.forEach(item=>list.append(make('li','',item)));details.append(list);
+      const source=make('details','sources');const sourceTitle=make('summary','',`源码依据 · ${g.paths.length}`);source.append(sourceTitle);g.paths.forEach(path=>{const a=make('a','',path.replace('../',''));a.href=path;source.append(a)});details.append(source);modules.append(details);
+    }));
+    section.append(modules);map.append(section);
+  });
+}
+render();
+const search=document.getElementById('search'),count=document.getElementById('count'),empty=document.getElementById('empty');
+function escapeRegex(value){return value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+function filter(){
+  const term=search.value.trim().toLowerCase();let visible=0;
+  document.querySelectorAll('.module').forEach(node=>{const show=!term||node.dataset.search.includes(term);node.hidden=!show;if(show){visible++;node.open=true}
+    node.querySelectorAll('.capabilities li').forEach(li=>{const original=li.dataset.original||li.textContent;li.dataset.original=original;li.innerHTML=term?original.replace(new RegExp(escapeRegex(term),'ig'),m=>`<mark>${m}</mark>`):original});
+  });
+  document.querySelectorAll('.domain').forEach(section=>section.hidden=!section.querySelector('.module:not([hidden])'));
+  count.textContent=`显示 ${visible} 个功能组`;empty.hidden=visible!==0;
+}
+search.addEventListener('input',filter);document.getElementById('expand').addEventListener('click',()=>document.querySelectorAll('.module,.sources').forEach(x=>x.open=true));document.getElementById('collapse').addEventListener('click',()=>document.querySelectorAll('.module').forEach(x=>x.open=false));document.getElementById('print').addEventListener('click',()=>window.print());filter();
+</script>
+</body>
+</html>
