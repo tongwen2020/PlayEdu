@@ -1,4 +1,4 @@
-# PlayEdu PC 学员端协作指南
+# EleadinEdu PC 学员端协作指南
 
 ## 适用范围
 
@@ -6,7 +6,7 @@
 
 ## 项目定位
 
-`eleadinedu-pc` 是 PlayEdu 企业培训系统的 PC 学员端，负责登录、课程浏览、课程学习、视频播放、最近学习以及考试中心题库练习。它只调用学员 API（`/api/v1/**`），不直接访问管理后台 API、数据库或对象存储。
+`eleadinedu-pc` 是 EleadinEdu 企业培训系统的 PC 学员端，负责登录、课程浏览、课程学习、视频播放、最近学习以及考试中心题库练习。它只调用学员 API（`/api/v1/**`），不直接访问管理后台 API、数据库或对象存储。
 
 当前考试中心已经覆盖后端现有的开放题库练习能力：加载题库内全部启用客观题、整卷作答、统一交卷、服务端自动评分、逐题答案解析和答卷持久化。规划中的正式考试组织、限时答卷、人工阅卷和成绩发布尚需对应后端接口支持，前端不得用静态假数据冒充这些能力。
 
@@ -155,7 +155,7 @@ Token 保存在 `localStorage` 的 `eleadinedu-frontend-token`，请求头使用
 
 ## 本地开发
 
-前置条件：Node.js 20、与锁文件兼容的 pnpm，以及可访问的 PlayEdu API。
+前置条件：Node.js 20、与锁文件兼容的 pnpm，以及可访问的 EleadinEdu API。
 
 ```powershell
 cd eleadinedu-pc

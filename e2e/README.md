@@ -1,4 +1,4 @@
-# PlayEdu Playwright E2E
+# EleadinEdu Playwright E2E
 
 该目录保存 Admin、PC 和 H5 三端的持续回归验收用例。测试连接一个已经启动的、可重置的验收环境；Playwright 本身不会启动或修改开发环境。
 

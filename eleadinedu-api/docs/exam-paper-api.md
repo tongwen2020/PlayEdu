@@ -89,7 +89,7 @@
 - `exam_paper_draft_items`
 - `exam_paper_versions`
 
-验收测试默认连接 `127.0.0.1:23307` 的 PlayEdu MySQL 实例，在同一实例中临时创建 `playedu_exam_paper_test`，测试完成后自动删除，避免清理或污染 `playedu` 业务库。
+验收测试默认连接 `127.0.0.1:23307` 的 EleadinEdu MySQL 实例，在同一实例中临时创建 `playedu_exam_paper_test`，测试完成后自动删除，避免清理或污染 `playedu` 业务库。
 
 ```powershell
 .\mvnw.cmd -B -pl eleadinedu-api -am "-Dtest=ExamPaperHttpTest" "-Dsurefire.failIfNoSpecifiedTests=false" test

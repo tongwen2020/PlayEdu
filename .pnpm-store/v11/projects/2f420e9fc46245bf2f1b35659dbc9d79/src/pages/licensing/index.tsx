@@ -10,18 +10,18 @@ const LicensingPage = () => {
       <div className="eleadinedu-main-top">
         <div className={styles["main-title"]}>当前版本信息</div>
         <div className="float-left mt-24">
-          <div className={styles["persion"]}>PlayEdu开源版 v2.0</div>
+          <div className={styles["persion"]}>EleadinEdu开源版 v2.0</div>
         </div>
         <div className="float-left mt-16">
           <div className={styles["content"]}>
-            1.版权归属：PlayEdu开源版版权归杭州白书科技有限公司所有，保留全部使用权。
+            1.版权归属：EleadinEdu开源版权归南京意领信息科技有限公司所有，保留全部使用权。
           </div>
           <div className={styles["content"]}>
             2.代码修改：允许在遵守开源协议的前提下修改代码，但需在修改处添加明确备注，详细说明修改内容。
           </div>
           <div className={styles["content"]}>
             3.版权保护：任何场景下均需保留
-            PlayEdu开源版页面及代码中的原有版权信息（如 “Designed By PlayEdu”
+            EleadinEdu开源版页面及代码中的原有版权信息（如 “Designed By EleadinEdu”
             标识、官网链接、开源说明等），严禁删除、修改或篡改，违者需承担法律责任及赔偿。
           </div>
         </div>

@@ -1,4 +1,4 @@
-# PlayEdu 后端协作指南
+# EleadinEdu 后端协作指南
 
 ## 适用范围
 
@@ -6,7 +6,7 @@
 
 ## 项目定位
 
-`eleadinedu-api` 是 PlayEdu 企业内部培训系统的 Java 后端工程，向管理后台、PC 学员端和 H5 学员端提供统一 HTTP API。工程采用 Maven 多模块结构，将接口适配、公共基础能力、课程学习、资源管理、系统治理和考试能力分开维护，最终由同名的 `eleadinedu-api` 应用模块组装为一个 Spring Boot 服务。
+`eleadinedu-api` 是 EleadinEdu 企业内部培训系统的 Java 后端工程，向管理后台、PC 学员端和 H5 学员端提供统一 HTTP API。工程采用 Maven 多模块结构，将接口适配、公共基础能力、课程学习、资源管理、系统治理和考试能力分开维护，最终由同名的 `eleadinedu-api` 应用模块组装为一个 Spring Boot 服务。
 
 ## 技术基线
 

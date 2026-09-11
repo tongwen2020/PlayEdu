@@ -1,4 +1,4 @@
-# PlayEdu Dockerfile 说明
+# EleadinEdu Dockerfile 说明
 
 本文档基于当前工作区中的 Dockerfile，说明每条指令的作用、镜像构建流程及使用时的注意事项。
 

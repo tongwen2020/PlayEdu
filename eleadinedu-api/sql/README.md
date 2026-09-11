@@ -1,4 +1,4 @@
-# PlayEdu 数据库初始化
+# EleadinEdu 数据库初始化
 
 初始化一个空的 MySQL 8 数据库时，按顺序执行：
 
