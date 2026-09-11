@@ -1,23 +1,23 @@
-/playedu-pc/node_modules/
-/playedu-pc/dist/
-/playedu-pc/.env.local/
-/playedu-pc/.env.development/
-/playedu-pc/.env.production/
-/playedu-pc/build/
+/eleadinedu-pc/node_modules/
+/eleadinedu-pc/dist/
+/eleadinedu-pc/.env.local/
+/eleadinedu-pc/.env.development/
+/eleadinedu-pc/.env.production/
+/eleadinedu-pc/build/
 
-/playedu-h5/node_modules/
-/playedu-h5/dist/
-/playedu-h5/.env.local/
-/playedu-h5/.env.development/
-/playedu-h5/.env.production/
-/playedu-h5/build/
+/eleadinedu-h5/node_modules/
+/eleadinedu-h5/dist/
+/eleadinedu-h5/.env.local/
+/eleadinedu-h5/.env.development/
+/eleadinedu-h5/.env.production/
+/eleadinedu-h5/build/
 
-/playedu-admin/node_modules/
-/playedu-admin/dist/
-/playedu-admin/.env.local/
-/playedu-admin/.env.development/
-/playedu-admin/.env.production/
-/playedu-admin/build/
+/eleadinedu-admin/node_modules/
+/eleadinedu-admin/dist/
+/eleadinedu-admin/.env.local/
+/eleadinedu-admin/.env.development/
+/eleadinedu-admin/.env.production/
+/eleadinedu-admin/build/
 
 **/target/
 **/.git/

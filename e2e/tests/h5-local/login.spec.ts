@@ -17,7 +17,7 @@ test("H5 登录校验并建立学员会话", async ({ page, apiCalls }) => {
   await expect(page).toHaveURL(/\/member$/);
   await expect(page.getByText("今日学习", { exact: true })).toBeVisible();
   await expect
-    .poll(() => page.evaluate(() => localStorage.getItem("playedu-h5-token")))
+    .poll(() => page.evaluate(() => localStorage.getItem("eleadinedu-h5-token")))
     .toBe("h5-e2e-token");
 
   const loginCall = apiCalls.find(

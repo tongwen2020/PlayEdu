@@ -70,6 +70,6 @@ test("退出登录会清理会话并返回登录页", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/login$/);
   await expect
-    .poll(() => page.evaluate(() => localStorage.getItem("playedu-h5-token")))
+    .poll(() => page.evaluate(() => localStorage.getItem("eleadinedu-h5-token")))
     .toBeNull();
 });

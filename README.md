@@ -19,7 +19,7 @@ PlayEdu 是由白书科技团队经营多年线上教培领域打造出的一款
 拉取代码：
 
 ```
-git clone --branch main https://gitee.com/playeduxyz/playedu.git playedu
+git clone --branch main https://github.com/tongwen2020/PlayEdu.git
 ```
 
 构建镜像：
@@ -34,19 +34,6 @@ cd playedu && docker-compose up -d
 - H5 端口 `http://localhost:9801`
 - API 端口 `http://localhost:9700`
 
-## 🔰️ 软件安全
 
-安全问题应该通过邮件私下报告给 tengyongzhi@playeduos.com。 您将在 24 小时内收到回复，如果因为某些原因您没有收到回复，请通过回复原始邮件的方式跟进，以确保我们收到了您的原始邮件。
-
-## 👁 界面预览
-
-![学员端口界面预览](https://meedu.cloud.oss.meedu.vip/playedu/%E5%89%8D%E5%8F%B0%E9%A1%B5%E9%9D%A2.jpg)
-
-![管理后台界面预览](https://meedu.cloud.oss.meedu.vip/playedu/%E5%90%8E%E5%8F%B0%E9%A1%B5%E9%9D%A2.jpg)
 
 ## 📃 使用须知
-
-- **1.版权归属**： 杭州白书科技有限公司对 PlayEdu 开源版拥有完整版权，所有使用权保留。
-- **2.代码修改**： 在遵守相关开源协议的严格前提下，允许对 PlayEdu 开源版代码进行修改。修改时，必须在代码中加入明确备注，详细记录每一处修改的具体内容。
-- **3.版权保护**： 严令禁止删除、修改或篡改源代码中的版权信息及开源说明文件，侵犯版权的行为将面临法律追究。
-- 在任何使用场景下，必须严格保留 PlayEdu 开源版页面及代码中的原有版权信息，包括不限于 “Designed By PlayEdu” 页面版权标识、官网链接以及代码中的开源说明等，一旦出现侵犯版权的行为，将承担相应法律责任。

@@ -17,9 +17,9 @@ export const authFiles = {
 };
 
 export const tokenKeys = {
-  admin: "playedu-backend-token",
-  pc: "playedu-frontend-token",
-  h5: "playedu-h5-token",
+  admin: "eleadinedu-backend-token",
+  pc: "eleadinedu-frontend-token",
+  h5: "eleadinedu-h5-token",
 } as const;
 
 export const fixtureIds = {

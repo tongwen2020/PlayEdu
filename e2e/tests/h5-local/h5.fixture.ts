@@ -413,13 +413,13 @@ export const test = base.extend<H5Fixtures>({
   page: async ({ page, authenticated, apiCalls, ldapEnabled }, use) => {
     if (authenticated) {
       await page.addInitScript(() => {
-        if (sessionStorage.getItem("playedu-h5-e2e-seeded") === "1") {
+        if (sessionStorage.getItem("eleadinedu-h5-e2e-seeded") === "1") {
           return;
         }
-        localStorage.setItem("playedu-h5-token", "h5-e2e-token");
-        localStorage.setItem("playedu-h5-depatmentKey", "1");
-        localStorage.setItem("playedu-h5-depatmentName", "研发中心");
-        sessionStorage.setItem("playedu-h5-e2e-seeded", "1");
+        localStorage.setItem("eleadinedu-h5-token", "h5-e2e-token");
+        localStorage.setItem("eleadinedu-h5-depatmentKey", "1");
+        localStorage.setItem("eleadinedu-h5-depatmentName", "研发中心");
+        sessionStorage.setItem("eleadinedu-h5-e2e-seeded", "1");
       });
     }
     await mockApi(page, apiCalls, ldapEnabled);

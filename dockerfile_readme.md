@@ -7,8 +7,8 @@
 | 文件 | 用途 | 建议的构建上下文 |
 | --- | --- | --- |
 | `Dockerfile` | 同时构建管理端、PC 端、H5 端和 Java API，并打包为一个一体化镜像 | 项目根目录 |
-| `playedu-api/Dockerfile` | 从源码构建并运行 Java API | `playedu-api` 目录 |
-| `playedu-api/Dockerfile.local` | 使用本地已经编译好的 JAR 快速制作 API 镜像 | `playedu-api` 目录 |
+| `eleadinedu-api/Dockerfile` | 从源码构建并运行 Java API | `eleadinedu-api` 目录 |
+| `eleadinedu-api/Dockerfile.local` | 使用本地已经编译好的 JAR 快速制作 API 镜像 | `eleadinedu-api` 目录 |
 | `docker/mysql/Dockerfile` | 在 MySQL 8.1 基础镜像中加入项目的 MySQL 配置 | `docker/mysql` 目录 |
 
 ## 一、根目录 `Dockerfile`
@@ -33,9 +33,9 @@ WORKDIR /app
 - 后续相对路径指令默认以该目录为基础；如果目录不存在，Docker 会自动创建。
 
 ```dockerfile
-COPY playedu-admin/package.json playedu-admin/pnpm-lock.yaml /app/admin/
-COPY playedu-pc/package.json    playedu-pc/pnpm-lock.yaml    /app/pc/
-COPY playedu-h5/package.json    playedu-h5/pnpm-lock.yaml    /app/h5/
+COPY eleadinedu-admin/package.json eleadinedu-admin/pnpm-lock.yaml /app/admin/
+COPY eleadinedu-pc/package.json    eleadinedu-pc/pnpm-lock.yaml    /app/pc/
+COPY eleadinedu-h5/package.json    eleadinedu-h5/pnpm-lock.yaml    /app/h5/
 ```
 
 - 先只复制三个前端项目的依赖清单和 pnpm 锁文件。
@@ -53,7 +53,7 @@ RUN cd /app/h5    && pnpm i
 - `pnpm i` 会使用各自的 `pnpm-lock.yaml`；若希望 CI 构建严格禁止锁文件被更新，可考虑使用 `pnpm install --frozen-lockfile`。
 
 ```dockerfile
-COPY playedu-admin /app/admin
+COPY eleadinedu-admin /app/admin
 RUN cd /app/admin && VITE_APP_URL=/api/ pnpm build
 ```
 
@@ -62,7 +62,7 @@ RUN cd /app/admin && VITE_APP_URL=/api/ pnpm build
 - `VITE_APP_URL=/api/` 是仅对本次构建命令生效的环境变量。Vite 会在打包时把 API 基础路径写入静态资源；它不是容器运行时动态配置。
 
 ```dockerfile
-COPY playedu-pc /app/pc
+COPY eleadinedu-pc /app/pc
 RUN cd /app/pc && VITE_APP_URL=/api/ pnpm build
 ```
 
@@ -70,7 +70,7 @@ RUN cd /app/pc && VITE_APP_URL=/api/ pnpm build
 - 构建结果位于 `/app/pc/dist`，API 请求使用 `/api/` 前缀。
 
 ```dockerfile
-COPY playedu-h5 /app/h5
+COPY eleadinedu-h5 /app/h5
 RUN cd /app/h5 && VITE_APP_URL=/api/ pnpm build
 ```
 
@@ -94,8 +94,8 @@ WORKDIR /app
 - 将 Java 构建阶段的工作目录设为 `/app`。
 
 ```dockerfile
-COPY playedu-api/mvnw          /app/mvnw
-COPY playedu-api/.mvn          /app/.mvn
+COPY eleadinedu-api/mvnw          /app/mvnw
+COPY eleadinedu-api/.mvn          /app/.mvn
 RUN sed -i 's/\r$//' /app/mvnw && chmod +x /app/mvnw
 ```
 
@@ -104,12 +104,12 @@ RUN sed -i 's/\r$//' /app/mvnw && chmod +x /app/mvnw
 - `chmod +x` 为 `mvnw` 增加可执行权限。
 
 ```dockerfile
-COPY playedu-api/pom.xml                     /app/pom.xml
-COPY playedu-api/playedu-api/pom.xml         /app/playedu-api/pom.xml
-COPY playedu-api/playedu-common/pom.xml      /app/playedu-common/pom.xml
-COPY playedu-api/playedu-course/pom.xml      /app/playedu-course/pom.xml
-COPY playedu-api/playedu-resource/pom.xml    /app/playedu-resource/pom.xml
-COPY playedu-api/playedu-system/pom.xml      /app/playedu-system/pom.xml
+COPY eleadinedu-api/pom.xml                     /app/pom.xml
+COPY eleadinedu-api/eleadinedu-api/pom.xml         /app/eleadinedu-api/pom.xml
+COPY eleadinedu-api/eleadinedu-common/pom.xml      /app/eleadinedu-common/pom.xml
+COPY eleadinedu-api/eleadinedu-course/pom.xml      /app/eleadinedu-course/pom.xml
+COPY eleadinedu-api/eleadinedu-resource/pom.xml    /app/eleadinedu-resource/pom.xml
+COPY eleadinedu-api/eleadinedu-system/pom.xml      /app/eleadinedu-system/pom.xml
 ```
 
 - 先复制父 POM 以及 5 个 Maven 子模块的 POM。
@@ -126,7 +126,7 @@ RUN /app/mvnw -B -DskipTests dependency:go-offline
 - “离线准备”不一定覆盖所有插件在后续生命周期中动态解析的内容，因此后续 `package` 在少数情况下仍可能访问 Maven 仓库。
 
 ```dockerfile
-COPY playedu-api /app
+COPY eleadinedu-api /app
 ```
 
 - 将整个后端工程源码复制到 `/app`。
@@ -138,7 +138,7 @@ RUN /app/mvnw -B -Dmaven.test.skip=true package
 
 - 编译所有 Maven 模块并执行 `package`，生成可运行的 Spring Boot JAR。
 - `-Dmaven.test.skip=true` 同时跳过测试源码编译和测试执行，比 `-DskipTests` 跳过得更彻底。
-- 最终需要的文件是 `/app/playedu-api/target/playedu-api.jar`。
+- 最终需要的文件是 `/app/eleadinedu-api/target/eleadinedu-api.jar`。
 
 ### 3. 最终运行阶段
 
@@ -151,7 +151,7 @@ FROM registry.cn-hangzhou.aliyuncs.com/hzbs/eclipse-temurin:17 AS base
 - 该 Dockerfile 后续会启动 `nginx`，因此这里使用的定制镜像必须已经包含 Nginx；如果换成官方纯 Temurin 镜像，需要自行安装 Nginx 并确保配置目录存在。
 
 ```dockerfile
-COPY --from=java-builder /app/playedu-api/target/playedu-api.jar /app/api/app.jar
+COPY --from=java-builder /app/eleadinedu-api/target/eleadinedu-api.jar /app/api/app.jar
 ```
 
 - 只从 Java 构建阶段复制最终 JAR，并在运行镜像中命名为 `/app/api/app.jar`。
@@ -198,7 +198,7 @@ CMD nginx; echo "Waiting for MySQL to start..."; sleep 15; java -jar /app/api/ap
 ```text
 三个前端源码 -> Node.js/pnpm/Vite -> admin、pc、h5 静态文件 --+
                                                            |
-Java 多模块源码 -> Maven/Java 17 -> playedu-api.jar --------+-> 最终镜像
+Java 多模块源码 -> Maven/Java 17 -> eleadinedu-api.jar --------+-> 最终镜像
                                                            |
 Nginx 配置 -------------------------------------------------+
 ```
@@ -220,9 +220,9 @@ docker run --rm \
   playedu:local
 ```
 
-## 二、`playedu-api/Dockerfile`
+## 二、`eleadinedu-api/Dockerfile`
 
-该文件只构建和运行 Java API，也采用“构建阶段 + 运行阶段”的多阶段模式。构建上下文应为 `playedu-api` 目录。
+该文件只构建和运行 Java API，也采用“构建阶段 + 运行阶段”的多阶段模式。构建上下文应为 `eleadinedu-api` 目录。
 
 ```dockerfile
 FROM registry.cn-hangzhou.aliyuncs.com/hzbs/eclipse-temurin:17 AS builder
@@ -240,11 +240,11 @@ WORKDIR /app
 COPY mvnw          /app/mvnw
 COPY .mvn          /app/.mvn
 COPY pom.xml                    /app/pom.xml
-COPY playedu-api/pom.xml        /app/playedu-api/pom.xml
-COPY playedu-common/pom.xml     /app/playedu-common/pom.xml
-COPY playedu-course/pom.xml     /app/playedu-course/pom.xml
-COPY playedu-resource/pom.xml   /app/playedu-resource/pom.xml
-COPY playedu-system/pom.xml     /app/playedu-system/pom.xml
+COPY eleadinedu-api/pom.xml        /app/eleadinedu-api/pom.xml
+COPY eleadinedu-common/pom.xml     /app/eleadinedu-common/pom.xml
+COPY eleadinedu-course/pom.xml     /app/eleadinedu-course/pom.xml
+COPY eleadinedu-resource/pom.xml   /app/eleadinedu-resource/pom.xml
+COPY eleadinedu-system/pom.xml     /app/eleadinedu-system/pom.xml
 ```
 
 - 复制 Maven Wrapper、父 POM 和全部模块 POM。
@@ -261,15 +261,15 @@ RUN /app/mvnw -B -DskipTests dependency:go-offline
 COPY . /app
 ```
 
-- 将 `playedu-api` 构建上下文中的全部后端源码复制到 `/app`。
-- 如果只使用项目根目录的 `.dockerignore`，应注意 Docker 只读取构建上下文根部的 ignore 文件；以 `playedu-api` 为上下文时，项目根目录的 `.dockerignore` 不在上下文根部，通常不会生效。
+- 将 `eleadinedu-api` 构建上下文中的全部后端源码复制到 `/app`。
+- 如果只使用项目根目录的 `.dockerignore`，应注意 Docker 只读取构建上下文根部的 ignore 文件；以 `eleadinedu-api` 为上下文时，项目根目录的 `.dockerignore` 不在上下文根部，通常不会生效。
 
 ```dockerfile
 RUN /app/mvnw -B -Dmaven.test.skip=true package
 ```
 
 - 编译并打包多模块项目，同时跳过测试编译与运行。
-- 生成 `/app/playedu-api/target/playedu-api.jar`。
+- 生成 `/app/eleadinedu-api/target/eleadinedu-api.jar`。
 
 ```dockerfile
 FROM registry.cn-hangzhou.aliyuncs.com/hzbs/eclipse-temurin:17 AS base
@@ -284,7 +284,7 @@ WORKDIR /app
 - 将最终容器的工作目录设为 `/app`。
 
 ```dockerfile
-COPY --from=builder /app/playedu-api/target/playedu-api.jar /app/app.jar
+COPY --from=builder /app/eleadinedu-api/target/eleadinedu-api.jar /app/app.jar
 ```
 
 - 从 `builder` 阶段只复制构建好的 API JAR。
@@ -314,10 +314,10 @@ ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 可在项目根目录执行：
 
 ```bash
-docker build -t playedu-api:local -f playedu-api/Dockerfile playedu-api
+docker build -t eleadinedu-api:local -f eleadinedu-api/Dockerfile eleadinedu-api
 ```
 
-## 三、`playedu-api/Dockerfile.local`
+## 三、`eleadinedu-api/Dockerfile.local`
 
 这个文件不在容器内编译源码，而是直接复制本地 Maven 已经生成的 JAR，适合本地快速验证。
 
@@ -335,12 +335,12 @@ WORKDIR /app
 - 将容器工作目录设置为 `/app`。
 
 ```dockerfile
-COPY ./playedu-api/target/playedu-api.jar /app/app.jar
+COPY ./eleadinedu-api/target/eleadinedu-api.jar /app/app.jar
 ```
 
-- 从构建上下文的 `playedu-api/target` 目录复制现成 JAR。
+- 从构建上下文的 `eleadinedu-api/target` 目录复制现成 JAR。
 - 因此构建镜像前必须先在后端项目中执行 Maven 打包。
-- 构建上下文应为外层 `playedu-api` 目录，而不是仓库根目录。
+- 构建上下文应为外层 `eleadinedu-api` 目录，而不是仓库根目录。
 
 ```dockerfile
 RUN chmod +x /app/app.jar
@@ -364,12 +364,12 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 示例流程：
 
 ```bash
-cd playedu-api
+cd eleadinedu-api
 ./mvnw -Dmaven.test.skip=true package
-docker build -t playedu-api:local-jar -f Dockerfile.local .
+docker build -t eleadinedu-api:local-jar -f Dockerfile.local .
 ```
 
-需要注意：项目根目录 `.dockerignore` 包含 `**/target/`。当构建上下文是 `playedu-api` 时，该根目录 ignore 文件通常不会生效，因此本地 JAR 可以被复制；如果以后在 `playedu-api` 目录新增 `.dockerignore` 并排除 `target`，该 Dockerfile 会因找不到 JAR 而构建失败。
+需要注意：项目根目录 `.dockerignore` 包含 `**/target/`。当构建上下文是 `eleadinedu-api` 时，该根目录 ignore 文件通常不会生效，因此本地 JAR 可以被复制；如果以后在 `eleadinedu-api` 目录新增 `.dockerignore` 并排除 `target`，该 Dockerfile 会因找不到 JAR 而构建失败。
 
 ## 四、`docker/mysql/Dockerfile`
 
@@ -399,7 +399,7 @@ RUN chmod 0444 /etc/mysql/conf.d/my.cnf
 可从项目根目录构建：
 
 ```bash
-docker build -t playedu-mysql:8.1 -f docker/mysql/Dockerfile docker/mysql
+docker build -t eleadinedu-mysql:8.1 -f docker/mysql/Dockerfile docker/mysql
 ```
 
 ## 五、四个文件之间的区别
