@@ -23,7 +23,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
 
-/** Additive and restartable paper-library migration on the configured MySQL datasource. */
+/** Additive and restartable paper-library migration backed by the centralized schema. */
 @Component
 @Order(30)
 public class ExamPaperMigration implements CommandLineRunner {
@@ -42,7 +42,7 @@ public class ExamPaperMigration implements CommandLineRunner {
                         "SELECT COUNT(*) FROM migrations WHERE migration=?", Long.class, name)
                 > 0) return;
         ResourceDatabasePopulator populator =
-                new ResourceDatabasePopulator(new ClassPathResource("db/exam-paper.sql"));
+                new ResourceDatabasePopulator(new ClassPathResource("db/create_tables.sql"));
         populator.setSqlScriptEncoding("UTF-8");
         populator.execute(dataSource);
         jdbc.update("INSERT INTO migrations(migration) VALUES(?)", name);

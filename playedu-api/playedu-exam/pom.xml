@@ -7,4 +7,18 @@
         <dependency><groupId>xyz.playedu</groupId><artifactId>playedu-common</artifactId><version>1.0</version></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jdbc</artifactId></dependency>
     </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>../sql</directory>
+                <includes>
+                    <include>create_tables.sql</include>
+                </includes>
+                <targetPath>db</targetPath>
+            </resource>
+        </resources>
+    </build>
 </project>

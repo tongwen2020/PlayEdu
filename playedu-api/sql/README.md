@@ -7,7 +7,7 @@ mysql -h 127.0.0.1 -P 23307 -u root -p playedu < create_tables.sql
 mysql -h 127.0.0.1 -P 23307 -u root -p playedu < init_data.sql
 ```
 
-`create_tables.sql` 创建完整表结构，`init_data.sql` 创建默认超级管理员和角色关系。默认登录信息：
+`create_tables.sql` 创建完整表结构，`init_data.sql` 仅创建默认超级管理员、默认角色及两者的关联。默认登录信息：
 
 - 账号：`admin@playedu.xyz`
 - 密码：`playedu`

@@ -1,6 +1,6 @@
 -- playedu.admin_logs 定义
 
-CREATE TABLE `admin_logs` (
+CREATE TABLE IF NOT EXISTS `admin_logs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `admin_id` int NOT NULL DEFAULT '0' COMMENT '管理员ID',
   `admin_name` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '管理员姓名',
@@ -21,7 +21,7 @@ CREATE TABLE `admin_logs` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 122 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员操作日志记录表';
 -- playedu.admin_permissions 定义
 
-CREATE TABLE `admin_permissions` (
+CREATE TABLE IF NOT EXISTS `admin_permissions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类型[行为:action,数据:data]',
 `group_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '分组',
@@ -33,7 +33,7 @@ PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 26 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'SQL变更记录表';
 -- playedu.admin_role_permission 定义
 
-CREATE TABLE `admin_role_permission` (
+CREATE TABLE IF NOT EXISTS `admin_role_permission` (
   `role_id` int unsigned NOT NULL DEFAULT '0' COMMENT '角色ID',
 `perm_id` int unsigned NOT NULL DEFAULT '0' COMMENT '权限ID',
 KEY `role_id` (`role_id`),
@@ -41,7 +41,7 @@ KEY `perm_id` (`perm_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员角色权限关联表';
 -- playedu.admin_roles 定义
 
-CREATE TABLE `admin_roles` (
+CREATE TABLE IF NOT EXISTS `admin_roles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '角色名',
   `slug` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'slug',
@@ -52,7 +52,7 @@ CREATE TABLE `admin_roles` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员角色表';
 -- playedu.admin_user_role 定义
 
-CREATE TABLE `admin_user_role` (
+CREATE TABLE IF NOT EXISTS `admin_user_role` (
   `admin_id` int unsigned NOT NULL DEFAULT '0' COMMENT '管理员ID',
   `role_id` int unsigned NOT NULL DEFAULT '0' COMMENT '角色ID',
   KEY `admin_id` (`admin_id`),
@@ -60,7 +60,7 @@ CREATE TABLE `admin_user_role` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员角色关联表';
 -- playedu.admin_users 定义
 
-CREATE TABLE `admin_users` (
+CREATE TABLE IF NOT EXISTS `admin_users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
   `email` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱',
@@ -79,7 +79,7 @@ CREATE TABLE `admin_users` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员表';
 -- playedu.app_config 定义
 
-CREATE TABLE `app_config` (
+CREATE TABLE IF NOT EXISTS `app_config` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `group_name` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '分组',
   `name` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
@@ -97,7 +97,7 @@ CREATE TABLE `app_config` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 23 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统配置表';
 -- playedu.course_attachment 定义
 
-CREATE TABLE `course_attachment` (
+CREATE TABLE IF NOT EXISTS `course_attachment` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
   `sort` int NOT NULL DEFAULT '0' COMMENT '升序',
@@ -110,7 +110,7 @@ CREATE TABLE `course_attachment` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程附件表';
 -- playedu.course_attachment_download_log 定义
 
-CREATE TABLE `course_attachment_download_log` (
+CREATE TABLE IF NOT EXISTS `course_attachment_download_log` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员ID',
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
@@ -123,7 +123,7 @@ CREATE TABLE `course_attachment_download_log` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程附件下载日志记录表';
 -- playedu.course_chapters 定义
 
-CREATE TABLE `course_chapters` (
+CREATE TABLE IF NOT EXISTS `course_chapters` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '章节名',
@@ -134,7 +134,7 @@ CREATE TABLE `course_chapters` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员权限表';
 -- playedu.course_department_user 定义
 
-CREATE TABLE `course_department_user` (
+CREATE TABLE IF NOT EXISTS `course_department_user` (
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
   `range_id` int NOT NULL DEFAULT '0' COMMENT '指派范围ID',
   `type` int NOT NULL DEFAULT '0' COMMENT '指派范围类型[0:部门,1:学员]',
@@ -143,7 +143,7 @@ CREATE TABLE `course_department_user` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程指派范围表';
 -- playedu.course_hour 定义
 
-CREATE TABLE `course_hour` (
+CREATE TABLE IF NOT EXISTS `course_hour` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
   `chapter_id` int NOT NULL DEFAULT '0' COMMENT '章节ID',
@@ -159,7 +159,7 @@ CREATE TABLE `course_hour` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程课时表';
 -- playedu.courses 定义
 
-CREATE TABLE `courses` (
+CREATE TABLE IF NOT EXISTS `courses` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '课程标题',
 `thumb` int NOT NULL DEFAULT '0' COMMENT '封面',
@@ -178,7 +178,7 @@ PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程表';
 -- playedu.departments 定义
 
-CREATE TABLE `departments` (
+CREATE TABLE IF NOT EXISTS `departments` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '部门名',
 `parent_id` int NOT NULL DEFAULT '0' COMMENT '父ID',
@@ -191,7 +191,7 @@ PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员上传图片日志记录表';
 -- playedu.ldap_department 定义
 
-CREATE TABLE `ldap_department` (
+CREATE TABLE IF NOT EXISTS `ldap_department` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
 `uuid` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '唯一特征值',
 `department_id` int NOT NULL DEFAULT '0' COMMENT '部门ID',
@@ -204,7 +204,7 @@ UNIQUE KEY `unique_uuid` (`uuid`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- playedu.ldap_sync_department_detail 定义
 
-CREATE TABLE `ldap_sync_department_detail` (
+CREATE TABLE IF NOT EXISTS `ldap_sync_department_detail` (
   `id` int NOT NULL AUTO_INCREMENT,
 `record_id` int NOT NULL COMMENT '关联的同步记录ID',
 `department_id` int NOT NULL DEFAULT '0' COMMENT '关联的部门ID',
@@ -219,7 +219,7 @@ KEY `department_id` (`department_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'LDAP部门同步详情表';
 -- playedu.ldap_sync_record 定义
 
-CREATE TABLE `ldap_sync_record` (
+CREATE TABLE IF NOT EXISTS `ldap_sync_record` (
   `id` int NOT NULL AUTO_INCREMENT,
 `admin_id` int NOT NULL DEFAULT '0' COMMENT '执行同步的管理员ID，0表示系统自动执行',
 `status` tinyint NOT NULL DEFAULT '0' COMMENT '状态：0-进行中，1-成功，2-失败',
@@ -240,7 +240,7 @@ PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'LDAP同步记录表';
 -- playedu.ldap_sync_user_detail 定义
 
-CREATE TABLE `ldap_sync_user_detail` (
+CREATE TABLE IF NOT EXISTS `ldap_sync_user_detail` (
   `id` bigint NOT NULL AUTO_INCREMENT,
 `record_id` int NOT NULL COMMENT '关联的同步记录ID',
 `user_id` bigint NOT NULL DEFAULT '0' COMMENT '关联的用户ID',
@@ -258,7 +258,7 @@ KEY `user_id` (`user_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'LDAP用户同步详情表';
 -- playedu.ldap_user 定义
 
-CREATE TABLE `ldap_user` (
+CREATE TABLE IF NOT EXISTS `ldap_user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
 `uuid` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '唯一特征值',
 `user_id` int NOT NULL DEFAULT '0' COMMENT '用户ID',
@@ -275,14 +275,14 @@ UNIQUE KEY `unique_uuid` (`uuid`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- playedu.migrations 定义
 
-CREATE TABLE `migrations` (
+CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `migration` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '变更记录',
 PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 39 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程章节表';
 -- playedu.resource 定义
 
-CREATE TABLE `resource` (
+CREATE TABLE IF NOT EXISTS `resource` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `admin_id` int NOT NULL DEFAULT '0' COMMENT '管理员ID',
 `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类型',
@@ -299,7 +299,7 @@ KEY `type` (`type`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '资源表';
 -- playedu.resource_categories 定义
 
-CREATE TABLE `resource_categories` (
+CREATE TABLE IF NOT EXISTS `resource_categories` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
 `parent_id` int NOT NULL DEFAULT '0' COMMENT '父ID',
 `parent_chain` varchar(2550) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '父链',
@@ -311,7 +311,7 @@ PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '部门表';
 -- playedu.resource_category 定义
 
-CREATE TABLE `resource_category` (
+CREATE TABLE IF NOT EXISTS `resource_category` (
   `cid` int NOT NULL DEFAULT '0' COMMENT '分类ID',
 `rid` int NOT NULL DEFAULT '0' COMMENT '资源ID',
 KEY `cid` (`cid`),
@@ -319,7 +319,7 @@ KEY `rid` (`rid`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '资源分类关联表';
 -- playedu.resource_course_category 定义
 
-CREATE TABLE `resource_course_category` (
+CREATE TABLE IF NOT EXISTS `resource_course_category` (
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
   `category_id` int NOT NULL DEFAULT '0' COMMENT '父级ID',
   KEY `course_id` (`course_id`),
@@ -327,7 +327,7 @@ CREATE TABLE `resource_course_category` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '课程分类关联表';
 -- playedu.resource_extra 定义
 
-CREATE TABLE `resource_extra` (
+CREATE TABLE IF NOT EXISTS `resource_extra` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `rid` int unsigned NOT NULL DEFAULT '0' COMMENT '资源ID',
   `poster` int unsigned NOT NULL DEFAULT '0' COMMENT '封面资源ID',
@@ -338,7 +338,7 @@ CREATE TABLE `resource_extra` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '资源详细信息表';
 -- playedu.user_course_hour_records 定义
 
-CREATE TABLE `user_course_hour_records` (
+CREATE TABLE IF NOT EXISTS `user_course_hour_records` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员ID',
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
@@ -357,7 +357,7 @@ CREATE TABLE `user_course_hour_records` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '线上课课时学员学习记录表';
 -- playedu.user_course_records 定义
 
-CREATE TABLE `user_course_records` (
+CREATE TABLE IF NOT EXISTS `user_course_records` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员ID',
   `course_id` int NOT NULL DEFAULT '0' COMMENT '课程ID',
@@ -372,7 +372,7 @@ CREATE TABLE `user_course_records` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '分类表';
 -- playedu.user_department 定义
 
-CREATE TABLE `user_department` (
+CREATE TABLE IF NOT EXISTS `user_department` (
   `user_id` int unsigned NOT NULL DEFAULT '0' COMMENT '学员ID',
   `dep_id` int unsigned NOT NULL DEFAULT '0' COMMENT '部门ID',
   KEY `user_id` (`user_id`),
@@ -380,7 +380,7 @@ CREATE TABLE `user_department` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员部门关联表';
 -- playedu.user_learn_duration_records 定义
 
-CREATE TABLE `user_learn_duration_records` (
+CREATE TABLE IF NOT EXISTS `user_learn_duration_records` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员ID',
   `created_date` date NOT NULL COMMENT '创建时间',
@@ -395,7 +395,7 @@ CREATE TABLE `user_learn_duration_records` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员学习时长表';
 -- playedu.user_learn_duration_stats 定义
 
-CREATE TABLE `user_learn_duration_stats` (
+CREATE TABLE IF NOT EXISTS `user_learn_duration_stats` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员ID',
   `duration` bigint NOT NULL DEFAULT '0' COMMENT '学习时长',
@@ -406,7 +406,7 @@ CREATE TABLE `user_learn_duration_stats` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员学习时长记录表';
 -- playedu.user_login_records 定义
 
-CREATE TABLE `user_login_records` (
+CREATE TABLE IF NOT EXISTS `user_login_records` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员ID',
   `jti` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'JTI',
@@ -424,7 +424,7 @@ CREATE TABLE `user_login_records` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员登录记录表';
 -- playedu.user_upload_image_logs 定义
 
-CREATE TABLE `user_upload_image_logs` (
+CREATE TABLE IF NOT EXISTS `user_upload_image_logs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL DEFAULT '0' COMMENT '学员时间',
   `typed` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片类型',
@@ -439,7 +439,7 @@ CREATE TABLE `user_upload_image_logs` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '线上课学员学习记录表';
 -- playedu.users 定义
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `email` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '邮件',
   `name` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '真实姓名',
@@ -466,7 +466,7 @@ CREATE TABLE `users` (
 
 -- playedu.exam_bank_audit 定义
 
-CREATE TABLE `exam_bank_audit` (
+CREATE TABLE IF NOT EXISTS `exam_bank_audit` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `admin_id` int NOT NULL COMMENT '管理员ID',
   `action` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '操作',
@@ -477,7 +477,7 @@ CREATE TABLE `exam_bank_audit` (
 
 -- playedu.exam_question_banks 定义
 
-CREATE TABLE `exam_question_banks` (
+CREATE TABLE IF NOT EXISTS `exam_question_banks` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题库名称',
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题库说明',
@@ -492,7 +492,7 @@ CREATE TABLE `exam_question_banks` (
 
 -- playedu.exam_question_categories 定义
 
-CREATE TABLE `exam_question_categories` (
+CREATE TABLE IF NOT EXISTS `exam_question_categories` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `bank_id` bigint NOT NULL COMMENT '题库ID',
   `parent_id` bigint NOT NULL DEFAULT '0' COMMENT '父分类ID',
@@ -504,7 +504,7 @@ CREATE TABLE `exam_question_categories` (
 
 -- playedu.exam_questions 定义
 
-CREATE TABLE `exam_questions` (
+CREATE TABLE IF NOT EXISTS `exam_questions` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `bank_id` bigint NOT NULL COMMENT '题库ID',
   `category_id` bigint DEFAULT NULL COMMENT '试题分类ID',
@@ -526,7 +526,7 @@ CREATE TABLE `exam_questions` (
 
 -- playedu.exam_question_versions 定义
 
-CREATE TABLE `exam_question_versions` (
+CREATE TABLE IF NOT EXISTS `exam_question_versions` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `question_id` bigint NOT NULL COMMENT '试题ID',
   `version_no` int NOT NULL COMMENT '版本号',
@@ -540,7 +540,7 @@ CREATE TABLE `exam_question_versions` (
 
 -- playedu.exam_practice_attempts 定义
 
-CREATE TABLE `exam_practice_attempts` (
+CREATE TABLE IF NOT EXISTS `exam_practice_attempts` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL COMMENT '学员ID',
   `question_id` bigint NOT NULL COMMENT '试题ID',
@@ -559,7 +559,7 @@ CREATE TABLE `exam_practice_attempts` (
 
 -- playedu.exam_practice_paper_attempts 定义
 
-CREATE TABLE `exam_practice_paper_attempts` (
+CREATE TABLE IF NOT EXISTS `exam_practice_paper_attempts` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int NOT NULL COMMENT '学员ID',
   `bank_id` bigint NOT NULL COMMENT '题库ID',
@@ -580,7 +580,7 @@ CREATE TABLE `exam_practice_paper_attempts` (
 
 -- playedu.exam_paper_audit 定义
 
-CREATE TABLE `exam_paper_audit` (
+CREATE TABLE IF NOT EXISTS `exam_paper_audit` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `admin_id` int NOT NULL COMMENT '管理员ID',
   `action` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '操作',
@@ -591,7 +591,7 @@ CREATE TABLE `exam_paper_audit` (
 
 -- playedu.exam_paper_categories 定义
 
-CREATE TABLE `exam_paper_categories` (
+CREATE TABLE IF NOT EXISTS `exam_paper_categories` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `owner_id` int NOT NULL COMMENT '所有者管理员ID',
   `parent_id` bigint NOT NULL DEFAULT '0' COMMENT '父分类ID',
@@ -603,7 +603,7 @@ CREATE TABLE `exam_paper_categories` (
 
 -- playedu.exam_papers 定义
 
-CREATE TABLE `exam_papers` (
+CREATE TABLE IF NOT EXISTS `exam_papers` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `owner_id` int NOT NULL COMMENT '所有者管理员ID',
   `category_id` bigint DEFAULT NULL COMMENT '试卷分类ID',
@@ -626,7 +626,7 @@ CREATE TABLE `exam_papers` (
 
 -- playedu.exam_paper_draft_sections 定义
 
-CREATE TABLE `exam_paper_draft_sections` (
+CREATE TABLE IF NOT EXISTS `exam_paper_draft_sections` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `paper_id` bigint NOT NULL COMMENT '试卷ID',
   `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '大题标题',
@@ -640,7 +640,7 @@ CREATE TABLE `exam_paper_draft_sections` (
 
 -- playedu.exam_paper_draft_items 定义
 
-CREATE TABLE `exam_paper_draft_items` (
+CREATE TABLE IF NOT EXISTS `exam_paper_draft_items` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `paper_id` bigint NOT NULL COMMENT '试卷ID',
   `section_id` bigint NOT NULL COMMENT '大题ID',
@@ -659,7 +659,7 @@ CREATE TABLE `exam_paper_draft_items` (
 
 -- playedu.exam_paper_versions 定义
 
-CREATE TABLE `exam_paper_versions` (
+CREATE TABLE IF NOT EXISTS `exam_paper_versions` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `paper_id` bigint NOT NULL COMMENT '试卷ID',
   `version_no` int NOT NULL COMMENT '版本号',
