@@ -557,6 +557,27 @@ CREATE TABLE `exam_practice_attempts` (
   CONSTRAINT `fk_exam_practice_version` FOREIGN KEY (`question_id`, `version_no`) REFERENCES `exam_question_versions` (`question_id`, `version_no`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试题练习记录表';
 
+-- playedu.exam_practice_paper_attempts 定义
+
+CREATE TABLE `exam_practice_paper_attempts` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int NOT NULL COMMENT '学员ID',
+  `bank_id` bigint NOT NULL COMMENT '题库ID',
+  `answers_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '整卷作答JSON',
+  `grading_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '自动阅卷结果JSON',
+  `score` decimal(10,2) NOT NULL COMMENT '总得分',
+  `max_score` decimal(10,2) NOT NULL COMMENT '试卷满分',
+  `question_count` int NOT NULL COMMENT '试题数',
+  `correct_count` int NOT NULL COMMENT '答对题数',
+  `request_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '幂等请求键',
+  `submitted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '交卷时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_practice_paper_request` (`user_id`,`request_key`),
+  KEY `idx_exam_practice_paper_user` (`user_id`,`submitted_at`),
+  KEY `idx_exam_practice_paper_bank` (`bank_id`,`submitted_at`),
+  CONSTRAINT `fk_exam_practice_paper_bank` FOREIGN KEY (`bank_id`) REFERENCES `exam_question_banks` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '题库整卷自动阅卷记录表';
+
 -- playedu.exam_paper_audit 定义
 
 CREATE TABLE `exam_paper_audit` (

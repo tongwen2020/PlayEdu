@@ -23,8 +23,8 @@ export default defineConfig({
     video: "retain-on-failure",
   },
   webServer: {
-    command: `${node} ../playedu-h5/node_modules/vite/bin/vite.js --host 127.0.0.1 --port 9811`,
-    url: "http://127.0.0.1:9811/login",
+    command: `${node} ../playedu-h5/node_modules/vite/bin/vite.js ../playedu-h5 --host 127.0.0.1 --port 9811`,
+    url: "http://127.0.0.1:9811/",
     cwd: process.cwd(),
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

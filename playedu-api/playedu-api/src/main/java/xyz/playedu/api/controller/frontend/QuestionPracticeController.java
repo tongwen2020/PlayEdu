@@ -52,6 +52,16 @@ public class QuestionPracticeController {
         return JsonResponse.data(service.practice(input, FCtx.getId()));
     }
 
+    @PostMapping("/practice/paper/submit")
+    public JsonResponse submitPaper(@Valid @RequestBody PracticePaperInput input) {
+        return JsonResponse.data(service.submitPracticePaper(input, FCtx.getId()));
+    }
+
+    @PostMapping("/practice/paper/history")
+    public JsonResponse paperHistory(@Valid @RequestBody Query input) {
+        return JsonResponse.data(service.practicePaperHistory(FCtx.getId(), input));
+    }
+
     @PostMapping("/practice/history")
     public JsonResponse history(@Valid @RequestBody Query input) {
         return JsonResponse.data(service.practiceHistory(FCtx.getId(), input));

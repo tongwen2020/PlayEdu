@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Checkbox,
@@ -23,6 +23,7 @@ import type {
   PracticeAnswer,
   PracticeBank,
   PracticeQuestion,
+  PracticePaperResult,
   PracticeResult,
 } from "../../api/exam";
 import { generateUUID } from "../../utils";
@@ -57,13 +58,18 @@ export default function ExamPracticePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<AnswerState>({});
   const [results, setResults] = useState<ResultState>({});
+  const [paperResult, setPaperResult] = useState<PracticePaperResult>();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const request = useRef<{ key: string; signature: string }>();
 
   const current = questions[currentIndex];
   const currentAnswer = current ? answers[current.id] : undefined;
   const currentResult = current ? results[current.id] : undefined;
-  const completed = Object.keys(results).length;
+  const answeredCount = questions.filter(
+    (question) => !isAnswerEmpty(question, answers[question.id])
+  ).length;
+  const completed = paperResult ? questions.length : answeredCount;
   const percent = questions.length ? Math.round((completed / questions.length) * 100) : 0;
 
   useEffect(() => {
@@ -83,33 +89,58 @@ export default function ExamPracticePage() {
   }, [numericBankId]);
 
   const selectAnswer = (answer: PracticeAnswer) => {
-    if (!current || currentResult) return;
+    if (!current || paperResult) return;
     setAnswers((old) => ({ ...old, [current.id]: answer }));
   };
 
-  const submitCurrent = async () => {
-    if (!current || !currentAnswer || isAnswerEmpty(current, currentAnswer)) return;
+  const gradePaper = async () => {
+    if (submitting || paperResult) return;
     setSubmitting(true);
     try {
-      const result = await exam.submit(
-        current.id,
-        current.version,
-        currentAnswer,
-        generateUUID()
+      const payload = questions
+        .filter((question) => !isAnswerEmpty(question, answers[question.id]))
+        .map((question) => ({
+          questionId: question.id,
+          version: question.version,
+          answer: answers[question.id],
+        }));
+      const signature = JSON.stringify(payload);
+      if (!request.current || request.current.signature !== signature)
+        request.current = { key: generateUUID(), signature };
+      const result = await exam.submitPaper(
+        numericBankId,
+        payload,
+        request.current.key
       );
-      setResults((old) => ({ ...old, [current.id]: result }));
+      setPaperResult(result);
+      setResults(
+        Object.fromEntries(result.items.map((item) => [item.questionId, item]))
+      );
+      message.success(`自动阅卷完成，得分 ${result.score} 分`);
     } catch {
-      message.error("答案提交失败，请检查网络后重试");
+      message.error("交卷或自动阅卷失败，请检查网络后重试");
     } finally {
       setSubmitting(false);
     }
   };
 
+  const confirmSubmit = () => {
+    const unanswered = questions.length - answeredCount;
+    Modal.confirm({
+      title: "确认提交试卷？",
+      content: unanswered ? `还有 ${unanswered} 道题未作答，交卷后将按 0 分计算。` : "交卷后将立即自动阅卷并给出分数。",
+      okText: "确认交卷",
+      cancelText: "继续答题",
+      centered: true,
+      onOk: gradePaper,
+    });
+  };
+
   const leave = () => {
-    if (Object.keys(answers).some((id) => !results[Number(id)])) {
+    if (!paperResult && answeredCount > 0) {
       Modal.confirm({
         title: "确认退出练习？",
-        content: "尚未提交的答案不会保存，已提交记录不受影响。",
+        content: "尚未交卷的答案不会保存。",
         okText: "确认退出",
         cancelText: "继续答题",
         centered: true,
@@ -174,7 +205,7 @@ export default function ExamPracticePage() {
             {current.type === "single_choice" && (
               <Radio.Group
                 value={currentAnswer?.optionIds?.[0]}
-                disabled={Boolean(currentResult)}
+                disabled={Boolean(paperResult)}
                 onChange={(event) => selectAnswer({ optionIds: [event.target.value] })}
               >
                 {current.options.map((option, index) => (
@@ -190,7 +221,7 @@ export default function ExamPracticePage() {
             {current.type === "multiple_choice" && (
               <Checkbox.Group
                 value={currentAnswer?.optionIds || []}
-                disabled={Boolean(currentResult)}
+                disabled={Boolean(paperResult)}
                 onChange={(value) => selectAnswer({ optionIds: value as string[] })}
               >
                 {current.options.map((option, index) => (
@@ -206,7 +237,7 @@ export default function ExamPracticePage() {
             {current.type === "true_false" && (
               <Radio.Group
                 value={currentAnswer?.value}
-                disabled={Boolean(currentResult)}
+                disabled={Boolean(paperResult)}
                 onChange={(event) => selectAnswer({ value: event.target.value })}
               >
                 <Radio className={styles.option} value={true}>
@@ -254,17 +285,7 @@ export default function ExamPracticePage() {
               上一题
             </Button>
             <div>
-              {!currentResult && (
-                <Button
-                  type="primary"
-                  loading={submitting}
-                  disabled={isAnswerEmpty(current, currentAnswer)}
-                  onClick={submitCurrent}
-                >
-                  提交答案
-                </Button>
-              )}
-              {currentResult && currentIndex < questions.length - 1 && (
+              {!paperResult && currentIndex < questions.length - 1 && (
                 <Button
                   type="primary"
                   onClick={() => setCurrentIndex((value) => value + 1)}
@@ -272,7 +293,16 @@ export default function ExamPracticePage() {
                   下一题 <RightOutlined />
                 </Button>
               )}
-              {currentResult && currentIndex === questions.length - 1 && (
+              {!paperResult && currentIndex === questions.length - 1 && (
+                <Button
+                  type="primary"
+                  loading={submitting}
+                  onClick={confirmSubmit}
+                >
+                  提交试卷
+                </Button>
+              )}
+              {paperResult && (
                 <Button type="primary" onClick={() => navigate("/exam")}>
                   完成练习
                 </Button>
@@ -283,25 +313,35 @@ export default function ExamPracticePage() {
 
         <aside className={styles.answerCard}>
           <h2>答题卡</h2>
+          {paperResult && (
+            <div className={styles.cardTip}>
+              自动阅卷得分：{paperResult.score} / {paperResult.maxScore}，答对 {paperResult.correctCount} / {paperResult.questionCount} 题
+            </div>
+          )}
           <div className={styles.legend}>
-            <span><i className={styles.done} />已提交</span>
-            <span><i />未提交</span>
+            <span><i className={styles.done} />{paperResult ? "正确" : "已作答"}</span>
+            <span><i />{paperResult ? "错误/未答" : "未作答"}</span>
           </div>
           <div className={styles.numbers}>
             {questions.map((question, index) => (
               <button
                 key={question.id}
                 className={`${index === currentIndex ? styles.current : ""} ${
-                  results[question.id] ? styles.submitted : ""
+                  (paperResult ? results[question.id]?.result === "correct" : answers[question.id]) ? styles.submitted : ""
                 }`}
                 onClick={() => setCurrentIndex(index)}
-                aria-label={`第 ${index + 1} 题${results[question.id] ? "，已提交" : ""}`}
+                aria-label={`第 ${index + 1} 题${answers[question.id] ? "，已作答" : ""}`}
               >
                 {index + 1}
               </button>
             ))}
           </div>
-          <div className={styles.cardTip}>答案提交后不可修改，请确认后提交。</div>
+          {!paperResult && <div className={styles.cardTip}>整卷提交后将立即自动阅卷，答案不可修改。</div>}
+          {!paperResult && currentIndex !== questions.length - 1 && (
+            <Button type="primary" block loading={submitting} onClick={confirmSubmit}>
+              提交试卷
+            </Button>
+          )}
         </aside>
       </div>
     </main>

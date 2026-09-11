@@ -3,11 +3,13 @@ import { test as base, expect, type Page, type Route } from "@playwright/test";
 export type ApiCall = {
   method: string;
   pathname: string;
+  query: Record<string, string>;
   body: unknown;
 };
 
 type H5Fixtures = {
   authenticated: boolean;
+  ldapEnabled: boolean;
   apiCalls: ApiCall[];
 };
 
@@ -87,7 +89,11 @@ async function readBody(route: Route): Promise<unknown> {
   }
 }
 
-async function mockApi(page: Page, apiCalls: ApiCall[]) {
+async function mockApi(
+  page: Page,
+  apiCalls: ApiCall[],
+  ldapEnabled: boolean
+) {
   await page.route("**/js/DPlayer.min.js", (route) =>
     route.fulfill({
       contentType: "application/javascript",
@@ -111,11 +117,16 @@ async function mockApi(page: Page, apiCalls: ApiCall[]) {
     const url = new URL(request.url());
     const pathname = url.pathname;
     const body = await readBody(route);
-    apiCalls.push({ method: request.method(), pathname, body });
+    apiCalls.push({
+      method: request.method(),
+      pathname,
+      query: Object.fromEntries(url.searchParams),
+      body,
+    });
 
     if (pathname === "/api/v1/system/config") {
       return json(route, {
-        "ldap-enabled": "0",
+        "ldap-enabled": ldapEnabled ? "1" : "0",
         "system-h5-url": "",
         "system-logo": "",
         "system-name": "PlayEdu 移动学习",
@@ -126,7 +137,6 @@ async function mockApi(page: Page, apiCalls: ApiCall[]) {
         "player-disabled-drag": "0",
         "player-bullet-secret-text": "{name}-{email}-{idCard}",
         "player-bullet-secret-color": "red",
-        "player-b": "0.5",
         "player-bullet-secret-opacity": "0.5",
         resource_url: {},
       });
@@ -238,6 +248,17 @@ async function mockApi(page: Page, apiCalls: ApiCall[]) {
             type: "file",
           },
         ],
+      });
+    }
+
+    if (pathname === "/api/v1/course/102") {
+      return json(route, {
+        course: courses[1],
+        chapters: [],
+        hours: { 0: [] },
+        learn_record: { progress: 3500, finished_count: 0 },
+        learn_hour_records: {},
+        attachments: [],
       });
     }
 
@@ -385,18 +406,23 @@ async function mockApi(page: Page, apiCalls: ApiCall[]) {
 
 export const test = base.extend<H5Fixtures>({
   authenticated: [true, { option: true }],
+  ldapEnabled: [false, { option: true }],
   apiCalls: async ({}, use) => {
     await use([]);
   },
-  page: async ({ page, authenticated, apiCalls }, use) => {
+  page: async ({ page, authenticated, apiCalls, ldapEnabled }, use) => {
     if (authenticated) {
       await page.addInitScript(() => {
+        if (sessionStorage.getItem("playedu-h5-e2e-seeded") === "1") {
+          return;
+        }
         localStorage.setItem("playedu-h5-token", "h5-e2e-token");
         localStorage.setItem("playedu-h5-depatmentKey", "1");
         localStorage.setItem("playedu-h5-depatmentName", "研发中心");
+        sessionStorage.setItem("playedu-h5-e2e-seeded", "1");
       });
     }
-    await mockApi(page, apiCalls);
+    await mockApi(page, apiCalls, ldapEnabled);
     await use(page);
   },
 });

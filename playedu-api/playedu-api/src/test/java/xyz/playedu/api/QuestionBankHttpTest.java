@@ -154,6 +154,7 @@ class QuestionBankHttpTest {
         QuestionBankService.class,
         QuestionGrader.class,
         QuestionBankMigration.class,
+        PracticeAutoGradingMigration.class,
         QuestionBankMethodFilter.class,
         ExceptionController.class,
         BackendPermissionAspect.class,
@@ -258,6 +259,7 @@ class QuestionBankHttpTest {
     private void resetQuestionBankTables() {
         for (String table :
                 List.of(
+                        "exam_practice_paper_attempts",
                         "exam_practice_attempts",
                         "exam_question_versions",
                         "exam_questions",
@@ -353,7 +355,7 @@ class QuestionBankHttpTest {
                                 paths.addAll(info.getPatternValues());
                             }
                         });
-        assertThat(paths).hasSize(20);
+        assertThat(paths).hasSize(22);
         for (String path : paths) {
             ResponseEntity<JsonNode> response = exchange(path, Map.of(), "admin-1", HttpMethod.GET);
             assertThat(response.getStatusCode().value()).as(path).isEqualTo(405);
@@ -651,6 +653,48 @@ class QuestionBankHttpTest {
                 .isEqualTo(1);
         assertThat(ok(STUDENT + "/practice/history", query(), "student-11").get("total").asInt())
                 .isZero();
+    }
+
+    @Test
+    void paperSubmissionAutomaticallyGradesEveryQuestionAndIsIdempotent() {
+        openPractice();
+        JsonNode first =
+                ok(ADMIN + "/questions/save", question("single_choice", "PAPER_ONE"), "admin-1");
+        ok(ADMIN + "/questions/save", question("true_false", "PAPER_TWO"), "admin-1");
+        ObjectNode request =
+                json.createObjectNode().put("bankId", bankId).put("requestKey", "paper-0001");
+        request
+                .putArray("answers")
+                .addObject()
+                .put("questionId", first.get("id").asLong())
+                .put("version", first.get("version").asInt())
+                .putObject("answer")
+                .putArray("optionIds")
+                .add("opt_1");
+
+        JsonNode result = ok(STUDENT + "/practice/paper/submit", request, "student-10");
+        assertThat(result.get("score").decimalValue()).isEqualByComparingTo("5.25");
+        assertThat(result.get("maxScore").decimalValue()).isEqualByComparingTo("10.50");
+        assertThat(result.get("questionCount").asInt()).isEqualTo(2);
+        assertThat(result.get("correctCount").asInt()).isEqualTo(1);
+        assertThat(result.get("items")).hasSize(2);
+        assertThat(result.toString()).contains("standardAnswer", "analysis");
+        assertThat(ok(STUDENT + "/practice/paper/submit", request, "student-10"))
+                .isEqualTo(result);
+        assertThat(
+                        ok(STUDENT + "/practice/paper/history", query(), "student-10")
+                                .get("total")
+                                .asInt())
+                .isEqualTo(1);
+        assertThat(
+                        ok(STUDENT + "/practice/paper/history", query(), "student-11")
+                                .get("total")
+                                .asInt())
+                .isZero();
+        assertThat(
+                        db.queryForObject(
+                                "SELECT COUNT(*) FROM exam_practice_paper_attempts", Long.class))
+                .isEqualTo(1);
     }
 
     @Test

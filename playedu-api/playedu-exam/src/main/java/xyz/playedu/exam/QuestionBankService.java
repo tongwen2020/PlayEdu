@@ -18,6 +18,7 @@ package xyz.playedu.exam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
 import java.util.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -81,6 +82,14 @@ public class QuestionBankService {
             return json.readValue(value, QuestionInput.class);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Invalid stored question", e);
+        }
+    }
+
+    private Map<String, Object> decodeMap(String value) {
+        try {
+            return json.readValue(value, new TypeReference<LinkedHashMap<String, Object>>() {});
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Invalid stored grading result", e);
         }
     }
 
@@ -673,5 +682,130 @@ public class QuestionBankService {
                                 })
                         .toList();
         return Map.of("items", items, "total", total);
+    }
+
+    private List<QuestionInput> practiceQuestions(long bankId) {
+        return db.query(
+                "SELECT v.content_json FROM exam_questions q JOIN exam_question_versions v ON"
+                        + " v.question_id=q.id AND v.version_no=q.current_version WHERE q.bank_id=?"
+                        + " AND q.status='enabled' AND q.type<>'short_answer' ORDER BY q.id DESC",
+                (rs, index) -> decode(rs.getString(1)),
+                bankId);
+    }
+
+    /**
+     * Locks the bank snapshot, grades every objective question, and persists one immutable result.
+     */
+    @Transactional
+    public Map<String, Object> submitPracticePaper(PracticePaperInput input, int userId) {
+        practiceBank(input.bankId(), true);
+        String submittedAnswers = encode(input.answers());
+        List<Map<String, Object>> previous =
+                db.queryForList(
+                        "SELECT * FROM exam_practice_paper_attempts WHERE user_id=? AND"
+                                + " request_key=? FOR UPDATE",
+                        userId,
+                        input.requestKey());
+        if (!previous.isEmpty()) {
+            Map<String, Object> row = previous.get(0);
+            require(
+                    number(row, "bank_id") == input.bankId()
+                            && row.get("answers_json").equals(submittedAnswers),
+                    "请求标识已用于其他试卷，请重新提交");
+            return practicePaperResult(row);
+        }
+
+        Map<Long, PaperAnswerInput> answers = new HashMap<>();
+        for (PaperAnswerInput answer : input.answers())
+            require(answers.put(answer.questionId(), answer) == null, "同一道题不能重复提交");
+
+        List<QuestionInput> questions = practiceQuestions(input.bankId());
+        require(!questions.isEmpty(), "题库暂无可自动阅卷的试题");
+        Set<Long> questionIds = new HashSet<>();
+        BigDecimal score = BigDecimal.ZERO;
+        BigDecimal maxScore = BigDecimal.ZERO;
+        int correctCount = 0;
+        List<Map<String, Object>> items = new ArrayList<>();
+        for (QuestionInput question : questions) {
+            questionIds.add(question.id());
+            PaperAnswerInput submitted = answers.get(question.id());
+            Answer answer = submitted == null ? new Answer(null, null, null) : submitted.answer();
+            if (submitted != null)
+                require(question.expectedVersion().equals(submitted.version()), "试题已更新，请刷新后重新作答");
+            Grade grade = grader.grade(question, answer);
+            score = score.add(grade.score());
+            maxScore = maxScore.add(grade.maxScore());
+            if ("correct".equals(grade.result())) correctCount++;
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("questionId", question.id());
+            item.put("version", question.expectedVersion());
+            item.put("score", grade.score());
+            item.put("maxScore", grade.maxScore());
+            item.put("result", grade.result());
+            item.put("standardAnswer", question.standardAnswer());
+            item.put("analysis", question.analysis());
+            items.add(item);
+        }
+        require(questionIds.containsAll(answers.keySet()), "答案包含不属于当前题库的试题");
+
+        Map<String, Object> grading = new LinkedHashMap<>();
+        grading.put("score", score);
+        grading.put("maxScore", maxScore);
+        grading.put("questionCount", questions.size());
+        grading.put("correctCount", correctCount);
+        grading.put("items", items);
+        long id =
+                insert(
+                        "INSERT INTO exam_practice_paper_attempts(user_id,bank_id,answers_json,"
+                            + "grading_json,score,max_score,question_count,correct_count,request_key)"
+                            + " VALUES(?,?,?,?,?,?,?,?,?)",
+                        userId,
+                        input.bankId(),
+                        submittedAnswers,
+                        encode(grading),
+                        score,
+                        maxScore,
+                        questions.size(),
+                        correctCount,
+                        input.requestKey());
+        return practicePaperResult(
+                one("SELECT * FROM exam_practice_paper_attempts WHERE id=?", id));
+    }
+
+    private Map<String, Object> practicePaperResult(Map<String, Object> row) {
+        Map<String, Object> result = decodeMap((String) row.get("grading_json"));
+        result.put("id", row.get("id"));
+        result.put("bankId", row.get("bank_id"));
+        result.put("submittedAt", row.get("submitted_at"));
+        return result;
+    }
+
+    public Map<String, Object> practicePaperHistory(int userId, Query query) {
+        long total =
+                db.queryForObject(
+                        "SELECT COUNT(*) FROM exam_practice_paper_attempts WHERE user_id=?",
+                        Long.class,
+                        userId);
+        List<Map<String, Object>> items =
+                db.query(
+                        "SELECT"
+                            + " a.id,a.bank_id,b.name,a.score,a.max_score,a.question_count,a.correct_count,a.submitted_at"
+                            + " FROM exam_practice_paper_attempts a JOIN exam_question_banks b ON"
+                            + " b.id=a.bank_id WHERE a.user_id=? ORDER BY a.id DESC LIMIT ? OFFSET"
+                            + " ?",
+                        (rs, index) ->
+                                Map.<String, Object>of(
+                                        "id", rs.getLong(1),
+                                        "bankId", rs.getLong(2),
+                                        "bankName", rs.getString(3),
+                                        "score", rs.getBigDecimal(4),
+                                        "maxScore", rs.getBigDecimal(5),
+                                        "questionCount", rs.getInt(6),
+                                        "correctCount", rs.getInt(7),
+                                        "submittedAt", rs.getTimestamp(8)),
+                        userId,
+                        query.size(),
+                        (query.page() - 1) * query.size());
+        return Map.of("items", items, "total", total, "page", query.page(), "size", query.size());
     }
 }

@@ -21,6 +21,7 @@ vi.mock("../../api", () => ({
     questions: vi.fn(),
     history: vi.fn(),
     submit: vi.fn(),
+    submitPaper: vi.fn(),
   },
 }));
 
@@ -76,7 +77,7 @@ describe("在线答题页面", () => {
     vi.clearAllMocks();
   });
 
-  it("选择判断题答案后提交，并展示判分和答案解析", async () => {
+  it("提交整卷后自动阅卷，并展示总分和答案解析", async () => {
     mockedExam.questions.mockResolvedValue({
       items: [
         {
@@ -94,16 +95,26 @@ describe("在线答题页面", () => {
       ],
       total: 1,
       page: 1,
-      size: 100,
+      size: 500,
     });
-    mockedExam.submit.mockResolvedValue({
+    mockedExam.submitPaper.mockResolvedValue({
       id: 99,
+      bankId: 8,
       score: 2,
       maxScore: 2,
-      result: "correct",
-      standardAnswer: { value: false },
-      analysis: "账号仅限本人使用，不得共享。",
-      version: 1,
+      questionCount: 1,
+      correctCount: 1,
+      submittedAt: "2026-09-10T09:00:00",
+      items: [{
+        id: 99,
+        questionId: 21,
+        score: 2,
+        maxScore: 2,
+        result: "correct",
+        standardAnswer: { value: false },
+        analysis: "账号仅限本人使用，不得共享。",
+        version: 1,
+      }],
     });
 
     renderPage(
@@ -114,20 +125,16 @@ describe("在线答题页面", () => {
     );
 
     expect(await screen.findByText("工作账号可以与他人共享。")).toBeInTheDocument();
-    const submitButton = screen.getByRole("button", { name: "提交答案" });
-    expect(submitButton).toBeDisabled();
-
     await userEvent.click(screen.getByText("错误"));
-    expect(submitButton).toBeEnabled();
-    await userEvent.click(submitButton);
+    await userEvent.click(screen.getByRole("button", { name: "提交试卷" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认交卷" }));
 
     expect(await screen.findByText("回答正确")).toBeInTheDocument();
     expect(screen.getByText(/账号仅限本人使用，不得共享/)).toBeInTheDocument();
     await waitFor(() =>
-      expect(mockedExam.submit).toHaveBeenCalledWith(
-        21,
-        1,
-        { value: false },
+      expect(mockedExam.submitPaper).toHaveBeenCalledWith(
+        8,
+        [{ questionId: 21, version: 1, answer: { value: false } }],
         expect.stringMatching(/^[a-f0-9-]{36}$/)
       )
     );

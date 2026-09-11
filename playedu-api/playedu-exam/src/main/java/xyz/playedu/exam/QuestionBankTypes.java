@@ -83,7 +83,7 @@ public final class QuestionBankTypes {
             @Size(max = 20) String status,
             @Size(max = 40) String tag,
             @Min(1) @Max(100000) int page,
-            @Min(1) @Max(100) int size) {}
+            @Min(1) @Max(500) int size) {}
 
     public record VersionInput(@NotNull @Positive Long id, @Positive Integer version) {}
 
@@ -100,6 +100,16 @@ public final class QuestionBankTypes {
             @NotNull @Positive Long questionId,
             @NotNull @Positive Integer version,
             @NotNull @Valid Answer answer,
+            @NotBlank @Pattern(regexp = "[a-zA-Z0-9_-]{8,64}") String requestKey) {}
+
+    public record PaperAnswerInput(
+            @NotNull @Positive Long questionId,
+            @NotNull @Positive Integer version,
+            @NotNull @Valid Answer answer) {}
+
+    public record PracticePaperInput(
+            @NotNull @Positive Long bankId,
+            @NotNull @Size(max = 500) List<@NotNull @Valid PaperAnswerInput> answers,
             @NotBlank @Pattern(regexp = "[a-zA-Z0-9_-]{8,64}") String requestKey) {}
 
     public record Grade(BigDecimal score, BigDecimal maxScore, String result) {}

@@ -13,6 +13,7 @@ import { exam } from "../../api";
 import type {
   PracticeAnswer,
   PracticeBank,
+  PracticePaperResult,
   PracticeQuestion,
   PracticeResult,
 } from "../../api/exam";
@@ -53,22 +54,22 @@ const ExamPracticePage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<AnswerState>({});
   const [results, setResults] = useState<ResultState>({});
+  const [paperResult, setPaperResult] = useState<PracticePaperResult>();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const requestKeys = useRef<
-    Record<number, { key: string; answerSignature: string }>
-  >({});
+  const request = useRef<{ key: string; signature: string }>();
 
   const current = questions[currentIndex];
   const currentAnswer = current ? answers[current.id] : undefined;
   const currentResult = current ? results[current.id] : undefined;
-  const completed = Object.keys(results).length;
+  const answeredCount = questions.filter(
+    (question) => !isAnswerEmpty(question, answers[question.id])
+  ).length;
+  const completed = paperResult ? questions.length : answeredCount;
   const percent = questions.length
     ? Math.round((completed / questions.length) * 100)
     : 0;
-  const hasUnsubmittedAnswer = Object.keys(answers).some(
-    (id) => !results[Number(id)]
-  );
+  const hasUnsubmittedAnswer = !paperResult && answeredCount > 0;
 
   useEffect(() => {
     document.title = bank?.name ? `${bank.name} - 考试中心` : "在线答题";
@@ -97,47 +98,59 @@ const ExamPracticePage = () => {
   }, [hasUnsubmittedAnswer]);
 
   const selectAnswer = (answer: PracticeAnswer) => {
-    if (!current || currentResult) return;
+    if (!current || paperResult) return;
     setAnswers((old) => ({ ...old, [current.id]: answer }));
   };
 
-  const submitCurrent = async () => {
-    if (
-      !current ||
-      !currentAnswer ||
-      isAnswerEmpty(current, currentAnswer) ||
-      submitting
-    ) {
-      return;
-    }
+  const gradePaper = async () => {
+    if (submitting || paperResult) return;
     setSubmitting(true);
     try {
-      const answerSignature = JSON.stringify(currentAnswer);
-      const previousRequest = requestKeys.current[current.id];
-      const requestKey =
-        previousRequest?.answerSignature === answerSignature
-          ? previousRequest.key
-          : generateUUID();
-      requestKeys.current[current.id] = { key: requestKey, answerSignature };
-      const result = await exam.submit(
-        current.id,
-        current.version,
-        currentAnswer,
-        requestKey
+      const payload = questions
+        .filter((question) => !isAnswerEmpty(question, answers[question.id]))
+        .map((question) => ({
+          questionId: question.id,
+          version: question.version,
+          answer: answers[question.id],
+        }));
+      const signature = JSON.stringify(payload);
+      if (!request.current || request.current.signature !== signature)
+        request.current = { key: generateUUID(), signature };
+      const result = await exam.submitPaper(
+        numericBankId,
+        payload,
+        request.current.key
       );
-      setResults((old) => ({ ...old, [current.id]: result }));
+      setPaperResult(result);
+      setResults(
+        Object.fromEntries(result.items.map((item) => [item.questionId, item]))
+      );
+      Toast.show({ content: `自动阅卷完成，得分 ${result.score} 分` });
     } catch {
-      Toast.show({ content: "答案提交失败，请检查网络后重试" });
+      Toast.show({ content: "交卷或自动阅卷失败，请检查网络后重试" });
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const confirmSubmit = async () => {
+    const unanswered = questions.length - answeredCount;
+    const confirmed = await Dialog.confirm({
+      title: "确认提交试卷？",
+      content: unanswered
+        ? `还有 ${unanswered} 道题未作答，交卷后将按 0 分计算。`
+        : "交卷后将立即自动阅卷并给出分数。",
+      confirmText: "确认交卷",
+      cancelText: "继续答题",
+    });
+    if (confirmed) await gradePaper();
   };
 
   const leave = async () => {
     if (hasUnsubmittedAnswer) {
       const confirmed = await Dialog.confirm({
         title: "确认退出练习？",
-        content: "尚未提交的答案不会保存，已提交记录不受影响。",
+        content: "尚未交卷的答案不会保存。",
         confirmText: "确认退出",
         cancelText: "继续答题",
       });
@@ -214,7 +227,7 @@ const ExamPracticePage = () => {
               {current.options.map((option, index) => (
                 <Radio
                   block
-                  disabled={Boolean(currentResult)}
+                  disabled={Boolean(paperResult)}
                   className={styles.option}
                   value={option.id}
                   key={option.id}
@@ -238,7 +251,7 @@ const ExamPracticePage = () => {
               {current.options.map((option, index) => (
                 <Checkbox
                   block
-                  disabled={Boolean(currentResult)}
+                  disabled={Boolean(paperResult)}
                   className={styles.option}
                   value={option.id}
                   key={option.id}
@@ -263,7 +276,7 @@ const ExamPracticePage = () => {
             >
               <Radio
                 block
-                disabled={Boolean(currentResult)}
+                disabled={Boolean(paperResult)}
                 className={styles.option}
                 value="true"
               >
@@ -316,17 +329,7 @@ const ExamPracticePage = () => {
           >
             上一题
           </Button>
-          {!currentResult && (
-            <Button
-              color="primary"
-              loading={submitting}
-              disabled={isAnswerEmpty(current, currentAnswer)}
-              onClick={submitCurrent}
-            >
-              提交答案
-            </Button>
-          )}
-          {currentResult && currentIndex < questions.length - 1 && (
+          {!paperResult && currentIndex < questions.length - 1 && (
             <Button
               color="primary"
               onClick={() => setCurrentIndex((value) => value + 1)}
@@ -334,7 +337,16 @@ const ExamPracticePage = () => {
               下一题
             </Button>
           )}
-          {currentResult && currentIndex === questions.length - 1 && (
+          {!paperResult && currentIndex === questions.length - 1 && (
+            <Button
+              color="primary"
+              loading={submitting}
+              onClick={confirmSubmit}
+            >
+              提交试卷
+            </Button>
+          )}
+          {paperResult && (
             <Button color="primary" onClick={leave}>
               完成练习
             </Button>
@@ -345,24 +357,29 @@ const ExamPracticePage = () => {
       <section className={styles["answer-card"]}>
         <div className={styles["answer-card-title"]}>
           <h2>答题卡</h2>
-          <span>答案提交后不可修改</span>
+          <span>{paperResult ? `${paperResult.score} / ${paperResult.maxScore} 分` : "整卷自动阅卷"}</span>
         </div>
         <div className={styles.numbers}>
           {questions.map((question, index) => (
             <button
               key={question.id}
               className={`${index === currentIndex ? styles.current : ""} ${
-                results[question.id] ? styles.submitted : ""
+                (paperResult ? results[question.id]?.result === "correct" : answers[question.id]) ? styles.submitted : ""
               }`}
               onClick={() => setCurrentIndex(index)}
               aria-label={`第 ${index + 1} 题${
-                results[question.id] ? "，已提交" : ""
+                answers[question.id] ? "，已作答" : ""
               }`}
             >
               {index + 1}
             </button>
           ))}
         </div>
+        {!paperResult && currentIndex !== questions.length - 1 && (
+          <Button block color="primary" loading={submitting} onClick={confirmSubmit}>
+            提交试卷
+          </Button>
+        )}
       </section>
     </main>
   );

@@ -54,6 +54,17 @@ export interface PracticeResult {
   version: number;
 }
 
+export interface PracticePaperResult {
+  id: number;
+  bankId: number;
+  score: number;
+  maxScore: number;
+  questionCount: number;
+  correctCount: number;
+  submittedAt: string;
+  items: Array<PracticeResult & { questionId: number }>;
+}
+
 export interface PracticeHistoryItem {
   id: number;
   questionId: number;
@@ -80,7 +91,7 @@ async function post<T>(path: string, body: object = {}): Promise<T> {
 
 export const banks = () => post<PracticeBank[]>("banks/list");
 
-export const questions = (bankId: number, page = 1, size = 100) =>
+export const questions = (bankId: number, page = 1, size = 500) =>
   post<PageResult<PracticeQuestion>>("questions/list", { bankId, page, size });
 
 export const submit = (
@@ -93,6 +104,17 @@ export const submit = (
     questionId,
     version,
     answer,
+    requestKey,
+  });
+
+export const submitPaper = (
+  bankId: number,
+  answers: Array<{ questionId: number; version: number; answer: PracticeAnswer }>,
+  requestKey: string
+) =>
+  post<PracticePaperResult>("practice/paper/submit", {
+    bankId,
+    answers,
     requestKey,
   });
 

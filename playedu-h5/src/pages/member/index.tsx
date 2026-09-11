@@ -195,6 +195,7 @@ const MemberPage = () => {
           </div>
           <Image
             className={styles["more-button"]}
+            alt="更多设置"
             onClick={() => setClick()}
             src={moreIcon}
           />
