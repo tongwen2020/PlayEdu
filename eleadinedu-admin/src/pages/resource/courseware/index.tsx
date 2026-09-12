@@ -96,10 +96,12 @@ const ResourceCoursewarePage = () => {
         setExistingTypes(res.data.existing_types);
         setAdminUsers(res.data.admin_users);
         setResourceUrl(res.data.resource_url);
-        setLoading(false);
       })
       .catch((err: any) => {
         console.log("错误,", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 

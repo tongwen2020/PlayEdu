@@ -16,7 +16,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [bodyHeight, setBodyHeight] = useState(0);
   const systemConfig = useSelector((state: any) => state.systemConfig.value);
@@ -28,9 +28,12 @@ const LoginPage = () => {
   }, []);
 
   const loginSubmit = async (e: any) => {
-    if (!email) {
+    if (!account) {
       Toast.show({
-        content: "请输入邮箱或UID",
+        content:
+          systemConfig["ldap-enabled"] === "1"
+            ? "请输入邮箱或UID"
+            : "请输入账号或邮箱",
       });
       return;
     }
@@ -50,7 +53,7 @@ const LoginPage = () => {
     setLoading(true);
     if (systemConfig["ldap-enabled"] === "1") {
       try {
-        let res: any = await login.loginLdap(email, password);
+        let res: any = await login.loginLdap(account, password);
         setToken(res.data.token); //将token写入本地
         await getSystemConfig(); //获取系统配置并写入store
         await getUser(); //获取登录用户的信息并写入store
@@ -62,7 +65,7 @@ const LoginPage = () => {
       }
     }else{
       try {
-        let res: any = await login.login(email, password);
+        let res: any = await login.login(account, password);
         setToken(res.data.token); //将token写入本地
         await getSystemConfig(); //获取系统配置并写入store
         await getUser(); //获取登录用户的信息并写入store
@@ -127,10 +130,14 @@ const LoginPage = () => {
         <div className={styles["input-box"]}>
           <Input
             className={styles["input-item"]}
-            placeholder="请输入邮箱或UID"
-            value={email}
+            placeholder={
+              systemConfig["ldap-enabled"] === "1"
+                ? "请输入邮箱或UID"
+                : "请输入账号或邮箱"
+            }
+            value={account}
             onChange={(val) => {
-              setEmail(val);
+              setAccount(val);
             }}
           />
           <div className={styles["line"]}></div>
@@ -147,7 +154,7 @@ const LoginPage = () => {
         <div className={styles["button-box"]}>
           <Button
             className={styles["primary-button"]}
-            disabled={email === "" || password === ""}
+            disabled={account === "" || password === ""}
             color="primary"
             loading={loading}
             onClick={loginSubmit}

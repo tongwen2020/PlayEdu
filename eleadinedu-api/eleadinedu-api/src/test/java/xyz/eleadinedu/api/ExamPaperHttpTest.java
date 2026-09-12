@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.math.BigDecimal;
 import java.sql.DriverManager;
 import java.util.*;
 import org.junit.jupiter.api.*;
@@ -44,11 +45,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import xyz.eleadinedu.api.controller.ExceptionController;
 import xyz.eleadinedu.api.controller.backend.*;
+import xyz.eleadinedu.api.controller.frontend.ExamPaperStudentController;
 import xyz.eleadinedu.api.interceptor.*;
 import xyz.eleadinedu.common.bus.BackendBus;
 import xyz.eleadinedu.common.config.EleadineduConfig;
 import xyz.eleadinedu.common.context.BCtx;
 import xyz.eleadinedu.common.domain.AdminUser;
+import xyz.eleadinedu.common.domain.User;
 import xyz.eleadinedu.common.service.*;
 import xyz.eleadinedu.exam.*;
 import xyz.eleadinedu.system.aspectj.BackendPermissionAspect;
@@ -128,8 +131,11 @@ class ExamPaperHttpTest {
     @EnableAutoConfiguration
     @Import({
         ExamPaperController.class,
+        ExamPaperStudentController.class,
         QuestionBankController.class,
         ExamPaperService.class,
+        ExamPaperPassScoreMigration.class,
+        FixedPaperAttemptMigration.class,
         QuestionBankService.class,
         QuestionGrader.class,
         QuestionBankMigration.class,
@@ -159,6 +165,8 @@ class ExamPaperHttpTest {
     @Autowired JdbcTemplate db;
     @Autowired RequestMappingHandlerMapping mappings;
     @Autowired ExamPaperMigration migration;
+    @Autowired ExamPaperPassScoreMigration passScoreMigration;
+    @Autowired FixedPaperAttemptMigration fixedPaperAttemptMigration;
     @MockBean BackendAuthService adminAuth;
     @MockBean FrontendAuthService studentAuth;
     @MockBean AdminUserService admins;
@@ -218,6 +226,24 @@ class ExamPaperHttpTest {
                         });
         when(backendBus.isSuperAdmin())
                 .thenAnswer(ignored -> Integer.valueOf(1).equals(BCtx.getId()));
+        when(studentAuth.check())
+                .thenAnswer(
+                        ignored ->
+                                Set.of("Bearer student-10", "Bearer student-11")
+                                        .contains(Objects.toString(token(), "")));
+        when(studentAuth.userId())
+                .thenAnswer(
+                        ignored ->
+                                Integer.parseInt(token().substring(token().lastIndexOf('-') + 1)));
+        when(studentAuth.jti()).thenReturn("paper-test-session");
+        when(users.find(anyInt()))
+                .thenAnswer(
+                        invocation -> {
+                            User user = new User();
+                            user.setId(invocation.getArgument(0));
+                            user.setIsLock(0);
+                            return user;
+                        });
         bankId = ok(QUESTION + "/banks/save", bank(), "admin-1").get("id").asLong();
         single = ok(QUESTION + "/questions/save", question("single_choice", "Q_SINGLE"), "admin-1");
         shortAnswer =
@@ -232,6 +258,7 @@ class ExamPaperHttpTest {
     private void resetTables() {
         for (String table :
                 List.of(
+                        "exam_fixed_paper_attempts",
                         "exam_paper_versions",
                         "exam_paper_draft_items",
                         "exam_paper_draft_sections",
@@ -285,7 +312,8 @@ class ExamPaperHttpTest {
                 json.createObjectNode()
                         .put("code", "PAPER_001")
                         .put("name", "Java 入职考试")
-                        .put("description", "固定组卷验收");
+                        .put("description", "固定组卷验收")
+                        .put("passScore", 9.00);
         if (id != null) p.put("id", id);
         if (revision != null) p.put("revision", revision);
         p.putArray("tags").add("入职");
@@ -422,6 +450,7 @@ class ExamPaperHttpTest {
         assertThat(created.get("status").asText()).isEqualTo("draft");
         assertThat(created.get("questionCount").asInt()).isEqualTo(2);
         assertThat(created.get("totalScore").decimalValue()).isEqualByComparingTo("12.75");
+        assertThat(created.get("passScore").decimalValue()).isEqualByComparingTo("9.00");
         assertThat(created.get("objectiveScore").decimalValue()).isEqualByComparingTo("5.25");
         assertThat(created.get("subjectiveScore").decimalValue()).isEqualByComparingTo("7.50");
         assertThat(created.get("requiresManualGrading").asBoolean()).isTrue();
@@ -443,12 +472,74 @@ class ExamPaperHttpTest {
     }
 
     @Test
+    void studentSeesPublishedFixedPaperAndPassesConfiguredScore() {
+        ObjectNode objective = paper(null, null, single, shortAnswer);
+        objective.withArray("sections").remove(1);
+        objective.put("passScore", 5.25);
+        JsonNode created = ok(PAPER + "/papers/save", objective, "admin-1");
+        assertThat(
+                        ok(
+                                        "/api/v1/exam-paper/papers/list",
+                                        json.createObjectNode().put("page", 1).put("size", 20),
+                                        "student-10")
+                                .get("total")
+                                .asInt())
+                .isZero();
+        JsonNode published =
+                ok(
+                        PAPER + "/papers/publish",
+                        Map.of("id", created.get("id").asLong(), "expectedRevision", 1),
+                        "admin-1");
+        JsonNode list =
+                ok(
+                        "/api/v1/exam-paper/papers/list",
+                        json.createObjectNode().put("page", 1).put("size", 20),
+                        "student-10");
+        assertThat(list.get("total").asInt()).isEqualTo(1);
+        assertThat(list.at("/items/0/passScore").decimalValue()).isEqualByComparingTo("5.25");
+        JsonNode detail =
+                ok(
+                        "/api/v1/exam-paper/papers/detail",
+                        Map.of("id", created.get("id").asLong()),
+                        "student-10");
+        assertThat(detail.at("/sections/0/items/0/question/standardAnswer").isMissingNode())
+                .isTrue();
+        ObjectNode answer = json.createObjectNode();
+        answer.put("paperId", created.get("id").asLong());
+        answer.put("version", published.get("version").asInt());
+        answer.put("requestKey", "fixed-paper-request-10");
+        answer.putArray("answers")
+                .addObject()
+                .put("questionId", single.get("id").asLong())
+                .put("version", single.get("version").asInt())
+                .putObject("answer")
+                .putArray("optionIds")
+                .add("A");
+        JsonNode result = ok("/api/v1/exam-paper/papers/submit", answer, "student-10");
+        assertThat(result.get("score").decimalValue()).isEqualByComparingTo("5.25");
+        assertThat(result.get("passScore").decimalValue()).isEqualByComparingTo("5.25");
+        assertThat(result.get("passed").asBoolean()).isTrue();
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM exam_fixed_paper_attempts", Long.class))
+                .isEqualTo(1);
+    }
+
+    @Test
     void invalidPaperRollsBackWithoutPartialRows() {
         ObjectNode duplicate = paper(null, null, single, shortAnswer);
         ((ObjectNode) duplicate.at("/sections/1/items/0"))
                 .put("questionId", single.get("id").asLong())
                 .put("questionVersion", single.get("version").asInt());
         assertThat(post(PAPER + "/papers/save", duplicate, "admin-1").get("code").asInt())
+                .isNotZero();
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM exam_papers", Long.class)).isZero();
+        ObjectNode excessivePassScore = paper(null, null, single, shortAnswer);
+        excessivePassScore.put("passScore", 12.76);
+        assertThat(post(PAPER + "/papers/save", excessivePassScore, "admin-1").get("code").asInt())
+                .isNotZero();
+        assertThat(db.queryForObject("SELECT COUNT(*) FROM exam_papers", Long.class)).isZero();
+        ObjectNode missingPassScore = paper(null, null, single, shortAnswer);
+        missingPassScore.remove("passScore");
+        assertThat(post(PAPER + "/papers/save", missingPassScore, "admin-1").get("code").asInt())
                 .isNotZero();
         assertThat(db.queryForObject("SELECT COUNT(*) FROM exam_papers", Long.class)).isZero();
         ObjectNode missing = paper(null, null, single, shortAnswer);
@@ -471,6 +562,7 @@ class ExamPaperHttpTest {
         JsonNode published =
                 ok(PAPER + "/papers/publish", Map.of("id", id, "expectedRevision", 1), "admin-1");
         assertThat(published.get("version").asInt()).isEqualTo(1);
+        assertThat(published.get("passScore").decimalValue()).isEqualByComparingTo("9.00");
         assertThat(published.get("status").asText()).isEqualTo("published");
         assertThat(
                         post(
@@ -487,6 +579,7 @@ class ExamPaperHttpTest {
     @Test
     void emptyDraftCanBeSavedButCannotBePublished() {
         ObjectNode empty = paper(null, null, single, shortAnswer);
+        empty.put("passScore", 0);
         empty.putArray("sections");
         JsonNode created = ok(PAPER + "/papers/save", empty, "admin-1");
         JsonNode validation =
@@ -538,7 +631,10 @@ class ExamPaperHttpTest {
                 .put("stem", "修改后的题干");
         JsonNode latestQuestion = ok(QUESTION + "/questions/save", changedQuestion, "admin-1");
         JsonNode staleDraft =
-                ok(PAPER + "/papers/save", paper(id, 2, single, shortAnswer), "admin-1");
+                ok(
+                        PAPER + "/papers/save",
+                        paper(id, 2, single, shortAnswer).put("passScore", 10.00),
+                        "admin-1");
         JsonNode validation = ok(PAPER + "/papers/validate", Map.of("id", id), "admin-1");
         assertThat(validation.get("valid").asBoolean()).isFalse();
         assertThat(validation.get("errors").toString()).contains("已有新版本");
@@ -546,7 +642,8 @@ class ExamPaperHttpTest {
         JsonNode freshDraft =
                 ok(
                         PAPER + "/papers/save",
-                        paper(id, staleDraft.get("revision").asInt(), latestQuestion, shortAnswer),
+                        paper(id, staleDraft.get("revision").asInt(), latestQuestion, shortAnswer)
+                                .put("passScore", 10.00),
                         "admin-1");
         ok(
                 PAPER + "/papers/publish",
@@ -556,7 +653,12 @@ class ExamPaperHttpTest {
         JsonNode version2 = ok(PAPER + "/papers/detail", Map.of("id", id, "version", 2), "admin-1");
         assertThat(version1.at("/sections/0/items/0/question/stem").asText()).contains("原始题干");
         assertThat(version2.at("/sections/0/items/0/question/stem").asText()).isEqualTo("修改后的题干");
-        assertThat(ok(PAPER + "/papers/versions", Map.of("id", id), "admin-1")).hasSize(2);
+        assertThat(version1.get("passScore").decimalValue()).isEqualByComparingTo("9.00");
+        assertThat(version2.get("passScore").decimalValue()).isEqualByComparingTo("10.00");
+        JsonNode versions = ok(PAPER + "/papers/versions", Map.of("id", id), "admin-1");
+        assertThat(versions).hasSize(2);
+        assertThat(versions.get(0).get("passScore").decimalValue()).isEqualByComparingTo("10.00");
+        assertThat(versions.get(1).get("passScore").decimalValue()).isEqualByComparingTo("9.00");
     }
 
     @Test
@@ -595,6 +697,7 @@ class ExamPaperHttpTest {
                         "admin-1");
         assertThat(copied.get("status").asText()).isEqualTo("draft");
         assertThat(copied.get("currentVersion").asInt()).isZero();
+        assertThat(copied.get("passScore").decimalValue()).isEqualByComparingTo("9.00");
         ok(PAPER + "/papers/delete-draft", Map.of("id", copied.get("id").asLong()), "admin-1");
         JsonNode disabled =
                 ok(
@@ -637,7 +740,24 @@ class ExamPaperHttpTest {
     void migrationIsRestartableAndCreatesAllTablesOnMysql() {
         savePaper();
         migration.run();
+        db.update("DELETE FROM migrations WHERE migration='20260911_exam_paper_pass_score_v1'");
+        db.execute("ALTER TABLE exam_paper_versions DROP COLUMN pass_score");
+        db.execute("ALTER TABLE exam_papers DROP COLUMN pass_score");
+        passScoreMigration.run();
         assertThat(db.queryForObject("SELECT COUNT(*) FROM exam_papers", Long.class)).isEqualTo(1);
+        assertThat(
+                        db.queryForObject(
+                                "SELECT pass_score FROM exam_papers LIMIT 1", BigDecimal.class))
+                .isEqualByComparingTo("0.00");
+        assertThat(
+                        db.queryForObject(
+                                "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE"
+                                        + " TABLE_SCHEMA=? AND TABLE_NAME IN"
+                                        + " ('exam_papers','exam_paper_versions') AND"
+                                        + " COLUMN_NAME='pass_score'",
+                                Long.class,
+                                MYSQL_DATABASE))
+                .isEqualTo(2);
         assertThat(
                         db.queryForObject(
                                 "SELECT COUNT(*) FROM information_schema.TABLES WHERE"
@@ -648,6 +768,12 @@ class ExamPaperHttpTest {
                         db.queryForObject(
                                 "SELECT COUNT(*) FROM migrations WHERE"
                                         + " migration='20260907_exam_paper_v1'",
+                                Long.class))
+                .isEqualTo(1);
+        assertThat(
+                        db.queryForObject(
+                                "SELECT COUNT(*) FROM migrations WHERE"
+                                        + " migration='20260911_exam_paper_pass_score_v1'",
                                 Long.class))
                 .isEqualTo(1);
     }

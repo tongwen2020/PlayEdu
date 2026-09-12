@@ -27,6 +27,7 @@ declare global {
     created_at?: string;
     credit1?: number;
     email: string;
+    username: string;
     id: number;
     id_card?: string;
     is_active?: number;

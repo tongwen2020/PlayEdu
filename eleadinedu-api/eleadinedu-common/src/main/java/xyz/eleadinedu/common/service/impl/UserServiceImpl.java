@@ -52,6 +52,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public boolean loginIdentifierIsUsedByOther(String identifier, Integer excludedUserId) {
+        var wrapper =
+                query().getWrapper()
+                        .and(w -> w.eq("username", identifier).or().eq("email", identifier));
+        if (excludedUserId != null) {
+            wrapper.ne("id", excludedUserId);
+        }
+        return count(wrapper) > 0;
+    }
+
+    @Override
+    public Set<String> existingLoginIdentifiers(List<String> identifiers) {
+        if (identifiers == null || identifiers.isEmpty()) {
+            return Set.of();
+        }
+        Set<String> requested = new HashSet<>(identifiers);
+        Set<String> result = new HashSet<>();
+        list(
+                        query().getWrapper()
+                                .and(w -> w.in("username", identifiers).or().in("email", identifiers))
+                                .select("username", "email"))
+                .forEach(
+                        user -> {
+                            if (requested.contains(user.getUsername())) {
+                                result.add(user.getUsername());
+                            }
+                            if (requested.contains(user.getEmail())) {
+                                result.add(user.getEmail());
+                            }
+                        });
+        return result;
+    }
+
+    @Override
     public PaginationResult<User> paginate(int page, int size, UserPaginateFilter filter) {
         filter.setPageStart((page - 1) * size);
         filter.setPageSize(size);
@@ -88,6 +122,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional
     public User createWithDepIds(
+            String username,
             String email,
             String name,
             Integer avatar,
@@ -98,6 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String passwordHashed = HelperUtil.MD5(password + salt);
 
         User user = new User();
+        user.setUsername(username);
         user.setEmail(email);
         user.setName(name);
         user.setAvatar(avatar);
@@ -127,6 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional
     public User updateWithDepIds(
             User user,
+            String username,
             String email,
             String name,
             Integer avatar,
@@ -135,6 +172,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             Integer[] depIds) {
         User newUser = new User();
         newUser.setId(user.getId());
+        newUser.setUsername(username);
         newUser.setEmail(email);
         newUser.setName(name);
         newUser.setAvatar(avatar);
@@ -181,6 +219,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User find(String email) {
         return getOne(query().getWrapper().eq("email", email));
+    }
+
+    @Override
+    public User findByLoginIdentifier(String identifier) {
+        return getOne(
+                query().getWrapper()
+                        .and(w -> w.eq("username", identifier).or().eq("email", identifier)));
     }
 
     @Override

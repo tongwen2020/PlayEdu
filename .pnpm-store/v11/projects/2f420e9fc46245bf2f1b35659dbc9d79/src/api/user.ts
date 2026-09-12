@@ -2,6 +2,7 @@ import client from "./internal/httpClient";
 
 //params可选值如下：
 // name - 姓名
+// username - 登录账号
 // nickname - 昵称
 // email - 邮箱
 // id_card - 身份证号
@@ -26,6 +27,7 @@ export function createUser() {
 }
 
 export function storeUser(
+  username: string,
   email: string,
   name: string,
   avatar: string,
@@ -34,6 +36,7 @@ export function storeUser(
   depIds: number[]
 ) {
   return client.post("/backend/v1/user/create", {
+    username,
     email,
     name,
     avatar,
@@ -49,6 +52,7 @@ export function user(id: number) {
 
 export function updateUser(
   id: number,
+  username: string,
   email: string,
   name: string,
   avatar: string,
@@ -57,6 +61,7 @@ export function updateUser(
   depIds: number[]
 ) {
   return client.put(`/backend/v1/user/${id}`, {
+    username,
     email,
     name,
     avatar,
@@ -71,8 +76,8 @@ export function destroyUser(id: number) {
 }
 
 //startline是表格真是数据的起始行号-用于提示哪一行数据存在问题
-//users是一个二维字符串数组，每个数组的元素如下：[部门ids字符串,邮箱,昵称,密码,姓名,身份证]
-export function storeBatch(startLine: number, users: string[][]) {
+// users为学员对象数组，字段包含部门、登录账号、邮箱、密码和姓名等。
+export function storeBatch(startLine: number, users: object[]) {
   return client.post("/backend/v1/user/store-batch", {
     start_line: startLine,
     users: users,

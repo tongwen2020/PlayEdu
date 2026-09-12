@@ -44,10 +44,11 @@ const MemberImportPage = () => {
       }
       data.push({
         deps: tmpItem[0],
-        email: tmpItem[1],
-        password: tmpItem[2],
-        name: tmpItem[3],
-        id_card: tmpItem[4],
+        username: tmpItem[1],
+        email: tmpItem[2],
+        password: tmpItem[3],
+        name: tmpItem[4],
+        id_card: tmpItem[5],
       });
     }
 

@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="xyz.eleadinedu.common.domain.User">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
@@ -26,7 +27,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,email,name,
+        id,email,username,name,
         avatar,password,salt,
         id_card,credit1,create_ip,
         create_city,is_active,is_lock,
@@ -61,6 +62,9 @@
             </if>
             <if test="email != null and email != ''">
                 AND `users`.`email` LIKE concat('%',#{email},'%')
+            </if>
+            <if test="username != null and username != ''">
+                AND `users`.`username` LIKE concat('%',#{username},'%')
             </if>
             <if test="idCard != null and idCard != ''">
                 AND `users`.`id_card` = #{idCard}
@@ -112,6 +116,9 @@
             </if>
             <if test="email != null and email != ''">
                 AND `users`.`email` LIKE concat('%',#{email},'%')
+            </if>
+            <if test="username != null and username != ''">
+                AND `users`.`username` LIKE concat('%',#{username},'%')
             </if>
             <if test="idCard != null and idCard != ''">
                 AND `users`.`id_card` = #{idCard}

@@ -13,13 +13,17 @@ const LoginPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
+  const [account, setAccount] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const systemConfig = useSelector((state: any) => state.systemConfig.value);
 
   const loginSubmit = (e: any) => {
-    if (!email) {
-      message.error("请输入邮箱或UID");
+    if (!account) {
+      message.error(
+        systemConfig["ldap-enabled"] === "1"
+          ? "请输入邮箱或UID"
+          : "请输入账号或邮箱"
+      );
       return;
     }
     if (!password) {
@@ -45,7 +49,7 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     if (systemConfig["ldap-enabled"] === "1") {
       login
-        .loginLdap(email, password)
+        .loginLdap(account, password)
         .then((res: any) => {
           const token = res.data.token;
           setToken(token);
@@ -56,7 +60,7 @@ const LoginPage: React.FC = () => {
         });
     } else {
       login
-        .login(email, password)
+        .login(account, password)
         .then((res: any) => {
           const token = res.data.token;
           setToken(token);
@@ -88,12 +92,16 @@ const LoginPage: React.FC = () => {
           <div className={styles["right-box"]}>
             <div className="login-box d-flex">
               <Input
-                value={email}
+                value={account}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setAccount(e.target.value);
                 }}
                 style={{ width: 400, height: 54 }}
-                placeholder={"请输入邮箱或UID"}
+                placeholder={
+                  systemConfig["ldap-enabled"] === "1"
+                    ? "请输入邮箱或UID"
+                    : "请输入账号或邮箱"
+                }
                 onKeyUp={(e) => keyUp(e)}
               />
             </div>

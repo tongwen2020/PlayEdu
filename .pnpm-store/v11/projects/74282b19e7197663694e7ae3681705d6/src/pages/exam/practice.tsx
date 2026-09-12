@@ -22,6 +22,9 @@ import { exam } from "../../api";
 import type {
   PracticeAnswer,
   PracticeBank,
+  FixedPaperDetail,
+  FixedPaperResult,
+  FixedPaperSummary,
   PracticeQuestion,
   PracticePaperResult,
   PracticeResult,
@@ -51,14 +54,19 @@ export function answerText(
 export default function ExamPracticePage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { bankId } = useParams();
-  const bank = (location.state as { bank?: PracticeBank } | null)?.bank;
+  const { bankId, paperId } = useParams();
+  const routeState = location.state as { bank?: PracticeBank; paper?: FixedPaperSummary } | null;
+  const bank = routeState?.bank;
+  const paper = routeState?.paper;
   const numericBankId = Number(bankId);
+  const numericPaperId = Number(paperId);
+  const fixedMode = paperId !== undefined;
+  const [fixedPaper, setFixedPaper] = useState<FixedPaperDetail>();
   const [questions, setQuestions] = useState<PracticeQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<AnswerState>({});
   const [results, setResults] = useState<ResultState>({});
-  const [paperResult, setPaperResult] = useState<PracticePaperResult>();
+  const [paperResult, setPaperResult] = useState<PracticePaperResult | FixedPaperResult>();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const request = useRef<{ key: string; signature: string }>();
@@ -73,20 +81,26 @@ export default function ExamPracticePage() {
   const percent = questions.length ? Math.round((completed / questions.length) * 100) : 0;
 
   useEffect(() => {
-    document.title = bank?.name ? `${bank.name} - 考试中心` : "在线答题";
-  }, [bank?.name]);
+    const name = fixedPaper?.name || paper?.name || bank?.name;
+    document.title = name ? `${name} - 考试中心` : "在线答题";
+  }, [bank?.name, fixedPaper?.name, paper?.name]);
 
   useEffect(() => {
-    if (!Number.isInteger(numericBankId) || numericBankId <= 0) {
+    const targetId = fixedMode ? numericPaperId : numericBankId;
+    if (!Number.isInteger(targetId) || targetId <= 0) {
       setLoading(false);
       return;
     }
-    exam
-      .questions(numericBankId)
-      .then((data) => setQuestions(data.items))
+    const load = fixedMode
+      ? exam.paperDetail(numericPaperId).then((data) => {
+          setFixedPaper(data);
+          setQuestions(data.sections.flatMap((section) => section.items.map((item) => ({ ...item.question, suggestedScore: item.score }))));
+        })
+      : exam.questions(numericBankId).then((data) => setQuestions(data.items));
+    load
       .catch(() => message.error("题目加载失败，请返回后重试"))
       .finally(() => setLoading(false));
-  }, [numericBankId]);
+  }, [fixedMode, numericBankId, numericPaperId]);
 
   const selectAnswer = (answer: PracticeAnswer) => {
     if (!current || paperResult) return;
@@ -107,16 +121,23 @@ export default function ExamPracticePage() {
       const signature = JSON.stringify(payload);
       if (!request.current || request.current.signature !== signature)
         request.current = { key: generateUUID(), signature };
-      const result = await exam.submitPaper(
-        numericBankId,
-        payload,
-        request.current.key
-      );
+      const result = fixedMode
+        ? await exam.submitFixedPaper(
+            numericPaperId,
+            fixedPaper!.version,
+            payload,
+            request.current.key
+          )
+        : await exam.submitPaper(numericBankId, payload, request.current.key);
       setPaperResult(result);
       setResults(
         Object.fromEntries(result.items.map((item) => [item.questionId, item]))
       );
-      message.success(`自动阅卷完成，得分 ${result.score} 分`);
+      message.success(
+        "passed" in result
+          ? `交卷完成，得分 ${result.score} 分，${result.passed ? "已通过" : "未通过"}`
+          : `自动阅卷完成，得分 ${result.score} 分`
+      );
     } catch {
       message.error("交卷或自动阅卷失败，请检查网络后重试");
     } finally {
@@ -167,7 +188,7 @@ export default function ExamPracticePage() {
   if (!current) {
     return (
       <main className={styles.emptyPage}>
-        <Empty description="该题库暂时没有可练习的题目" />
+        <Empty description={fixedMode ? "该试卷暂时无法作答" : "该题库暂时没有可练习的题目"} />
         <Button type="primary" onClick={() => navigate("/exam")}>
           返回考试中心
         </Button>
@@ -180,9 +201,9 @@ export default function ExamPracticePage() {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Button type="text" icon={<ArrowLeftOutlined />} onClick={leave}>
-            退出练习
+            {fixedMode ? "退出考试" : "退出练习"}
           </Button>
-          <div className={styles.title}>{bank?.name || "题库练习"}</div>
+          <div className={styles.title}>{fixedPaper?.name || paper?.name || bank?.name || (fixedMode ? "正式试卷" : "题库练习")}</div>
           <div className={styles.progressSummary}>
             已完成 <strong>{completed}</strong> / {questions.length}
           </div>
@@ -315,7 +336,9 @@ export default function ExamPracticePage() {
           <h2>答题卡</h2>
           {paperResult && (
             <div className={styles.cardTip}>
-              自动阅卷得分：{paperResult.score} / {paperResult.maxScore}，答对 {paperResult.correctCount} / {paperResult.questionCount} 题
+              {"passed" in paperResult
+                ? `${paperResult.passed ? "已通过" : "未通过"}：${paperResult.score} / ${paperResult.maxScore} 分（及格线 ${paperResult.passScore} 分）`
+                : `自动阅卷得分：${paperResult.score} / ${paperResult.maxScore}，答对 ${paperResult.correctCount} / ${paperResult.questionCount} 题`}
             </div>
           )}
           <div className={styles.legend}>

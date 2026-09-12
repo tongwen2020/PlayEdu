@@ -18,6 +18,7 @@ package xyz.eleadinedu.common.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import xyz.eleadinedu.common.domain.User;
 import xyz.eleadinedu.common.exception.NotFoundException;
 import xyz.eleadinedu.common.exception.ServiceException;
@@ -32,6 +33,10 @@ import xyz.eleadinedu.common.types.paginate.UserPaginateFilter;
 public interface UserService extends IService<User> {
     boolean emailIsExists(String email);
 
+    boolean loginIdentifierIsUsedByOther(String identifier, Integer excludedUserId);
+
+    Set<String> existingLoginIdentifiers(List<String> identifiers);
+
     PaginationResult<User> paginate(int page, int size, UserPaginateFilter filter);
 
     List<String> existsEmailsByEmails(List<String> emails);
@@ -44,7 +49,10 @@ public interface UserService extends IService<User> {
 
     User find(String email);
 
+    User findByLoginIdentifier(String identifier);
+
     User createWithDepIds(
+            String username,
             String email,
             String name,
             Integer avatar,
@@ -54,6 +62,7 @@ public interface UserService extends IService<User> {
 
     User updateWithDepIds(
             User user,
+            String username,
             String email,
             String name,
             Integer avatar,

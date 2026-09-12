@@ -43,7 +43,8 @@ public class QuestionBankMethodFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         if ((path.startsWith("/backend/v1/question-bank/")
                         || path.startsWith("/api/v1/question-bank/")
-                        || path.startsWith("/backend/v1/exam-paper/"))
+                        || path.startsWith("/backend/v1/exam-paper/")
+                        || path.startsWith("/api/v1/exam-paper/"))
                 && !request.getMethod().equals("POST")
                 && !request.getMethod().equals("OPTIONS")) {
             response.setStatus(405);

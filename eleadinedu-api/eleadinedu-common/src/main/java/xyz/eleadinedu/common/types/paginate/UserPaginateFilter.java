@@ -28,6 +28,7 @@ public class UserPaginateFilter {
 
     private String name;
     private String email;
+    private String username;
     private String idCard;
     private Integer isActive;
     private Integer isLock;

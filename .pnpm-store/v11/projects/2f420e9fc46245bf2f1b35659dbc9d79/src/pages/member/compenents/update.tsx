@@ -62,6 +62,7 @@ export const MemberUpdate: React.FC<PropInterface> = ({
       let user = res.data.user;
       setResourceUrl(res.data.resource_url);
       form.setFieldsValue({
+        username: user.username,
         email: user.email,
         name: user.name,
         avatar: user.avatar,
@@ -119,6 +120,7 @@ export const MemberUpdate: React.FC<PropInterface> = ({
     user
       .updateUser(
         id,
+        values.username,
         values.email,
         values.name,
         values.avatar,
@@ -205,6 +207,21 @@ export const MemberUpdate: React.FC<PropInterface> = ({
                   allowClear
                   style={{ width: 274 }}
                   placeholder="请填写学员姓名"
+                />
+              </Form.Item>
+              <Form.Item
+                label="登录账号"
+                name="username"
+                rules={[
+                  { required: true, message: "请输入登录账号!" },
+                  { min: 3, max: 64, message: "登录账号长度应为3-64个字符!" },
+                ]}
+              >
+                <Input
+                  autoComplete="off"
+                  style={{ width: 274 }}
+                  allowClear
+                  placeholder="请输入学员登录账号"
                 />
               </Form.Item>
               <Form.Item

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ConfigProvider } from "antd";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -22,10 +22,15 @@ vi.mock("../../api", () => ({
     history: vi.fn(),
     submit: vi.fn(),
     submitPaper: vi.fn(),
+    papers: vi.fn(),
+    paperDetail: vi.fn(),
+    submitFixedPaper: vi.fn(),
   },
 }));
 
 const mockedExam = vi.mocked(exam);
+
+afterEach(cleanup);
 
 function renderPage(node: React.ReactNode, path = "/exam") {
   return render(
@@ -38,12 +43,19 @@ function renderPage(node: React.ReactNode, path = "/exam") {
 describe("考试中心页面", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockedExam.papers.mockResolvedValue({ items: [], total: 0, page: 1, size: 100 });
   });
 
   it("展示开放题库，并可切换查看我的作答记录", async () => {
     mockedExam.banks.mockResolvedValue([
       { id: 8, name: "信息安全基础", description: "安全意识必修练习", questionCount: 12 },
     ]);
+    mockedExam.papers.mockResolvedValue({
+      items: [{ id: 6, code: "P-6", name: "安全正式考试", description: "", version: 1, questionCount: 10, totalScore: 100, passScore: 90, requiresManualGrading: false }],
+      total: 1,
+      page: 1,
+      size: 100,
+    });
     mockedExam.history.mockResolvedValue({
       items: [
         {
@@ -63,6 +75,9 @@ describe("考试中心页面", () => {
 
     renderPage(<ExamCenterPage />);
 
+    expect(await screen.findByText("安全正式考试")).toBeInTheDocument();
+    expect(screen.getByText("及格 90 分")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("tab", { name: "开放题库" }));
     expect(await screen.findByText("信息安全基础")).toBeInTheDocument();
     expect(screen.getByText("12 道题")).toBeInTheDocument();
 
@@ -138,5 +153,35 @@ describe("在线答题页面", () => {
         expect.stringMatching(/^[a-f0-9-]{36}$/)
       )
     );
-  });
+  }, 15000);
+
+  it("正式试卷交卷后展示及格线和通过结果", async () => {
+    const question = {
+      id: 31, bankId: 8, code: "P-001", type: "true_false" as const,
+      difficulty: "easy" as const, stem: "必须遵守安全规程。", options: [],
+      suggestedScore: 10, tags: [], version: 1,
+    };
+    mockedExam.paperDetail.mockResolvedValue({
+      id: 6, code: "P-6", name: "安全正式考试", description: "", version: 1,
+      questionCount: 1, totalScore: 10, passScore: 9, requiresManualGrading: false,
+      sections: [{ title: "判断题", description: "", position: 0, shuffleQuestions: false,
+        items: [{ questionId: 31, questionVersion: 1, score: 10, position: 0, question }] }],
+    });
+    mockedExam.submitFixedPaper.mockResolvedValue({
+      id: 100, paperId: 6, version: 1, score: 10, maxScore: 10,
+      passScore: 9, passed: true, questionCount: 1, correctCount: 1,
+      submittedAt: "2026-09-11T09:00:00",
+      items: [{ id: 100, questionId: 31, score: 10, maxScore: 10, result: "correct",
+        standardAnswer: { value: true }, analysis: "应始终遵守安全规程。", version: 1 }],
+    });
+    renderPage(
+      <Routes><Route path="/exam/paper/:paperId" element={<ExamPracticePage />} /></Routes>,
+      "/exam/paper/6"
+    );
+    expect(await screen.findByText("必须遵守安全规程。")).toBeInTheDocument();
+    await userEvent.click(screen.getByText("正确"));
+    await userEvent.click(screen.getByRole("button", { name: "提交试卷" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认交卷" }));
+    expect(await screen.findByText(/已通过：10 \/ 10 分（及格线 9 分）/)).toBeInTheDocument();
+  }, 15000);
 });

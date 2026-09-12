@@ -110,6 +110,10 @@ const routes: RouteObject[] = [
             element: <PrivateRoute Component={<ExamPracticePage />} />,
           },
           {
+            path: "/exam/paper/:paperId",
+            element: <PrivateRoute Component={<ExamPracticePage />} />,
+          },
+          {
             path: "/error",
             element: <ErrorPage />,
           },

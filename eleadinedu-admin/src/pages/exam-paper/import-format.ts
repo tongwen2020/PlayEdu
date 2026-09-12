@@ -14,10 +14,11 @@ export function parsePaperImport(text: string, categories: PaperCategory[]): Pap
     if (paper.description != null && (typeof paper.description !== "string" || paper.description.length > 1000)) fail("说明不超过 1000 字");
     if (!Array.isArray(paper.tags) || paper.tags.length > 20 || paper.tags.some((tag: unknown) => typeof tag !== "string" || !tag.trim() || tag.length > 40)) fail("标签格式不正确");
     if (!Array.isArray(paper.sections) || paper.sections.length > 50) fail("大题必须为数组且最多 50 个");
+    if (typeof paper.passScore !== "number" || paper.passScore < 0 || paper.passScore > 1000000 || Math.abs(paper.passScore * 100 - Math.round(paper.passScore * 100)) > 0.000001) fail("通过分数须为 0–1000000 之间、最多两位小数");
     if (paper.categoryId != null && !categories.some(category => category.id === paper.categoryId)) fail("分类不存在，请将 categoryId 改为当前试卷分类 ID 或 null");
     let questionCount = 0;
     const ids = new Set<number>();
-    const sections = paper.sections.map((section: any, sectionIndex: number) => {
+    const sections: PaperInput["sections"] = paper.sections.map((section: any, sectionIndex: number) => {
       if (!section || typeof section.title !== "string" || !section.title.trim() || section.title.length > 100) fail(`第 ${sectionIndex + 1} 大题标题不正确`);
       if (!Array.isArray(section.items) || section.items.length > 500) fail(`第 ${sectionIndex + 1} 大题试题格式不正确`);
       questionCount += section.items.length;
@@ -30,6 +31,8 @@ export function parsePaperImport(text: string, categories: PaperCategory[]): Pap
       return { title: section.title, description: typeof section.description === "string" ? section.description : "", position: sectionIndex, shuffleQuestions: Boolean(section.shuffleQuestions), items };
     });
     if (questionCount > 500) fail("整卷最多 500 道题");
-    return { code: paper.code, name: paper.name, description: paper.description || "", categoryId: paper.categoryId ?? null, tags: paper.tags, sections };
+    const totalScore = sections.reduce((sum, section) => sum + section.items.reduce((value, item) => value + item.score, 0), 0);
+    if (paper.passScore > totalScore) fail("通过分数不能超过试卷总分");
+    return { code: paper.code, name: paper.name, description: paper.description || "", categoryId: paper.categoryId ?? null, passScore: paper.passScore, tags: paper.tags, sections };
   });
 }

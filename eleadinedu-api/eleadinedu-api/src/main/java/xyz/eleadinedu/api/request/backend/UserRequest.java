@@ -30,6 +30,10 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class UserRequest {
 
+    @NotBlank(message = "请输入登录账号")
+    @Length(min = 3, max = 64, message = "登录账号长度在3-64个字符之间")
+    private String username;
+
     @NotBlank(message = "请输入邮箱")
     @Email(message = "请输入正确的邮箱")
     private String email;

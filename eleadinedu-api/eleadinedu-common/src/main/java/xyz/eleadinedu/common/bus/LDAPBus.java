@@ -630,7 +630,7 @@ public class LDAPBus {
 
         if (ldapUser == null) {
             // 检测localUserEmail是否存在
-            if (userService.find(localUserEmail) != null) {
+            if (userService.findByLoginIdentifier(localUserEmail) != null) {
                 log.info("LDAP-用户同步-email重复|ctx=[email:{}]", localUserEmail);
                 return null;
             }
@@ -641,6 +641,7 @@ public class LDAPBus {
             // 创建本地user
             user =
                     userService.createWithDepIds(
+                            localUserEmail,
                             localUserEmail,
                             ldapUserName,
                             defaultAvatar,
@@ -670,6 +671,7 @@ public class LDAPBus {
                 user =
                         userService.createWithDepIds(
                                 localUserEmail,
+                                localUserEmail,
                                 ldapUserName,
                                 defaultAvatar,
                                 HelperUtil.randomString(10),
@@ -680,7 +682,7 @@ public class LDAPBus {
             // 账号修改[账号有可能是email也有可能是uid]
             if (!localUserEmail.equals(user.getEmail())) {
                 // 检测localUserEmail是否存在
-                if (userService.find(localUserEmail) != null) {
+                if (userService.findByLoginIdentifier(localUserEmail) != null) {
                     localUserEmail = HelperUtil.randomString(5) + "_" + localUserEmail;
                 }
                 userService.updateEmail(user.getId(), localUserEmail);

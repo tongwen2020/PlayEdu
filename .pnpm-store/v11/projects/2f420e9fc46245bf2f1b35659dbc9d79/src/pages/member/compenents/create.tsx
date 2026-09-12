@@ -45,6 +45,7 @@ export const MemberCreate: React.FC<PropInterface> = ({
 
   useEffect(() => {
     form.setFieldsValue({
+      username: "",
       email: "",
       name: "",
       password: "",
@@ -106,6 +107,7 @@ export const MemberCreate: React.FC<PropInterface> = ({
     setLoading(true);
     user
       .storeUser(
+        values.username,
         values.email,
         values.name,
         values.avatar,
@@ -187,6 +189,21 @@ export const MemberCreate: React.FC<PropInterface> = ({
                 rules={[{ required: true, message: "请输入学员姓名!" }]}
               >
                 <Input style={{ width: 274 }} placeholder="请填写学员姓名" />
+              </Form.Item>
+              <Form.Item
+                label="登录账号"
+                name="username"
+                rules={[
+                  { required: true, message: "请输入登录账号!" },
+                  { min: 3, max: 64, message: "登录账号长度应为3-64个字符!" },
+                ]}
+              >
+                <Input
+                  autoComplete="off"
+                  allowClear
+                  style={{ width: 274 }}
+                  placeholder="请输入学员登录账号"
+                />
               </Form.Item>
               <Form.Item
                 label="登录邮箱"

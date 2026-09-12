@@ -42,6 +42,9 @@ public class User implements Serializable {
     /** 邮件 */
     private String email;
 
+    /** 登录账号 */
+    private String username;
+
     /** 真实姓名 */
     private String name;
 
@@ -134,6 +137,9 @@ public class User implements Serializable {
                 && (this.getEmail() == null
                         ? other.getEmail() == null
                         : this.getEmail().equals(other.getEmail()))
+                && (this.getUsername() == null
+                        ? other.getUsername() == null
+                        : this.getUsername().equals(other.getUsername()))
                 && (this.getName() == null
                         ? other.getName() == null
                         : this.getName().equals(other.getName()))
@@ -190,6 +196,7 @@ public class User implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getEmail() == null) ? 0 : getEmail().hashCode());
+        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getAvatar() == null) ? 0 : getAvatar().hashCode());
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
@@ -218,6 +225,7 @@ public class User implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", email=").append(email);
+        sb.append(", username=").append(username);
         sb.append(", name=").append(name);
         sb.append(", avatar=").append(avatar);
         sb.append(", password=").append(password);

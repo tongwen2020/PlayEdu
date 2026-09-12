@@ -9,7 +9,7 @@ export interface PaperItem { questionId: number; questionVersion: number; score:
 export interface PaperSection { title: string; description: string; position: number; shuffleQuestions: boolean; items: PaperItem[] }
 export interface PaperInput {
   id?: number; revision?: number; code: string; name: string; description: string;
-  categoryId?: number | null; tags: string[]; sections: PaperSection[];
+  categoryId?: number | null; passScore: number; tags: string[]; sections: PaperSection[];
 }
 export interface Paper extends PaperInput {
   id: number; ownerId: number; mode: "fixed"; status: PaperStatus; revision: number;
@@ -19,7 +19,7 @@ export interface Paper extends PaperInput {
 }
 export interface PaperQuery { categoryId?: number; keyword?: string; status?: string; tag?: string; page: number; size: number }
 export interface PaperVersion {
-  version: number; questionCount: number; totalScore: number; objectiveScore: number;
+  version: number; questionCount: number; totalScore: number; passScore: number; objectiveScore: number;
   subjectiveScore: number; requiresManualGrading: boolean; createdBy: number; createdAt: string;
 }
 export interface ValidationResult {

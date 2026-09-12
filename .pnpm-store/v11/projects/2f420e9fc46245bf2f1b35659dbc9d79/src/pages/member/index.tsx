@@ -36,6 +36,7 @@ interface DataType {
   created_at?: string;
   credit1?: number;
   email: string;
+  username: string;
   id_card?: string;
   is_active?: number;
   is_lock?: number;
@@ -52,6 +53,7 @@ interface LocalSearchParamsInterface {
   size?: number;
   nickname?: string;
   email?: string;
+  username?: string;
 }
 
 const MemberPage = () => {
@@ -62,11 +64,13 @@ const MemberPage = () => {
     size: "10",
     nickname: "",
     email: "",
+    username: "",
   });
   const page = parseInt(searchParams.get("page") || "1");
   const size = parseInt(searchParams.get("size") || "10");
   const nickname = searchParams.get("nickname");
   const email = searchParams.get("email");
+  const username = searchParams.get("username");
 
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<DataType[]>([]);
@@ -135,6 +139,12 @@ const MemberPage = () => {
             })}
         </div>
       ),
+    },
+    {
+      title: "登录账号",
+      width: 160,
+      dataIndex: "username",
+      render: (username: string) => <span>{username}</span>,
     },
     {
       title: "登录邮箱",
@@ -249,6 +259,7 @@ const MemberPage = () => {
     user
       .userList(page, size, {
         name: nickname,
+        username: username,
         email: email,
         dep_ids: dep_ids.join(","),
       })
@@ -268,6 +279,7 @@ const MemberPage = () => {
       size: 10,
       nickname: "",
       email: "",
+      username: "",
     });
     setList([]);
     setRefresh(!refresh);
@@ -297,6 +309,9 @@ const MemberPage = () => {
         }
         if (typeof params.email !== "undefined") {
           prev.set("email", params.email);
+        }
+        if (typeof params.username !== "undefined") {
+          prev.set("username", params.username);
         }
         if (typeof params.page !== "undefined") {
           prev.set("page", params.page + "");
@@ -404,6 +419,20 @@ const MemberPage = () => {
               )} */}
             </div>
             <div className="d-flex">
+              <div className="d-flex mr-24">
+                <Typography.Text>账号：</Typography.Text>
+                <Input
+                  value={username || ""}
+                  onChange={(e) => {
+                    resetLocalSearchParams({
+                      username: e.target.value,
+                    });
+                  }}
+                  style={{ width: 160 }}
+                  placeholder="请输入登录账号"
+                  allowClear
+                />
+              </div>
               <div className="d-flex mr-24">
                 <Typography.Text>姓名：</Typography.Text>
                 <Input

@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
+import xyz.eleadinedu.exam.QuestionBankTypes.PaperAnswerInput;
 
 /** Inputs for fixed paper composition and immutable publication. */
 public final class ExamPaperTypes {
@@ -53,6 +54,8 @@ public final class ExamPaperTypes {
             @NotBlank @Size(max = 100) String name,
             @NotNull @Size(max = 1000) String description,
             @Positive Long categoryId,
+            @NotNull @DecimalMin("0.00") @DecimalMax("1000000") @Digits(integer = 7, fraction = 2)
+                    BigDecimal passScore,
             @NotNull @Size(max = 20) List<@NotBlank @Size(max = 40) String> tags,
             @NotNull @Size(max = 50) List<@NotNull @Valid PaperSectionInput> sections) {}
 
@@ -81,4 +84,15 @@ public final class ExamPaperTypes {
             @NotBlank @Size(max = 100) String name) {}
 
     public record ImportInput(@NotEmpty @Size(max = 100) List<@NotNull @Valid PaperInput> papers) {}
+
+    public record StudentPaperQuery(
+            @Size(max = 100) String keyword,
+            @Min(1) @Max(100000) int page,
+            @Min(1) @Max(100) int size) {}
+
+    public record StudentSubmitInput(
+            @NotNull @Positive Long paperId,
+            @NotNull @Positive Integer version,
+            @NotNull @Size(max = 500) List<@NotNull @Valid PaperAnswerInput> answers,
+            @NotBlank @Pattern(regexp = "[a-zA-Z0-9_-]{8,64}") String requestKey) {}
 }

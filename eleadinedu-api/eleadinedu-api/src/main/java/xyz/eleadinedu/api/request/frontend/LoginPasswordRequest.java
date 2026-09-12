@@ -15,14 +15,16 @@
  */
 package xyz.eleadinedu.api.request.frontend;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class LoginPasswordRequest {
 
-    @NotBlank(message = "请输入邮箱")
-    private String email;
+    @JsonAlias("email")
+    @NotBlank(message = "请输入账号")
+    private String account;
 
     @NotBlank(message = "请输入密码")
     private String password;

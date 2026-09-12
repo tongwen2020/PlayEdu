@@ -69,24 +69,24 @@ public class LoginController {
             return JsonResponse.error("请使用LDAP登录");
         }
 
-        String email = req.getEmail();
+        String account = req.getAccount().trim();
 
-        User user = userService.find(email);
+        User user = userService.findByLoginIdentifier(account);
         if (user == null) {
-            return JsonResponse.error("邮箱或密码错误");
+            return JsonResponse.error("账号或密码错误");
         }
 
-        loginLimitCache.check(email);
+        loginLimitCache.check(account);
 
         if (!HelperUtil.MD5(req.getPassword() + user.getSalt()).equals(user.getPassword())) {
-            return JsonResponse.error("邮箱或密码错误");
+            return JsonResponse.error("账号或密码错误");
         }
 
         if (user.getIsLock() == 1) {
             return JsonResponse.error("当前学员已锁定无法登录");
         }
 
-        loginLimitCache.destroy(email);
+        loginLimitCache.destroy(account);
 
         return JsonResponse.data(loginBus.tokenByUser(user));
     }

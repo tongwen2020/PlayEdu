@@ -285,7 +285,13 @@ class BackendUserDepartmentHttpTest {
         assertSuccess(created);
         verify(userService)
                 .createWithDepIds(
-                        "new@example.com", "New User", 7, "secret", "ID-1", new Integer[] {3});
+                        "student001",
+                        "new@example.com",
+                        "New User",
+                        7,
+                        "secret",
+                        "ID-1",
+                        new Integer[] {3});
     }
 
     @Test
@@ -310,6 +316,7 @@ class BackendUserDepartmentHttpTest {
         verify(userService)
                 .updateWithDepIds(
                         target,
+                        "student001",
                         "changed@example.com",
                         "New User",
                         7,
@@ -572,6 +579,8 @@ class BackendUserDepartmentHttpTest {
 
     private Map<String, Object> userPayload(String password) {
         return Map.of(
+                "username",
+                "student001",
                 "email",
                 "new@example.com",
                 "name",
@@ -591,6 +600,7 @@ class BackendUserDepartmentHttpTest {
                 "users",
                 List.of(
                         Map.of(
+                                "username", "student001",
                                 "email", "new@example.com",
                                 "name", "New User",
                                 "password", "secret",

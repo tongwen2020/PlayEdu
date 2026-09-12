@@ -95,6 +95,7 @@ public class UserController {
 
         String name = MapUtils.getString(params, "name");
         String email = MapUtils.getString(params, "email");
+        String username = MapUtils.getString(params, "username");
         String idCard = MapUtils.getString(params, "id_card");
         Integer isActive = MapUtils.getInteger(params, "is_active");
         Integer isLock = MapUtils.getInteger(params, "is_lock");
@@ -137,6 +138,7 @@ public class UserController {
                     {
                         setName(name);
                         setEmail(email);
+                        setUsername(username);
                         setIdCard(idCard);
                         setIsActive(isActive);
                         setIsLock(isLock);
@@ -184,15 +186,23 @@ public class UserController {
     @PostMapping("/create")
     @Log(title = "学员-新建", businessType = BusinessTypeConstant.INSERT)
     public JsonResponse store(@RequestBody @Validated UserRequest req) {
-        String email = req.getEmail();
+        String username = req.getUsername().trim();
+        String email = req.getEmail().trim();
+        if (userService.loginIdentifierIsUsedByOther(username, null)) {
+            return JsonResponse.error("登录账号已存在");
+        }
         if (userService.emailIsExists(email)) {
             return JsonResponse.error("邮箱已存在");
+        }
+        if (!username.equals(email) && userService.loginIdentifierIsUsedByOther(email, null)) {
+            return JsonResponse.error("邮箱已被用作其他学员的登录账号");
         }
         String password = req.getPassword();
         if (password.isEmpty()) {
             return JsonResponse.error("请输入密码");
         }
         userService.createWithDepIds(
+                username,
                 email,
                 req.getName(),
                 req.getAvatar(),
@@ -236,13 +246,22 @@ public class UserController {
             throws NotFoundException {
         User user = userService.findOrFail(id);
 
-        String email = req.getEmail();
+        String username = req.getUsername().trim();
+        String email = req.getEmail().trim();
+        if (userService.loginIdentifierIsUsedByOther(username, user.getId())) {
+            return JsonResponse.error("登录账号已存在");
+        }
         if (!email.equals(user.getEmail()) && userService.emailIsExists(email)) {
             return JsonResponse.error("邮箱已存在");
+        }
+        if (!username.equals(email)
+                && userService.loginIdentifierIsUsedByOther(email, user.getId())) {
+            return JsonResponse.error("邮箱已被用作其他学员的登录账号");
         }
 
         userService.updateWithDepIds(
                 user,
+                username,
                 email,
                 req.getName(),
                 req.getAvatar(),
@@ -315,30 +334,41 @@ public class UserController {
             depChainNameMap.put(String.join("-", tmpChainNames), tmpDepItem.getId());
         }
 
-        // 邮箱输入重复检测 || 部门存在检测
-        HashMap<String, Integer> emailRepeat = new HashMap<>();
+        // 登录标识重复检测 || 部门存在检测
+        HashMap<String, Integer> identifierRepeat = new HashMap<>();
         HashMap<String, Integer[]> depMap = new HashMap<>();
-        List<String> emails = new ArrayList<>();
+        List<String> identifiers = new ArrayList<>();
         List<User> insertUsers = new ArrayList<>();
         int i = -1;
 
         for (UserImportRequest.UserItem userItem : users) {
             i++; // 索引值
+            int line = i + startLine;
 
-            if (userItem.getEmail() == null || userItem.getEmail().trim().isEmpty()) {
-                errorLines.add(new String[] {"第" + (i + startLine) + "行", "未输入邮箱账号"});
+            String username = userItem.getUsername() == null ? "" : userItem.getUsername().trim();
+            if (username.isEmpty()) {
+                errorLines.add(new String[] {"第" + line + "行", "未输入登录账号"});
+            } else if (username.length() < 3 || username.length() > 64) {
+                errorLines.add(new String[] {"第" + line + "行", "登录账号长度应为3-64个字符"});
             } else {
-                // 邮箱重复判断
-                Integer repeatLine = emailRepeat.get(userItem.getEmail());
+                Integer repeatLine = identifierRepeat.putIfAbsent(username, line);
                 if (repeatLine != null) {
                     errorLines.add(
-                            new String[] {
-                                "第" + (i + startLine) + "行", "与第" + repeatLine + "行邮箱重复"
-                            });
-                } else {
-                    emailRepeat.put(userItem.getEmail(), i + startLine);
+                            new String[] {"第" + line + "行", "登录账号与第" + repeatLine + "行重复"});
                 }
-                emails.add(userItem.getEmail());
+                identifiers.add(username);
+            }
+
+            if (userItem.getEmail() == null || userItem.getEmail().trim().isEmpty()) {
+                errorLines.add(new String[] {"第" + line + "行", "未输入邮箱"});
+            } else {
+                String email = userItem.getEmail().trim();
+                Integer repeatLine = identifierRepeat.putIfAbsent(email, line);
+                if (repeatLine != null && repeatLine != line) {
+                    errorLines.add(
+                            new String[] {"第" + line + "行", "邮箱与第" + repeatLine + "行登录标识重复"});
+                }
+                identifiers.add(email);
             }
 
             // 部门数据检测
@@ -360,7 +390,8 @@ public class UserController {
                     }
                     tmpDepIds[j] = tmpDepId;
                 }
-                depMap.put(userItem.getEmail(), tmpDepIds);
+                depMap.put(
+                        userItem.getEmail() == null ? "" : userItem.getEmail().trim(), tmpDepIds);
             }
 
             // 姓名为空检测
@@ -378,7 +409,8 @@ public class UserController {
             // 待插入数据
             User tmpInsertUser = new User();
             String tmpSalt = HelperUtil.randomString(6);
-            tmpInsertUser.setEmail(userItem.getEmail());
+            tmpInsertUser.setUsername(username);
+            tmpInsertUser.setEmail(userItem.getEmail() == null ? "" : userItem.getEmail().trim());
             tmpInsertUser.setPassword(HelperUtil.MD5(tmpPassword + tmpSalt));
             tmpInsertUser.setSalt(tmpSalt);
             tmpInsertUser.setName(tmpName);
@@ -396,11 +428,14 @@ public class UserController {
             return JsonResponse.error("导入数据有误", errorLines);
         }
 
-        // 邮箱是否注册检测
-        List<String> existsEmails = userService.existsEmailsByEmails(emails);
-        if (!existsEmails.isEmpty()) {
-            for (String tmpEmail : existsEmails) {
-                errorLines.add(new String[] {"第" + emailRepeat.get(tmpEmail) + "行", "邮箱已注册"});
+        // 账号或邮箱是否已被用作登录标识
+        Set<String> existingIdentifiers = userService.existingLoginIdentifiers(identifiers);
+        if (!existingIdentifiers.isEmpty()) {
+            for (String identifier : existingIdentifiers) {
+                errorLines.add(
+                        new String[] {
+                            "第" + identifierRepeat.get(identifier) + "行", "登录账号或邮箱已存在"
+                        });
             }
         }
         if (errorLines.size() > 1) {

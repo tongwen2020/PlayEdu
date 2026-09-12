@@ -65,6 +65,43 @@ export interface PracticePaperResult {
   items: Array<PracticeResult & { questionId: number }>;
 }
 
+export interface FixedPaperSummary {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+  version: number;
+  questionCount: number;
+  totalScore: number;
+  passScore: number;
+  requiresManualGrading: boolean;
+}
+
+export interface FixedPaperItem {
+  questionId: number;
+  questionVersion: number;
+  score: number;
+  position: number;
+  question: PracticeQuestion;
+}
+
+export interface FixedPaperDetail extends FixedPaperSummary {
+  sections: Array<{
+    title: string;
+    description: string;
+    position: number;
+    shuffleQuestions: boolean;
+    items: FixedPaperItem[];
+  }>;
+}
+
+export interface FixedPaperResult extends Omit<PracticePaperResult, "bankId"> {
+  paperId: number;
+  version: number;
+  passScore: number;
+  passed: boolean;
+}
+
 export interface PracticeHistoryItem {
   id: number;
   questionId: number;
@@ -84,6 +121,13 @@ interface PageResult<T> {
 
 async function post<T>(path: string, body: object = {}): Promise<T> {
   const result = (await client.post(`/api/v1/question-bank/${path}`, body)) as {
+    data: T;
+  };
+  return result.data;
+}
+
+async function paperPost<T>(path: string, body: object = {}): Promise<T> {
+  const result = (await client.post(`/api/v1/exam-paper/${path}`, body)) as {
     data: T;
   };
   return result.data;
@@ -120,3 +164,22 @@ export const submitPaper = (
 
 export const history = (page = 1, size = 10) =>
   post<PageResult<PracticeHistoryItem>>("practice/history", { page, size });
+
+export const papers = (page = 1, size = 100, keyword?: string) =>
+  paperPost<PageResult<FixedPaperSummary>>("papers/list", { page, size, keyword });
+
+export const paperDetail = (id: number) =>
+  paperPost<FixedPaperDetail>("papers/detail", { id });
+
+export const submitFixedPaper = (
+  paperId: number,
+  version: number,
+  answers: Array<{ questionId: number; version: number; answer: PracticeAnswer }>,
+  requestKey: string
+) =>
+  paperPost<FixedPaperResult>("papers/submit", {
+    paperId,
+    version,
+    answers,
+    requestKey,
+  });

@@ -28,6 +28,10 @@ import xyz.eleadinedu.common.bus.BackendBus;
 import xyz.eleadinedu.common.context.BCtx;
 import xyz.eleadinedu.common.exception.ServiceException;
 import xyz.eleadinedu.exam.ExamPaperTypes.*;
+import xyz.eleadinedu.exam.QuestionBankTypes.Answer;
+import xyz.eleadinedu.exam.QuestionBankTypes.Grade;
+import xyz.eleadinedu.exam.QuestionBankTypes.PaperAnswerInput;
+import xyz.eleadinedu.exam.QuestionBankTypes.QuestionInput;
 
 /** Fixed-paper drafts and immutable publication snapshots. */
 @Service
@@ -35,11 +39,14 @@ public class ExamPaperService {
     private final JdbcTemplate db;
     private final ObjectMapper json;
     private final BackendBus backendBus;
+    private final QuestionGrader grader;
 
-    public ExamPaperService(JdbcTemplate db, ObjectMapper json, BackendBus backendBus) {
+    public ExamPaperService(
+            JdbcTemplate db, ObjectMapper json, BackendBus backendBus, QuestionGrader grader) {
         this.db = db;
         this.json = json;
         this.backendBus = backendBus;
+        this.grader = grader;
     }
 
     private void require(boolean condition, String message) {
@@ -211,6 +218,7 @@ public class ExamPaperService {
             }
         }
         require(total.compareTo(new BigDecimal("1000000")) <= 0, "试卷总分不能超过 1000000");
+        require(input.passScore().compareTo(total) <= 0, "通过分数不能超过试卷总分");
     }
 
     private Map<String, Object> question(long questionId, int version, long paperOwner) {
@@ -246,12 +254,13 @@ public class ExamPaperService {
             id =
                     insert(
                             "INSERT INTO exam_papers(owner_id,category_id,code,name,description,"
-                                    + "tags_json) VALUES(?,?,?,?,?,?)",
+                                    + "pass_score,tags_json) VALUES(?,?,?,?,?,?,?)",
                             ownerId,
                             input.categoryId(),
                             input.code(),
                             input.name().trim(),
                             input.description(),
+                            input.passScore(),
                             encode(input.tags()));
         } else {
             Map<String, Object> old = managedPaper(input.id(), true);
@@ -264,12 +273,13 @@ public class ExamPaperService {
             validateCategoryOwner(input.categoryId(), ownerId);
             db.update(
                     "UPDATE exam_papers SET"
-                        + " category_id=?,code=?,name=?,description=?,tags_json=?,status='draft',revision=revision+1,updated_at=CURRENT_TIMESTAMP"
+                        + " category_id=?,code=?,name=?,description=?,pass_score=?,tags_json=?,status='draft',revision=revision+1,updated_at=CURRENT_TIMESTAMP"
                         + " WHERE id=?",
                     input.categoryId(),
                     input.code(),
                     input.name().trim(),
                     input.description(),
+                    input.passScore(),
                     encode(input.tags()),
                     id);
             db.update("DELETE FROM exam_paper_draft_items WHERE paper_id=?", id);
@@ -350,6 +360,7 @@ public class ExamPaperService {
         result.put("code", p.get("code"));
         result.put("name", p.get("name"));
         result.put("description", p.get("description"));
+        result.put("passScore", p.get("pass_score"));
         try {
             result.put("tags", json.readValue((String) p.get("tags_json"), List.class));
         } catch (JsonProcessingException e) {
@@ -396,11 +407,13 @@ public class ExamPaperService {
         if (input.version() == null) return draft(input.id(), p);
         Map<String, Object> version =
                 one(
-                        "SELECT content_json FROM exam_paper_versions WHERE paper_id=? AND"
-                                + " version_no=?",
+                        "SELECT content_json,pass_score FROM exam_paper_versions WHERE paper_id=?"
+                                + " AND version_no=?",
                         input.id(),
                         input.version());
-        return decode((String) version.get("content_json"));
+        Map<String, Object> content = decode((String) version.get("content_json"));
+        content.putIfAbsent("passScore", version.get("pass_score"));
+        return content;
     }
 
     public Map<String, Object> validate(long id) {
@@ -456,13 +469,14 @@ public class ExamPaperService {
         Map<String, Object> sums = (Map<String, Object>) validation.get("summary");
         insert(
                 "INSERT INTO exam_paper_versions(paper_id,version_no,content_json,question_count,"
-                    + "total_score,objective_score,subjective_score,requires_manual_grading,created_by)"
-                    + " VALUES(?,?,?,?,?,?,?,?,?)",
+                    + "total_score,pass_score,objective_score,subjective_score,requires_manual_grading,created_by)"
+                    + " VALUES(?,?,?,?,?,?,?,?,?,?)",
                 input.id(),
                 version,
                 encode(snapshot),
                 sums.get("questionCount"),
                 sums.get("totalScore"),
+                snapshot.get("passScore"),
                 sums.get("objectiveScore"),
                 sums.get("subjectiveScore"),
                 sums.get("requiresManualGrading"),
@@ -499,14 +513,15 @@ public class ExamPaperService {
     public List<Map<String, Object>> versions(long id) {
         managedPaper(id, false);
         return db.query(
-                "SELECT version_no,question_count,total_score,objective_score,subjective_score,"
-                        + "requires_manual_grading,created_by,created_at FROM exam_paper_versions"
-                        + " WHERE paper_id=? ORDER BY version_no DESC",
+                "SELECT"
+                    + " version_no,question_count,total_score,pass_score,objective_score,subjective_score,requires_manual_grading,created_by,created_at"
+                    + " FROM exam_paper_versions WHERE paper_id=? ORDER BY version_no DESC",
                 (rs, index) -> {
                     Map<String, Object> value = new LinkedHashMap<>();
                     value.put("version", rs.getInt("version_no"));
                     value.put("questionCount", rs.getInt("question_count"));
                     value.put("totalScore", rs.getBigDecimal("total_score"));
+                    value.put("passScore", rs.getBigDecimal("pass_score"));
                     value.put("objectiveScore", rs.getBigDecimal("objective_score"));
                     value.put("subjectiveScore", rs.getBigDecimal("subjective_score"));
                     value.put("requiresManualGrading", rs.getBoolean("requires_manual_grading"));
@@ -560,6 +575,7 @@ public class ExamPaperService {
                         number(source, "owner_id") == BCtx.getId()
                                 ? (Long) source.get("category_id")
                                 : null,
+                        decimal(content.getOrDefault("passScore", BigDecimal.ZERO)),
                         tags,
                         sections);
         Map<String, Object> result = save(copy);
@@ -606,6 +622,213 @@ public class ExamPaperService {
             }
         }
         return Map.of("count", ids.size(), "ids", ids);
+    }
+
+    /** Published fixed papers visible to authenticated learners. */
+    public Map<String, Object> studentPapers(StudentPaperQuery query) {
+        String keyword = query.keyword() == null ? "" : query.keyword().trim();
+        String filter = keyword.isEmpty() ? "" : " AND (LOCATE(?,p.name)>0 OR LOCATE(?,p.code)>0)";
+        List<Object> args = new ArrayList<>();
+        if (!keyword.isEmpty()) {
+            args.add(keyword);
+            args.add(keyword);
+        }
+        long total =
+                db.queryForObject(
+                        "SELECT COUNT(*) FROM exam_papers p WHERE p.status='published'"
+                                + " AND p.current_version>0"
+                                + filter,
+                        Long.class,
+                        args.toArray());
+        args.add(query.size());
+        args.add((query.page() - 1) * query.size());
+        List<Map<String, Object>> items =
+                db.query(
+                        "SELECT p.id,p.code,p.name,p.description,p.current_version,"
+                            + "v.question_count,v.total_score,v.pass_score,v.requires_manual_grading"
+                            + " FROM exam_papers p JOIN exam_paper_versions v ON v.paper_id=p.id"
+                            + " AND v.version_no=p.current_version WHERE p.status='published'"
+                                + filter
+                                + " ORDER BY p.updated_at DESC,p.id DESC LIMIT ? OFFSET ?",
+                        (rs, index) -> {
+                            Map<String, Object> item = new LinkedHashMap<>();
+                            item.put("id", rs.getLong("id"));
+                            item.put("code", rs.getString("code"));
+                            item.put("name", rs.getString("name"));
+                            item.put("description", rs.getString("description"));
+                            item.put("version", rs.getInt("current_version"));
+                            item.put("questionCount", rs.getInt("question_count"));
+                            item.put("totalScore", rs.getBigDecimal("total_score"));
+                            item.put("passScore", rs.getBigDecimal("pass_score"));
+                            item.put(
+                                    "requiresManualGrading",
+                                    rs.getBoolean("requires_manual_grading"));
+                            return item;
+                        },
+                        args.toArray());
+        return Map.of("items", items, "total", total, "page", query.page(), "size", query.size());
+    }
+
+    private Map<String, Object> publishedVersion(long paperId, int version, boolean lock) {
+        Map<String, Object> paper =
+                one(
+                        "SELECT id,status,current_version FROM exam_papers WHERE id=?"
+                                + (lock ? " FOR UPDATE" : ""),
+                        paperId);
+        require(
+                "published".equals(paper.get("status"))
+                        && number(paper, "current_version") == version,
+                "试卷未发布或版本已更新，请返回考试中心刷新");
+        return one(
+                "SELECT * FROM exam_paper_versions WHERE paper_id=? AND version_no=?",
+                paperId,
+                version);
+    }
+
+    /** Current immutable paper snapshot with answers and grading rules removed. */
+    public Map<String, Object> studentDetail(long paperId) {
+        Map<String, Object> paper =
+                one("SELECT status,current_version FROM exam_papers WHERE id=?", paperId);
+        require("published".equals(paper.get("status")), "试卷未发布或已停用");
+        int version = ((Number) paper.get("current_version")).intValue();
+        Map<String, Object> row = publishedVersion(paperId, version, false);
+        require(!Boolean.TRUE.equals(row.get("requires_manual_grading")), "该试卷包含主观题，暂不支持在线交卷");
+        Map<String, Object> content = decode((String) row.get("content_json"));
+        content.remove("ownerId");
+        content.remove("categoryId");
+        content.remove("revision");
+        content.remove("status");
+        content.remove("currentVersion");
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> sections = (List<Map<String, Object>>) content.get("sections");
+        for (Map<String, Object> section : sections) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> items = (List<Map<String, Object>>) section.get("items");
+            for (Map<String, Object> item : items) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> question =
+                        new LinkedHashMap<>((Map<String, Object>) item.get("question"));
+                question.remove("standardAnswer");
+                question.remove("gradingRule");
+                question.remove("analysis");
+                question.put("suggestedScore", item.get("score"));
+                item.put("question", question);
+            }
+        }
+        content.put("version", version);
+        content.put("passScore", row.get("pass_score"));
+        return content;
+    }
+
+    private QuestionInput gradingQuestion(Map<String, Object> item) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> value = new LinkedHashMap<>((Map<String, Object>) item.get("question"));
+        value.remove("version");
+        value.put("expectedVersion", ((Number) item.get("questionVersion")).intValue());
+        value.put("suggestedScore", item.get("score"));
+        return json.convertValue(value, QuestionInput.class);
+    }
+
+    /** Grade and persist one objective fixed-paper submission against its published version. */
+    @Transactional
+    public Map<String, Object> submitStudentPaper(StudentSubmitInput input, int userId) {
+        Map<String, Object> version = publishedVersion(input.paperId(), input.version(), true);
+        require(!Boolean.TRUE.equals(version.get("requires_manual_grading")), "该试卷包含主观题，暂不支持自动交卷");
+        String submittedAnswers = encode(input.answers());
+        List<Map<String, Object>> previous =
+                db.queryForList(
+                        "SELECT * FROM exam_fixed_paper_attempts WHERE user_id=? AND request_key=?"
+                                + " FOR UPDATE",
+                        userId,
+                        input.requestKey());
+        if (!previous.isEmpty()) {
+            Map<String, Object> row = previous.get(0);
+            require(
+                    number(row, "paper_id") == input.paperId()
+                            && number(row, "version_no") == input.version()
+                            && row.get("answers_json").equals(submittedAnswers),
+                    "请求标识已用于其他试卷，请重新提交");
+            return fixedPaperResult(row);
+        }
+
+        Map<Long, PaperAnswerInput> answers = new HashMap<>();
+        for (PaperAnswerInput answer : input.answers())
+            require(answers.put(answer.questionId(), answer) == null, "同一道题不能重复提交");
+        Map<String, Object> snapshot = decode((String) version.get("content_json"));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> sections = (List<Map<String, Object>>) snapshot.get("sections");
+        Set<Long> questionIds = new HashSet<>();
+        BigDecimal score = BigDecimal.ZERO;
+        BigDecimal maxScore = BigDecimal.ZERO;
+        int correctCount = 0;
+        List<Map<String, Object>> gradedItems = new ArrayList<>();
+        for (Map<String, Object> section : sections) {
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> items = (List<Map<String, Object>>) section.get("items");
+            for (Map<String, Object> item : items) {
+                QuestionInput question = gradingQuestion(item);
+                questionIds.add(Objects.requireNonNull(question.id()));
+                PaperAnswerInput submitted = answers.get(question.id());
+                Answer answer =
+                        submitted == null ? new Answer(null, null, null) : submitted.answer();
+                if (submitted != null)
+                    require(
+                            question.expectedVersion().equals(submitted.version()),
+                            "试题版本与试卷不一致，请刷新后重新作答");
+                Grade grade = grader.grade(question, answer);
+                score = score.add(grade.score());
+                maxScore = maxScore.add(grade.maxScore());
+                if ("correct".equals(grade.result())) correctCount++;
+                Map<String, Object> graded = new LinkedHashMap<>();
+                graded.put("questionId", question.id());
+                graded.put("version", question.expectedVersion());
+                graded.put("score", grade.score());
+                graded.put("maxScore", grade.maxScore());
+                graded.put("result", grade.result());
+                graded.put("standardAnswer", question.standardAnswer());
+                graded.put("analysis", question.analysis());
+                gradedItems.add(graded);
+            }
+        }
+        require(!questionIds.isEmpty(), "试卷暂无试题");
+        require(questionIds.containsAll(answers.keySet()), "答案包含不属于当前试卷的试题");
+        BigDecimal passScore = decimal(version.get("pass_score"));
+        boolean passed = score.compareTo(passScore) >= 0;
+        Map<String, Object> grading = new LinkedHashMap<>();
+        grading.put("paperId", input.paperId());
+        grading.put("version", input.version());
+        grading.put("score", score);
+        grading.put("maxScore", maxScore);
+        grading.put("passScore", passScore);
+        grading.put("passed", passed);
+        grading.put("questionCount", questionIds.size());
+        grading.put("correctCount", correctCount);
+        grading.put("items", gradedItems);
+        long id =
+                insert(
+                        "INSERT INTO exam_fixed_paper_attempts(user_id,paper_id,version_no,"
+                            + "answers_json,grading_json,score,max_score,pass_score,passed,question_count,correct_count,request_key)"
+                            + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                        userId,
+                        input.paperId(),
+                        input.version(),
+                        submittedAnswers,
+                        encode(grading),
+                        score,
+                        maxScore,
+                        passScore,
+                        passed,
+                        questionIds.size(),
+                        correctCount,
+                        input.requestKey());
+        return fixedPaperResult(one("SELECT * FROM exam_fixed_paper_attempts WHERE id=?", id));
+    }
+
+    private Map<String, Object> fixedPaperResult(Map<String, Object> row) {
+        Map<String, Object> result = decode((String) row.get("grading_json"));
+        result.put("id", row.get("id"));
+        result.put("submittedAt", row.get("submitted_at"));
+        return result;
     }
 
     public Map<String, Object> list(PaperQuery query) {

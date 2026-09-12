@@ -249,10 +249,12 @@ const ResourceVideosPage = () => {
         setVideoExtra(res.data.videos_extra);
         setAdminUsers(res.data.admin_users);
         setResourceUrl(res.data.resource_url);
-        setLoading(false);
       })
       .catch((err: any) => {
         console.log("错误,", err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 

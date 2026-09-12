@@ -442,6 +442,7 @@ CREATE TABLE IF NOT EXISTS `user_upload_image_logs` (
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `email` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '邮件',
+  `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '登录账号',
   `name` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '真实姓名',
   `avatar` int NOT NULL DEFAULT '0' COMMENT '头像',
   `password` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '密码',
@@ -461,7 +462,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `from_scene` int NOT NULL DEFAULT '0' COMMENT '来源[0:本地,1:企业微信,2:飞书]',
   `deleted` tinyint unsigned DEFAULT '0' COMMENT '删除标志[0:存在,1:删除]',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '学员表';
 
 -- playedu.exam_bank_audit 定义
@@ -610,6 +612,7 @@ CREATE TABLE IF NOT EXISTS `exam_papers` (
   `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷编码',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷名称',
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷说明',
+  `pass_score` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '通过分数',
   `tags_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标签JSON',
   `mode` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'fixed' COMMENT '组卷模式',
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft' COMMENT '状态',
@@ -666,6 +669,7 @@ CREATE TABLE IF NOT EXISTS `exam_paper_versions` (
   `content_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '不可变试卷快照JSON',
   `question_count` int NOT NULL COMMENT '题目数量',
   `total_score` decimal(10,2) NOT NULL COMMENT '总分',
+  `pass_score` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '通过分数',
   `objective_score` decimal(10,2) NOT NULL COMMENT '客观题分值',
   `subjective_score` decimal(10,2) NOT NULL COMMENT '主观题分值',
   `requires_manual_grading` tinyint(1) NOT NULL COMMENT '是否需要人工评分',
@@ -675,3 +679,27 @@ CREATE TABLE IF NOT EXISTS `exam_paper_versions` (
   UNIQUE KEY `uq_exam_paper_version` (`paper_id`,`version_no`),
   CONSTRAINT `fk_exam_paper_version_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '试卷正式版本表';
+
+-- playedu.exam_fixed_paper_attempts 定义
+
+CREATE TABLE IF NOT EXISTS `exam_fixed_paper_attempts` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int NOT NULL COMMENT '学员ID',
+  `paper_id` bigint NOT NULL COMMENT '试卷ID',
+  `version_no` int NOT NULL COMMENT '试卷版本',
+  `answers_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '提交答案JSON',
+  `grading_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '评分快照JSON',
+  `score` decimal(10,2) NOT NULL COMMENT '得分',
+  `max_score` decimal(10,2) NOT NULL COMMENT '满分',
+  `pass_score` decimal(10,2) NOT NULL COMMENT '提交时通过分数',
+  `passed` tinyint(1) NOT NULL COMMENT '是否通过',
+  `question_count` int NOT NULL COMMENT '题目数量',
+  `correct_count` int NOT NULL COMMENT '正确题数',
+  `request_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '幂等请求标识',
+  `submitted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '提交时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_fixed_paper_request` (`user_id`,`request_key`),
+  KEY `idx_exam_fixed_paper_user` (`user_id`,`submitted_at`),
+  KEY `idx_exam_fixed_paper_paper` (`paper_id`,`version_no`,`submitted_at`),
+  CONSTRAINT `fk_exam_fixed_paper_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '固定试卷学员答卷表';

@@ -667,6 +667,7 @@ public class MigrationCheck implements CommandLineRunner {
                                                     CREATE TABLE `users` (
                                                       `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
                                                       `email` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '邮件',
+                                                      `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '登录账号',
                                                       `name` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '真实姓名',
                                                       `avatar` int(11) NOT NULL DEFAULT 0 COMMENT '头像',
                                                       `password` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '密码',
@@ -686,7 +687,8 @@ public class MigrationCheck implements CommandLineRunner {
                                                       `from_scene` int(11) NOT NULL DEFAULT 0 COMMENT '来源[0:本地,1:企业微信,2:飞书]',
                                                       `deleted` tinyint(1) unsigned NULL DEFAULT 0 COMMENT '删除标志[0:存在,1:删除]',
                                                       PRIMARY KEY (`id`),
-                                                      UNIQUE KEY `email` (`email`)
+                                                      UNIQUE KEY `email` (`email`),
+                                                      UNIQUE KEY `username` (`username`)
                                                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT '学员表';
                                                     """);
                                 }
