@@ -20,6 +20,8 @@ vi.mock("../../api", () => ({
     banks: vi.fn(),
     questions: vi.fn(),
     history: vi.fn(),
+    records: vi.fn(),
+    recordDetail: vi.fn(),
     submit: vi.fn(),
     submitPaper: vi.fn(),
     papers: vi.fn(),
@@ -46,7 +48,7 @@ describe("考试中心页面", () => {
     mockedExam.papers.mockResolvedValue({ items: [], total: 0, page: 1, size: 100 });
   });
 
-  it("展示开放题库，并可切换查看我的作答记录", async () => {
+  it("展示开放题库，并可切换查看考试记录", async () => {
     mockedExam.banks.mockResolvedValue([
       { id: 8, name: "信息安全基础", description: "安全意识必修练习", questionCount: 12 },
     ]);
@@ -56,21 +58,70 @@ describe("考试中心页面", () => {
       page: 1,
       size: 100,
     });
-    mockedExam.history.mockResolvedValue({
+    mockedExam.records.mockResolvedValue({
       items: [
         {
           id: 3,
-          questionId: 11,
-          stem: "收到可疑邮件时应如何处理？",
-          score: 2,
-          maxScore: 2,
-          result: "correct",
-          createdAt: "2026-09-08T09:30:00",
+          paperId: 6,
+          paperCode: "P-6",
+          paperName: "安全正式考试",
+          version: 1,
+          fixedPaperAttemptId: 100,
+          examTime: "2026-09-08T09:30:00",
+          score: 92,
+          maxScore: 100,
+          passScore: 90,
+          passed: true,
+          questionCount: 10,
+          correctCount: 9,
         },
       ],
       total: 1,
       page: 1,
       size: 10,
+    });
+    mockedExam.recordDetail.mockResolvedValue({
+      id: 3,
+      paperId: 6,
+      paperCode: "P-6",
+      paperName: "安全正式考试",
+      version: 1,
+      fixedPaperAttemptId: 100,
+      examTime: "2026-09-08T09:30:00",
+      score: 92,
+      maxScore: 100,
+      passScore: 90,
+      passed: true,
+      questionCount: 1,
+      correctCount: 1,
+      sections: [{
+        title: "判断题",
+        description: "",
+        position: 0,
+        items: [{
+          questionId: 21,
+          questionVersion: 1,
+          position: 0,
+          question: {
+            id: 21,
+            bankId: 8,
+            code: "SAFE-001",
+            type: "true_false",
+            difficulty: "easy",
+            stem: "工作账号可以与他人共享。",
+            options: [],
+            suggestedScore: 100,
+            tags: [],
+            version: 1,
+          },
+          submittedAnswer: { value: false },
+          standardAnswer: { value: false },
+          score: 100,
+          maxScore: 100,
+          result: "correct",
+          analysis: "账号仅限本人使用。",
+        }],
+      }],
     });
 
     renderPage(<ExamCenterPage />);
@@ -81,9 +132,14 @@ describe("考试中心页面", () => {
     expect(await screen.findByText("信息安全基础")).toBeInTheDocument();
     expect(screen.getByText("12 道题")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("tab", { name: "我的作答记录" }));
-    expect(await screen.findByText("收到可疑邮件时应如何处理？")).toBeInTheDocument();
-    expect(screen.getByText("2", { selector: "strong" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("tab", { name: "考试记录" }));
+    expect((await screen.findAllByText("安全正式考试")).length).toBeGreaterThan(0);
+    expect(screen.getByText("92", { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText("已通过")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "查看答题快照" }));
+    expect(await screen.findByText(/工作账号可以与他人共享。/)).toBeInTheDocument();
+    expect(screen.getAllByText("错误").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText("账号仅限本人使用。")).toBeInTheDocument();
   });
 });
 

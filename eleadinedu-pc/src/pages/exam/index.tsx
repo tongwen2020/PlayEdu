@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Empty,
+  Modal,
   Pagination,
   Skeleton,
+  Spin,
   Tabs,
   Tag,
   message,
@@ -18,11 +20,30 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { exam } from "../../api";
-import type { FixedPaperSummary, PracticeBank, PracticeHistoryItem } from "../../api/exam";
+import type {
+  ExamRecordDetail,
+  ExamRecordItem,
+  FixedPaperSummary,
+  PracticeAnswer,
+  PracticeBank,
+  PracticeQuestion,
+} from "../../api/exam";
 import { dateFormat } from "../../utils";
 import styles from "./index.module.scss";
 
 const PAGE_SIZE = 10;
+
+function snapshotAnswerText(answer: PracticeAnswer | null | undefined, question: PracticeQuestion) {
+  if (!answer) return "未作答";
+  if (question.type === "true_false") {
+    if (answer.value === undefined) return "未作答";
+    return answer.value ? "正确" : "错误";
+  }
+  if (!answer.optionIds?.length) return "未作答";
+  return answer.optionIds
+    .map((id) => question.options.find((option) => option.id === id)?.text || id)
+    .join("、");
+}
 
 export default function ExamCenterPage() {
   document.title = "考试中心";
@@ -30,12 +51,15 @@ export default function ExamCenterPage() {
   const [activeTab, setActiveTab] = useState("papers");
   const [papers, setPapers] = useState<FixedPaperSummary[]>([]);
   const [banks, setBanks] = useState<PracticeBank[]>([]);
-  const [history, setHistory] = useState<PracticeHistoryItem[]>([]);
-  const [historyTotal, setHistoryTotal] = useState(0);
-  const [historyPage, setHistoryPage] = useState(1);
+  const [records, setRecords] = useState<ExamRecordItem[]>([]);
+  const [recordTotal, setRecordTotal] = useState(0);
+  const [recordPage, setRecordPage] = useState(1);
   const [paperLoading, setPaperLoading] = useState(true);
   const [bankLoading, setBankLoading] = useState(true);
-  const [historyLoading, setHistoryLoading] = useState(false);
+  const [recordLoading, setRecordLoading] = useState(false);
+  const [recordDetail, setRecordDetail] = useState<ExamRecordDetail>();
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
 
   const loadBanks = async () => {
     setBankLoading(true);
@@ -60,16 +84,30 @@ export default function ExamCenterPage() {
     }
   };
 
-  const loadHistory = async (page: number) => {
-    setHistoryLoading(true);
+  const loadRecords = async (page: number) => {
+    setRecordLoading(true);
     try {
-      const data = await exam.history(page, PAGE_SIZE);
-      setHistory(data.items);
-      setHistoryTotal(data.total);
+      const data = await exam.records(page, PAGE_SIZE);
+      setRecords(data.items);
+      setRecordTotal(data.total);
     } catch {
-      message.error("作答记录加载失败，请稍后重试");
+      message.error("考试记录加载失败，请稍后重试");
     } finally {
-      setHistoryLoading(false);
+      setRecordLoading(false);
+    }
+  };
+
+  const showRecordDetail = async (id: number) => {
+    setDetailOpen(true);
+    setDetailLoading(true);
+    setRecordDetail(undefined);
+    try {
+      setRecordDetail(await exam.recordDetail(id));
+    } catch {
+      message.error("答题快照加载失败，请稍后重试");
+      setDetailOpen(false);
+    } finally {
+      setDetailLoading(false);
     }
   };
 
@@ -79,8 +117,8 @@ export default function ExamCenterPage() {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "history") loadHistory(historyPage);
-  }, [activeTab, historyPage]);
+    if (activeTab === "records") loadRecords(recordPage);
+  }, [activeTab, recordPage]);
 
   const bankPanel = bankLoading ? (
     <div className={styles.grid} aria-label="题库加载中">
@@ -165,52 +203,57 @@ export default function ExamCenterPage() {
     </div>
   );
 
-  const historyPanel = historyLoading ? (
-    <div className={styles.historyList} aria-label="作答记录加载中">
+  const recordPanel = recordLoading ? (
+    <div className={styles.historyList} aria-label="考试记录加载中">
       <Skeleton active paragraph={{ rows: 5 }} />
     </div>
-  ) : history.length ? (
+  ) : records.length ? (
     <>
       <div className={styles.historyList}>
-        {history.map((item) => (
+        {records.map((item) => (
           <article className={styles.historyItem} key={item.id}>
             <div
               className={`${styles.resultIcon} ${
-                item.result === "correct" ? styles.correct : styles.incorrect
+                item.passed ? styles.correct : styles.incorrect
               }`}
             >
-              {item.result === "correct" ? (
+              {item.passed ? (
                 <CheckCircleFilled />
               ) : (
                 <CloseCircleFilled />
               )}
             </div>
             <div className={styles.historyMain}>
-              <div className={styles.historyStem}>{item.stem}</div>
+              <div className={styles.historyStem}>{item.paperName}</div>
               <div className={styles.historyMeta}>
-                <ClockCircleOutlined /> {dateFormat(item.createdAt)}
+                <ClockCircleOutlined /> {dateFormat(item.examTime)} · 第 {item.version} 版 · 答对{" "}
+                {item.correctCount} / {item.questionCount} 题
               </div>
             </div>
-            <div className={styles.score}>
-              <strong>{item.score}</strong> / {item.maxScore} 分
+            <div className={styles.recordActions}>
+              <div className={styles.score}>
+                <strong>{item.score}</strong> / {item.maxScore} 分
+                <div>{item.passed ? "已通过" : `未通过 · 及格 ${item.passScore} 分`}</div>
+              </div>
+              <Button onClick={() => showRecordDetail(item.id)}>查看答题快照</Button>
             </div>
           </article>
         ))}
       </div>
       <Pagination
         className={styles.pagination}
-        current={historyPage}
+        current={recordPage}
         pageSize={PAGE_SIZE}
-        total={historyTotal}
+        total={recordTotal}
         showSizeChanger={false}
-        onChange={setHistoryPage}
+        onChange={setRecordPage}
       />
     </>
   ) : (
     <div className={styles.empty}>
-      <Empty description="还没有作答记录，去选择一个题库开始吧" />
-      <Button type="primary" onClick={() => setActiveTab("banks")}>
-        去练习
+      <Empty description="还没有考试记录，去选择一份正式试卷开始吧" />
+      <Button type="primary" onClick={() => setActiveTab("papers")}>
+        去考试
       </Button>
     </div>
   );
@@ -236,10 +279,58 @@ export default function ExamCenterPage() {
           items={[
             { key: "papers", label: "正式试卷", children: paperPanel },
             { key: "banks", label: "开放题库", children: bankPanel },
-            { key: "history", label: "我的作答记录", children: historyPanel },
+            { key: "records", label: "考试记录", children: recordPanel },
           ]}
         />
       </section>
+
+      <Modal
+        title={recordDetail ? `${recordDetail.paperName} · 答题快照` : "答题快照"}
+        open={detailOpen}
+        width={900}
+        footer={<Button onClick={() => setDetailOpen(false)}>关闭</Button>}
+        onCancel={() => setDetailOpen(false)}
+      >
+        <Spin spinning={detailLoading}>
+          {recordDetail && (
+            <div className={styles.snapshot}>
+              <div className={styles.snapshotSummary}>
+                <span>考试时间：{dateFormat(recordDetail.examTime)}</span>
+                <span>试卷版本：第 {recordDetail.version} 版</span>
+                <span>成绩：{recordDetail.score} / {recordDetail.maxScore} 分</span>
+                <Tag color={recordDetail.passed ? "success" : "error"}>
+                  {recordDetail.passed ? "已通过" : "未通过"}
+                </Tag>
+              </div>
+              {recordDetail.sections.map((section, sectionIndex) => (
+                <section className={styles.snapshotSection} key={`${section.position}-${sectionIndex}`}>
+                  <h3>{section.title}</h3>
+                  {section.items.map((item, itemIndex) => (
+                    <article className={styles.snapshotQuestion} key={item.questionId}>
+                      <div className={styles.snapshotQuestionTitle}>
+                        <span>{itemIndex + 1}. {item.question.stem}</span>
+                        <Tag color={item.result === "correct" ? "success" : "error"}>
+                          {item.result === "correct" ? "正确" : "错误"} · {item.score}/{item.maxScore} 分
+                        </Tag>
+                      </div>
+                      {item.question.options?.length > 0 && (
+                        <ol className={styles.snapshotOptions} type="A">
+                          {item.question.options.map((option) => <li key={option.id}>{option.text}</li>)}
+                        </ol>
+                      )}
+                      <div className={styles.snapshotAnswer}>
+                        <div><strong>学员答案：</strong>{snapshotAnswerText(item.submittedAnswer, item.question)}</div>
+                        <div><strong>正确答案：</strong>{snapshotAnswerText(item.standardAnswer, item.question)}</div>
+                        <div><strong>答案解析：</strong>{item.analysis || "暂无解析"}</div>
+                      </div>
+                    </article>
+                  ))}
+                </section>
+              ))}
+            </div>
+          )}
+        </Spin>
+      </Modal>
     </main>
   );
 }

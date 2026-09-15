@@ -90,6 +90,12 @@ public final class ExamPaperTypes {
             @Min(1) @Max(100000) int page,
             @Min(1) @Max(100) int size) {}
 
+    public record StudentRecordQuery(
+            @Size(max = 100) String keyword,
+            Boolean passed,
+            @Min(1) @Max(100000) int page,
+            @Min(1) @Max(100) int size) {}
+
     public record StudentSubmitInput(
             @NotNull @Positive Long paperId,
             @NotNull @Positive Integer version,

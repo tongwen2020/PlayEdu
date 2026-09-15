@@ -131,11 +131,13 @@ class ExamPaperHttpTest {
     @EnableAutoConfiguration
     @Import({
         ExamPaperController.class,
+        UserExamRecordController.class,
         ExamPaperStudentController.class,
         QuestionBankController.class,
         ExamPaperService.class,
         ExamPaperPassScoreMigration.class,
         FixedPaperAttemptMigration.class,
+        ExamRecordMigration.class,
         QuestionBankService.class,
         QuestionGrader.class,
         QuestionBankMigration.class,
@@ -167,6 +169,7 @@ class ExamPaperHttpTest {
     @Autowired ExamPaperMigration migration;
     @Autowired ExamPaperPassScoreMigration passScoreMigration;
     @Autowired FixedPaperAttemptMigration fixedPaperAttemptMigration;
+    @Autowired ExamRecordMigration examRecordMigration;
     @MockBean BackendAuthService adminAuth;
     @MockBean FrontendAuthService studentAuth;
     @MockBean AdminUserService admins;
@@ -186,7 +189,7 @@ class ExamPaperHttpTest {
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         http.getRestTemplate().setRequestFactory(new JdkClientHttpRequestFactory());
         resetTables();
         when(config.keyValues()).thenReturn(Map.of());
@@ -221,7 +224,8 @@ class ExamPaperHttpTest {
                                                 "exam-paper-view",
                                                 "exam-paper-edit",
                                                 "exam-paper-publish",
-                                                "exam-paper-export")) permissions.put(slug, true);
+                                                "exam-paper-export",
+                                                "user-learn")) permissions.put(slug, true);
                             return permissions;
                         });
         when(backendBus.isSuperAdmin())
@@ -244,6 +248,14 @@ class ExamPaperHttpTest {
                             user.setIsLock(0);
                             return user;
                         });
+        when(users.findOrFail(anyInt()))
+                .thenAnswer(
+                        invocation -> {
+                            User user = new User();
+                            user.setId(invocation.getArgument(0));
+                            user.setIsLock(0);
+                            return user;
+                        });
         bankId = ok(QUESTION + "/banks/save", bank(), "admin-1").get("id").asLong();
         single = ok(QUESTION + "/questions/save", question("single_choice", "Q_SINGLE"), "admin-1");
         shortAnswer =
@@ -258,6 +270,7 @@ class ExamPaperHttpTest {
     private void resetTables() {
         for (String table :
                 List.of(
+                        "exam_records",
                         "exam_fixed_paper_attempts",
                         "exam_paper_versions",
                         "exam_paper_draft_items",
@@ -521,6 +534,67 @@ class ExamPaperHttpTest {
         assertThat(result.get("passed").asBoolean()).isTrue();
         assertThat(db.queryForObject("SELECT COUNT(*) FROM exam_fixed_paper_attempts", Long.class))
                 .isEqualTo(1);
+        Map<String, Object> record =
+                db.queryForMap(
+                        "SELECT * FROM exam_records WHERE user_id=? AND paper_id=?",
+                        10,
+                        created.get("id").asLong());
+        assertThat(new BigDecimal(record.get("score").toString())).isEqualByComparingTo("5.25");
+        assertThat(new BigDecimal(record.get("pass_score").toString()))
+                .isEqualByComparingTo("5.25");
+        assertThat(record.get("passed").toString()).isIn("true", "1");
+        assertThat(record.get("exam_time")).isNotNull();
+        JsonNode records =
+                ok(
+                        "/api/v1/exam-paper/records",
+                        json.createObjectNode().put("page", 1).put("size", 10),
+                        "student-10");
+        assertThat(records.get("total").asInt()).isEqualTo(1);
+        assertThat(records.at("/items/0/paperName").asText()).isEqualTo("Java 入职考试");
+        assertThat(records.at("/items/0/score").decimalValue()).isEqualByComparingTo("5.25");
+        assertThat(records.at("/items/0/passed").asBoolean()).isTrue();
+        JsonNode recordDetail =
+                ok(
+                        "/api/v1/exam-paper/records/detail",
+                        Map.of("id", records.at("/items/0/id").asLong()),
+                        "student-10");
+        assertThat(recordDetail.get("paperName").asText()).isEqualTo("Java 入职考试");
+        assertThat(recordDetail.at("/sections/0/items/0/question/stem").asText())
+                .isEqualTo("Q_SINGLE 的原始题干");
+        assertThat(recordDetail.at("/sections/0/items/0/submittedAnswer/optionIds/0").asText())
+                .isEqualTo("A");
+        assertThat(recordDetail.at("/sections/0/items/0/standardAnswer/optionIds/0").asText())
+                .isEqualTo("A");
+        assertThat(recordDetail.at("/sections/0/items/0/result").asText()).isEqualTo("correct");
+        JsonNode backendRecords =
+                ok(
+                        "/backend/v1/user/10/exam-records",
+                        json.createObjectNode().put("page", 1).put("size", 10).put("passed", true),
+                        "admin-1");
+        assertThat(backendRecords.get("total").asInt()).isEqualTo(1);
+        assertThat(backendRecords.at("/items/0/paperCode").asText()).isEqualTo("PAPER_001");
+        JsonNode backendDetail =
+                ok(
+                        "/backend/v1/user/10/exam-records/detail",
+                        Map.of("id", records.at("/items/0/id").asLong()),
+                        "admin-1");
+        assertThat(backendDetail.at("/sections/0/items/0/result").asText()).isEqualTo("correct");
+        assertThat(
+                        post(
+                                        "/backend/v1/user/10/exam-records",
+                                        json.createObjectNode().put("page", 1).put("size", 10),
+                                        "admin-3")
+                                .get("code")
+                                .asInt())
+                .isNotZero();
+        assertThat(
+                        post(
+                                        "/api/v1/exam-paper/records/detail",
+                                        Map.of("id", records.at("/items/0/id").asLong()),
+                                        "student-11")
+                                .get("code")
+                                .asInt())
+                .isNotZero();
     }
 
     @Test
@@ -740,6 +814,7 @@ class ExamPaperHttpTest {
     void migrationIsRestartableAndCreatesAllTablesOnMysql() {
         savePaper();
         migration.run();
+        examRecordMigration.run();
         db.update("DELETE FROM migrations WHERE migration='20260911_exam_paper_pass_score_v1'");
         db.execute("ALTER TABLE exam_paper_versions DROP COLUMN pass_score");
         db.execute("ALTER TABLE exam_papers DROP COLUMN pass_score");
@@ -766,6 +841,13 @@ class ExamPaperHttpTest {
                 .isEqualTo(6);
         assertThat(
                         db.queryForObject(
+                                "SELECT COUNT(*) FROM information_schema.TABLES WHERE"
+                                        + " TABLE_SCHEMA=? AND TABLE_NAME='exam_records'",
+                                Long.class,
+                                MYSQL_DATABASE))
+                .isEqualTo(1);
+        assertThat(
+                        db.queryForObject(
                                 "SELECT COUNT(*) FROM migrations WHERE"
                                         + " migration='20260907_exam_paper_v1'",
                                 Long.class))
@@ -774,6 +856,12 @@ class ExamPaperHttpTest {
                         db.queryForObject(
                                 "SELECT COUNT(*) FROM migrations WHERE"
                                         + " migration='20260911_exam_paper_pass_score_v1'",
+                                Long.class))
+                .isEqualTo(1);
+        assertThat(
+                        db.queryForObject(
+                                "SELECT COUNT(*) FROM migrations WHERE"
+                                        + " migration='20260914_exam_record_v1'",
                                 Long.class))
                 .isEqualTo(1);
     }

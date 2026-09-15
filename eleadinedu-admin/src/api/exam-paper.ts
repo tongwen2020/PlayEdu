@@ -26,6 +26,23 @@ export interface ValidationResult {
   valid: boolean; errors: string[]; warnings: string[];
   summary: Pick<Paper, "questionCount" | "totalScore" | "objectiveScore" | "subjectiveScore" | "requiresManualGrading">;
 }
+export interface ExamRecordItem {
+  id: number; paperId: number; paperCode: string; paperName: string; version: number;
+  examTime: string; score: number; maxScore: number; passScore: number; passed: boolean;
+  questionCount: number; correctCount: number;
+}
+export interface ExamAnswer { optionIds?: string[]; value?: boolean; text?: string }
+export interface ExamRecordDetail extends ExamRecordItem {
+  sections: Array<{
+    title: string; description?: string; position: number;
+    items: Array<{
+      questionId: number; position: number; score: number; maxScore: number;
+      result: "correct" | "incorrect"; submittedAnswer?: ExamAnswer | null;
+      standardAnswer?: ExamAnswer | null; analysis?: string | null;
+      question: Question;
+    }>;
+  }>;
+}
 
 async function post<T>(path: string, body: object = {}): Promise<T> {
   const result = await client.post(`/backend/v1/exam-paper/${path}`, body) as { data: T };
@@ -48,3 +65,14 @@ export const versions = (id: number) => post<PaperVersion[]>("papers/versions", 
 export const exportPaper = (id: number, version?: number) => post<Paper>("papers/export", { id, version });
 export const importPapers = (values: PaperInput[]) => post<{ count: number; ids: number[] }>("papers/import", { papers: values });
 export const searchQuestions = (body: QuestionQuery) => post<{ items: Question[]; total: number; page: number; size: number }>("questions/search", body);
+
+async function memberRecordPost<T>(userId: number, path: string, body: object): Promise<T> {
+  const suffix = path ? `/${path}` : "";
+  const result = await client.post(`/backend/v1/user/${userId}/exam-records${suffix}`, body) as { data: T };
+  return result.data;
+}
+
+export const memberRecords = (userId: number, body: { keyword?: string; passed?: boolean; page: number; size: number }) =>
+  memberRecordPost<{ items: ExamRecordItem[]; total: number; page: number; size: number }>(userId, "", body);
+export const memberRecordDetail = (userId: number, id: number) =>
+  memberRecordPost<ExamRecordDetail>(userId, "detail", { id });

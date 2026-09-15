@@ -4,6 +4,8 @@
 
 本模块提供所有后端模块共享的组织、账号、权限、配置、LDAP、响应、分页、异常、缓存和工具能力，是依赖图的基础层。
 
+固定试卷、判分和 `exam_records` 属于 `eleadinedu-exam`；本模块只提供学员身份、管理员权限常量和 `UserService` 等公共能力。不要为方便查询把考试 SQL 或快照模型下沉到 common。
+
 ## 主要业务能力
 
 - 用户与组织：`User`、`Department`、`UserDepartment` 及其 Service/Mapper。

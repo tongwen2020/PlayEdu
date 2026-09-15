@@ -95,6 +95,14 @@ public class ExamPaperService {
         }
     }
 
+    private List<Map<String, Object>> decodeList(String value) {
+        try {
+            return json.readValue(value, new TypeReference<ArrayList<Map<String, Object>>>() {});
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Invalid stored exam answers", e);
+        }
+    }
+
     private void audit(String action, long targetId) {
         db.update(
                 "INSERT INTO exam_paper_audit(admin_id,action,target_id) VALUES(?,?,?)",
@@ -821,6 +829,13 @@ public class ExamPaperService {
                         questionIds.size(),
                         correctCount,
                         input.requestKey());
+        db.update(
+                "INSERT INTO exam_records(user_id,paper_id,version_no,fixed_paper_attempt_id,"
+                    + "exam_time,score,max_score,pass_score,passed,question_count,correct_count)"
+                    + " SELECT"
+                    + " user_id,paper_id,version_no,id,submitted_at,score,max_score,pass_score,passed,question_count,correct_count"
+                    + " FROM exam_fixed_paper_attempts WHERE id=?",
+                id);
         return fixedPaperResult(one("SELECT * FROM exam_fixed_paper_attempts WHERE id=?", id));
     }
 
@@ -828,6 +843,145 @@ public class ExamPaperService {
         Map<String, Object> result = decode((String) row.get("grading_json"));
         result.put("id", row.get("id"));
         result.put("submittedAt", row.get("submitted_at"));
+        return result;
+    }
+
+    /** Paginated fixed-paper exam result records for the current learner. */
+    public Map<String, Object> studentRecords(StudentRecordQuery query, int userId) {
+        String keyword = query.keyword() == null ? "" : query.keyword().trim();
+        StringBuilder filter = new StringBuilder();
+        List<Object> countArgs = new ArrayList<>();
+        countArgs.add(userId);
+        if (!keyword.isEmpty()) {
+            filter.append(" AND (LOCATE(?,p.name)>0 OR LOCATE(?,p.code)>0)");
+            countArgs.add(keyword);
+            countArgs.add(keyword);
+        }
+        if (query.passed() != null) {
+            filter.append(" AND r.passed=?");
+            countArgs.add(query.passed());
+        }
+        long total =
+                db.queryForObject(
+                        "SELECT COUNT(*) FROM exam_records r JOIN exam_papers p ON p.id=r.paper_id"
+                                + " WHERE r.user_id=?"
+                                + filter,
+                        Long.class,
+                        countArgs.toArray());
+        List<Object> args = new ArrayList<>(countArgs);
+        args.add(query.size());
+        args.add((query.page() - 1) * query.size());
+        List<Map<String, Object>> items =
+                db.query(
+                        "SELECT"
+                            + " r.id,r.paper_id,p.code,p.name,r.version_no,r.fixed_paper_attempt_id,"
+                            + "r.exam_time,r.score,r.max_score,r.pass_score,r.passed,r.question_count,r.correct_count"
+                            + " FROM exam_records r JOIN exam_papers p ON p.id=r.paper_id WHERE"
+                            + " r.user_id=?"
+                                + filter
+                                + " ORDER BY r.exam_time DESC,r.id DESC LIMIT ? OFFSET ?",
+                        (rs, index) -> {
+                            Map<String, Object> item = new LinkedHashMap<>();
+                            item.put("id", rs.getLong("id"));
+                            item.put("paperId", rs.getLong("paper_id"));
+                            item.put("paperCode", rs.getString("code"));
+                            item.put("paperName", rs.getString("name"));
+                            item.put("version", rs.getInt("version_no"));
+                            item.put("fixedPaperAttemptId", rs.getLong("fixed_paper_attempt_id"));
+                            item.put("examTime", rs.getTimestamp("exam_time"));
+                            item.put("score", rs.getBigDecimal("score"));
+                            item.put("maxScore", rs.getBigDecimal("max_score"));
+                            item.put("passScore", rs.getBigDecimal("pass_score"));
+                            item.put("passed", rs.getBoolean("passed"));
+                            item.put("questionCount", rs.getInt("question_count"));
+                            item.put("correctCount", rs.getInt("correct_count"));
+                            return item;
+                        },
+                        args.toArray());
+        return Map.of("items", items, "total", total, "page", query.page(), "size", query.size());
+    }
+
+    /** Immutable questions, submitted answers and grading result for one learner exam record. */
+    public Map<String, Object> studentRecordDetail(long recordId, int userId) {
+        Map<String, Object> row =
+                one(
+                        "SELECT r.*,p.code AS paper_code,p.name AS"
+                            + " current_paper_name,a.answers_json,a.grading_json,v.content_json"
+                            + " FROM exam_records r JOIN exam_papers p ON p.id=r.paper_id JOIN"
+                            + " exam_fixed_paper_attempts a ON a.id=r.fixed_paper_attempt_id JOIN"
+                            + " exam_paper_versions v ON v.paper_id=r.paper_id AND"
+                            + " v.version_no=r.version_no WHERE r.id=? AND r.user_id=?",
+                        recordId,
+                        userId);
+        Map<String, Object> paper = decode((String) row.get("content_json"));
+        Map<String, Object> grading = decode((String) row.get("grading_json"));
+        Map<Long, Map<String, Object>> submittedByQuestion = new HashMap<>();
+        for (Map<String, Object> answer : decodeList((String) row.get("answers_json")))
+            submittedByQuestion.put(number(answer, "questionId"), answer);
+        Map<Long, Map<String, Object>> gradingByQuestion = new HashMap<>();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> gradedItems =
+                (List<Map<String, Object>>) grading.getOrDefault("items", List.of());
+        for (Map<String, Object> item : gradedItems)
+            gradingByQuestion.put(number(item, "questionId"), item);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> sections =
+                (List<Map<String, Object>>) paper.getOrDefault("sections", List.of());
+        List<Map<String, Object>> snapshotSections = new ArrayList<>();
+        for (Map<String, Object> section : sections) {
+            Map<String, Object> snapshotSection = new LinkedHashMap<>();
+            snapshotSection.put("title", section.get("title"));
+            snapshotSection.put("description", section.get("description"));
+            snapshotSection.put("position", section.get("position"));
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> items =
+                    (List<Map<String, Object>>) section.getOrDefault("items", List.of());
+            List<Map<String, Object>> snapshotItems = new ArrayList<>();
+            for (Map<String, Object> item : items) {
+                long questionId = number(item, "questionId");
+                @SuppressWarnings("unchecked")
+                Map<String, Object> storedQuestion = (Map<String, Object>) item.get("question");
+                Map<String, Object> question = new LinkedHashMap<>(storedQuestion);
+                question.remove("standardAnswer");
+                question.remove("gradingRule");
+                question.remove("analysis");
+                Map<String, Object> submitted = submittedByQuestion.get(questionId);
+                Map<String, Object> graded = gradingByQuestion.get(questionId);
+                Map<String, Object> snapshotItem = new LinkedHashMap<>();
+                snapshotItem.put("questionId", questionId);
+                snapshotItem.put("questionVersion", item.get("questionVersion"));
+                snapshotItem.put("position", item.get("position"));
+                snapshotItem.put("question", question);
+                snapshotItem.put(
+                        "submittedAnswer", submitted == null ? null : submitted.get("answer"));
+                snapshotItem.put("score", graded == null ? BigDecimal.ZERO : graded.get("score"));
+                snapshotItem.put(
+                        "maxScore", graded == null ? item.get("score") : graded.get("maxScore"));
+                snapshotItem.put("result", graded == null ? "incorrect" : graded.get("result"));
+                snapshotItem.put(
+                        "standardAnswer", graded == null ? null : graded.get("standardAnswer"));
+                snapshotItem.put("analysis", graded == null ? null : graded.get("analysis"));
+                snapshotItems.add(snapshotItem);
+            }
+            snapshotSection.put("items", snapshotItems);
+            snapshotSections.add(snapshotSection);
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", row.get("id"));
+        result.put("paperId", row.get("paper_id"));
+        result.put("paperCode", paper.getOrDefault("code", row.get("paper_code")));
+        result.put("paperName", paper.getOrDefault("name", row.get("current_paper_name")));
+        result.put("version", row.get("version_no"));
+        result.put("examTime", row.get("exam_time"));
+        result.put("score", row.get("score"));
+        result.put("maxScore", row.get("max_score"));
+        result.put("passScore", row.get("pass_score"));
+        result.put("passed", row.get("passed"));
+        result.put("questionCount", row.get("question_count"));
+        result.put("correctCount", row.get("correct_count"));
+        result.put("sections", snapshotSections);
         return result;
     }
 

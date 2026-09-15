@@ -703,3 +703,28 @@ CREATE TABLE IF NOT EXISTS `exam_fixed_paper_attempts` (
   KEY `idx_exam_fixed_paper_paper` (`paper_id`,`version_no`,`submitted_at`),
   CONSTRAINT `fk_exam_fixed_paper_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '固定试卷学员答卷表';
+
+-- playedu.exam_records 定义
+
+CREATE TABLE IF NOT EXISTS `exam_records` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` int NOT NULL COMMENT '学员ID',
+  `paper_id` bigint NOT NULL COMMENT '试卷ID',
+  `version_no` int NOT NULL COMMENT '试卷版本',
+  `fixed_paper_attempt_id` bigint DEFAULT NULL COMMENT '固定试卷答卷ID',
+  `exam_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '考试时间',
+  `score` decimal(10,2) NOT NULL COMMENT '得分',
+  `max_score` decimal(10,2) NOT NULL COMMENT '满分',
+  `pass_score` decimal(10,2) NOT NULL COMMENT '通过分数',
+  `passed` tinyint(1) NOT NULL COMMENT '是否通过',
+  `question_count` int NOT NULL COMMENT '题目数量',
+  `correct_count` int NOT NULL COMMENT '正确题数',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_exam_record_fixed_attempt` (`fixed_paper_attempt_id`),
+  KEY `idx_exam_record_user_time` (`user_id`,`exam_time`),
+  KEY `idx_exam_record_paper_time` (`paper_id`,`version_no`,`exam_time`),
+  KEY `idx_exam_record_passed_time` (`passed`,`exam_time`),
+  CONSTRAINT `fk_exam_record_paper` FOREIGN KEY (`paper_id`) REFERENCES `exam_papers` (`id`),
+  CONSTRAINT `fk_exam_record_fixed_attempt` FOREIGN KEY (`fixed_paper_attempt_id`) REFERENCES `exam_fixed_paper_attempts` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '考试记录表';

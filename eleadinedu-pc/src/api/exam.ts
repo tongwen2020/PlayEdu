@@ -112,6 +112,44 @@ export interface PracticeHistoryItem {
   createdAt: string;
 }
 
+export interface ExamRecordItem {
+  id: number;
+  paperId: number;
+  paperCode: string;
+  paperName: string;
+  version: number;
+  fixedPaperAttemptId?: number | null;
+  examTime: string;
+  score: number;
+  maxScore: number;
+  passScore: number;
+  passed: boolean;
+  questionCount: number;
+  correctCount: number;
+}
+
+export interface ExamRecordSnapshotItem {
+  questionId: number;
+  questionVersion: number;
+  position: number;
+  question: PracticeQuestion;
+  submittedAnswer?: PracticeAnswer | null;
+  standardAnswer?: PracticeAnswer | null;
+  score: number;
+  maxScore: number;
+  result: "correct" | "incorrect";
+  analysis?: string | null;
+}
+
+export interface ExamRecordDetail extends ExamRecordItem {
+  sections: Array<{
+    title: string;
+    description: string;
+    position: number;
+    items: ExamRecordSnapshotItem[];
+  }>;
+}
+
 interface PageResult<T> {
   items: T[];
   total: number;
@@ -167,6 +205,12 @@ export const history = (page = 1, size = 10) =>
 
 export const papers = (page = 1, size = 100, keyword?: string) =>
   paperPost<PageResult<FixedPaperSummary>>("papers/list", { page, size, keyword });
+
+export const records = (page = 1, size = 10, keyword?: string) =>
+  paperPost<PageResult<ExamRecordItem>>("records", { page, size, keyword });
+
+export const recordDetail = (id: number) =>
+  paperPost<ExamRecordDetail>("records/detail", { id });
 
 export const paperDetail = (id: number) =>
   paperPost<FixedPaperDetail>("papers/detail", { id });

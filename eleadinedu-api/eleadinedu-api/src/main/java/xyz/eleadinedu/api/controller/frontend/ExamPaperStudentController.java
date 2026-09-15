@@ -46,4 +46,14 @@ public class ExamPaperStudentController {
     public JsonResponse submit(@Valid @RequestBody StudentSubmitInput input) {
         return JsonResponse.data(service.submitStudentPaper(input, FCtx.getId()));
     }
+
+    @PostMapping("/records")
+    public JsonResponse records(@Valid @RequestBody StudentRecordQuery input) {
+        return JsonResponse.data(service.studentRecords(input, FCtx.getId()));
+    }
+
+    @PostMapping("/records/detail")
+    public JsonResponse recordDetail(@Valid @RequestBody IdInput input) {
+        return JsonResponse.data(service.studentRecordDetail(input.id(), FCtx.getId()));
+    }
 }

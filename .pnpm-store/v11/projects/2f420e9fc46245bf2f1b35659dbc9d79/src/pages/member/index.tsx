@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Typography,
   Input,
@@ -12,7 +12,7 @@ import {
 } from "antd";
 import type { MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
-// import styles from "./index.module.less";
+import styles from "./index.module.less";
 import {
   PlusOutlined,
   DownOutlined,
@@ -87,6 +87,9 @@ const MemberPage = () => {
   const [user_dep_ids, setUserDepIds] = useState<DepIdsModel>({});
   const [departments, setDepartments] = useState<DepartmentsModel>({});
   const [did, setDid] = useState(Number(result.get("did")));
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [filtersOverflow, setFiltersOverflow] = useState(false);
+  const filterFieldsRef = useRef<HTMLDivElement>(null);
   const ldapEnabled = useSelector(
     (state: any) => state.systemConfig.value["ldap-enabled"]
   );
@@ -99,6 +102,30 @@ const MemberPage = () => {
       setRefresh(!refresh);
     }
   }, [result.get("refresh")]);
+
+  useEffect(() => {
+    const filterFields = filterFieldsRef.current;
+    if (!filterFields) {
+      return;
+    }
+
+    const updateOverflow = () => {
+      const hasOverflow = filterFields.scrollHeight > 32;
+      setFiltersOverflow(hasOverflow);
+      if (!hasOverflow) {
+        setFiltersExpanded(false);
+      }
+    };
+
+    updateOverflow();
+    const resizeObserver = new ResizeObserver(updateOverflow);
+    resizeObserver.observe(filterFields);
+    if (filterFields.parentElement) {
+      resizeObserver.observe(filterFields.parentElement);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   const columns: ColumnsType<DataType> = [
     {
@@ -125,6 +152,7 @@ const MemberPage = () => {
     {
       title: "所属部门",
       dataIndex: "id",
+      width: 180,
       render: (id: number) => (
         <div className="float-left">
           {user_dep_ids[id] &&
@@ -162,7 +190,7 @@ const MemberPage = () => {
       title: "操作",
       key: "action",
       fixed: "right",
-      width: 160,
+      width: 230,
       render: (_, record: any) => {
         const items: MenuProps["items"] = [
           {
@@ -207,6 +235,27 @@ const MemberPage = () => {
               <PerButton
                 type="link"
                 text="学习"
+                class="b-link c-red"
+                icon={null}
+                p="user-learn"
+                onClick={() => null}
+                disabled={null}
+              />
+            </Link>
+            <div className="form-column"></div>
+            <Link
+              style={{ textDecoration: "none" }}
+              to={{
+                pathname: "/member/exam",
+                search: new URLSearchParams({
+                  id: String(record.id),
+                  name: record.name,
+                }).toString(),
+              }}
+            >
+              <PerButton
+                type="link"
+                text="考试"
                 class="b-link c-red"
                 icon={null}
                 p="user-learn"
@@ -376,95 +425,94 @@ const MemberPage = () => {
           <div className="eleadinedu-main-title float-left mb-24">
             学员 | {selLabel}
           </div>
-          <div className="float-left j-b-flex mb-24">
-            <div className="d-flex">
+          <div className={styles.toolbar}>
+            <div className={styles.filterBar}>
               {!ldapEnabled && (
-                <PerButton
-                  type="primary"
-                  text="添加学员"
-                  class="mr-16"
-                  icon={<PlusOutlined />}
-                  p="user-store"
-                  onClick={() => setCreateVisible(true)}
-                  disabled={null}
-                />
-              )}
-              {!ldapEnabled && dep_ids.length === 0 && (
-                <Link style={{ textDecoration: "none" }} to={`/member/import`}>
+                <div className={styles.toolbarActions}>
                   <PerButton
-                    type="default"
-                    text="批量导入学员"
-                    class="mr-16"
-                    icon={null}
+                    type="primary"
+                    text="添加学员"
+                    class={styles.toolbarButton}
+                    icon={<PlusOutlined />}
                     p="user-store"
+                    onClick={() => setCreateVisible(true)}
                     disabled={null}
                   />
-                </Link>
+                  {dep_ids.length === 0 && (
+                    <Link
+                      className={styles.toolbarLink}
+                      to={`/member/import`}
+                    >
+                      <PerButton
+                        type="default"
+                        text="批量导入学员"
+                        class={styles.toolbarButton}
+                        icon={null}
+                        p="user-store"
+                        disabled={null}
+                      />
+                    </Link>
+                  )}
+                </div>
               )}
-              {/* {dep_ids.length > 0 && (
-                <Link
-                  style={{ textDecoration: "none" }}
-                  to={`/member/departmentUser?id=${dep_ids.join(
-                    ","
-                  )}&title=${selLabel}`}
-                >
-                  <PerButton
-                    type="default"
-                    text="部门学员进度"
-                    class="mr-16"
-                    p="department-user-learn"
-                    disabled={null}
-                  />
-                </Link>
-              )} */}
-            </div>
-            <div className="d-flex">
-              <div className="d-flex mr-24">
-                <Typography.Text>账号：</Typography.Text>
-                <Input
-                  value={username || ""}
-                  onChange={(e) => {
-                    resetLocalSearchParams({
-                      username: e.target.value,
-                    });
-                  }}
-                  style={{ width: 160 }}
-                  placeholder="请输入登录账号"
-                  allowClear
-                />
+              <div
+                className={`${styles.filterViewport} ${
+                  filtersExpanded ? styles.expanded : ""
+                }`}
+              >
+                <div className={styles.filterFields} ref={filterFieldsRef}>
+                  <div className={styles.filterItem}>
+                    <Typography.Text className={styles.filterLabel}>
+                      账号：
+                    </Typography.Text>
+                    <Input
+                      value={username || ""}
+                      onChange={(e) => {
+                        resetLocalSearchParams({
+                          username: e.target.value,
+                        });
+                      }}
+                      className={styles.filterInput}
+                      placeholder="请输入登录账号"
+                      allowClear
+                    />
+                  </div>
+                  <div className={styles.filterItem}>
+                    <Typography.Text className={styles.filterLabel}>
+                      姓名：
+                    </Typography.Text>
+                    <Input
+                      value={nickname || ""}
+                      onChange={(e) => {
+                        resetLocalSearchParams({
+                          nickname: e.target.value,
+                        });
+                      }}
+                      className={styles.filterInput}
+                      placeholder="请输入姓名关键字"
+                      allowClear
+                    />
+                  </div>
+                  <div className={styles.filterItem}>
+                    <Typography.Text className={styles.filterLabel}>
+                      邮箱：
+                    </Typography.Text>
+                    <Input
+                      value={email || ""}
+                      onChange={(e) => {
+                        resetLocalSearchParams({
+                          email: e.target.value,
+                        });
+                      }}
+                      className={styles.filterInput}
+                      placeholder="请输入邮箱账号"
+                      allowClear
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="d-flex mr-24">
-                <Typography.Text>姓名：</Typography.Text>
-                <Input
-                  value={nickname || ""}
-                  onChange={(e) => {
-                    resetLocalSearchParams({
-                      nickname: e.target.value,
-                    });
-                  }}
-                  style={{ width: 160 }}
-                  placeholder="请输入姓名关键字"
-                  allowClear
-                />
-              </div>
-              <div className="d-flex mr-24">
-                <Typography.Text>邮箱：</Typography.Text>
-                <Input
-                  value={email || ""}
-                  onChange={(e) => {
-                    resetLocalSearchParams({
-                      email: e.target.value,
-                    });
-                  }}
-                  style={{ width: 160 }}
-                  placeholder="请输入邮箱账号"
-                  allowClear
-                />
-              </div>
-              <div className="d-flex">
-                <Button className="mr-16" onClick={resetData}>
-                  重 置
-                </Button>
+              <div className={styles.filterActions}>
+                <Button onClick={resetData}>重 置</Button>
                 <Button
                   type="primary"
                   onClick={() => {
@@ -476,6 +524,23 @@ const MemberPage = () => {
                 >
                   查 询
                 </Button>
+                <span className={styles.expandSlot}>
+                  {filtersOverflow && (
+                    <Button
+                      type="link"
+                      className={styles.expandButton}
+                      aria-expanded={filtersExpanded}
+                      onClick={() =>
+                        setFiltersExpanded((expanded) => !expanded)
+                      }
+                    >
+                      {filtersExpanded ? "收起" : "展开"}
+                      <DownOutlined
+                        className={filtersExpanded ? styles.expandedIcon : ""}
+                      />
+                    </Button>
+                  )}
+                </span>
               </div>
             </div>
           </div>
@@ -486,6 +551,7 @@ const MemberPage = () => {
               loading={loading}
               pagination={paginationProps}
               rowKey={(record) => record.id}
+              scroll={{ x: 1270 }}
             />
             <MemberCreate
               open={createVisible}

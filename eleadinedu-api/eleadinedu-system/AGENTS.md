@@ -20,6 +20,8 @@
 
 `Migration`、`MigrationMapper` 和 `MigrationService` 维护公共 `migrations` 记录。核心迁移先于系统数据、配置和权限；考试模块迁移也依赖该记录表。
 
+题库、固定试卷答卷和 `exam_records` 的具体迁移类位于 `eleadinedu-exam`，不要搬入 system；本模块负责先建立公共迁移记录表及系统基础结构。新增启动迁移时同时核对 `@Order`，确保考试历史回填发生在依赖表创建之后。
+
 ## AOP 横切能力
 
 - `BackendPermissionAspect`：拦截 `@BackendPermission` 并校验后台权限。

@@ -30,7 +30,7 @@
 
 ## API 能力范围
 
-管理端覆盖管理员/角色/日志、应用配置、用户/部门、课程/章节/课时/附件、资源分类/资源/上传、LDAP、仪表盘、题库和固定试卷。学员端覆盖密码或 LDAP 登录、课程与分类、课时播放/进度/心跳、学习记录、个人资料，以及开放题库的逐题兼容练习、整卷提交、自动阅卷和两类历史查询。
+管理端覆盖管理员/角色/日志、应用配置、用户/部门、课程/章节/课时/附件、资源分类/资源/上传、LDAP、仪表盘、题库、固定试卷，以及指定学员的考试记录/答题快照。学员端覆盖密码或 LDAP 登录、课程与分类、课时播放/进度/心跳、学习记录、个人资料、开放题库练习，以及已发布固定试卷的列表、脱敏详情、幂等交卷、考试记录和本人答题快照。
 
 统一返回模型为 `JsonResponse`。后台权限由 `AdminInterceptor` 与 `@BackendPermission` 切面共同控制，后台上下文使用 `BCtx`；学员身份由 `FrontInterceptor` 解析，学员上下文使用 `FCtx`。
 
@@ -55,9 +55,11 @@
 
 - 后台题库和试卷接口分别位于 `/backend/v1/question-bank/**`、`/backend/v1/exam-paper/**`，全部使用 POST；权限分为题库查看/编辑/导出和试卷查看/编辑/发布/导出。
 - 学员练习位于 `/api/v1/question-bank/**`。题目列表隐藏标准答案和解析，只有判分结果可以返回这些字段。
-- 当前 PC/H5 主流程使用 `practice/paper/submit` 整卷交卷；`practice/submit` 与 `practice/history` 是仍保留的逐题兼容契约。
-- `practice/paper/history` 已提供整卷总分、满分、题数和正确数，但 PC/H5 历史页尚未接入。修改契约时同时检查两端 `src/api/exam.ts` 和考试页面。
-- 正式考试活动、考生分配、时间/次数控制、简答题人工阅卷和成绩发布尚未形成 HTTP 闭环，不得把固定试卷发布接口等同于正式考试能力。
+- 固定试卷学员接口位于 `/api/v1/exam-paper/**`：`papers/list`、`papers/detail`、`papers/submit`、`records`、`records/detail`。当前仅 PC 接入；H5 尚未接入。
+- `papers/detail` 只允许当前已发布版本且拒绝需要人工评分的试卷；交卷在版本行锁内按发布快照评分，并以 `(user_id, request_key)` 保证幂等。
+- `records/detail` 必须按当前学员 ID 限定记录；管理端 `/backend/v1/user/{userId}/exam-records[/detail]` 还需 `user-learn` 权限并先校验学员存在。
+- `practice/paper/history` 是开放题库整卷历史，`exam_records` 是固定试卷考试记录，二者不合并。旧 `practice/submit` 与 `practice/history` 仍是逐题兼容契约。
+- 正式考试活动、考生分配、时间/次数控制、断点暂存、简答题人工阅卷和成绩发布尚未形成 HTTP 闭环。
 
 ## 代码边界
 
@@ -80,4 +82,4 @@
 .\mvnw.cmd -pl eleadinedu-api -am package -DskipTests
 ```
 
-修改题库或试卷 HTTP 行为时，重点运行 `QuestionBankHttpTest`、`ExamPaperHttpTest`。新增接口至少验证鉴权、参数校验、成功响应和主要异常分支。
+修改题库、试卷或考试记录 HTTP 行为时，重点运行 `QuestionBankHttpTest`、`ExamPaperHttpTest`。至少验证鉴权、参数校验、发布/版本状态、主观题拒绝、幂等、本人记录隔离、管理员权限和不存在资源。

@@ -201,6 +201,55 @@
   color: rgba(0, 0, 0, 0.45);
   strong { color: rgba(0, 0, 0, 0.88); font-size: 22px; }
 }
+.recordActions {
+  min-width: 150px;
+  margin-left: 18px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 9px;
+}
+.snapshot { max-height: 68vh; overflow-y: auto; padding-right: 8px; }
+.snapshotSummary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: #f7f8fa;
+  color: rgba(0, 0, 0, 0.65);
+}
+.snapshotSection {
+  margin-top: 22px;
+  h3 { margin: 0 0 12px; font-size: 17px; }
+}
+.snapshotQuestion {
+  padding: 16px 0;
+  border-top: 1px solid #f0f1f3;
+}
+.snapshotQuestionTitle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  line-height: 24px;
+  > span { flex: 1; font-weight: 500; }
+}
+.snapshotOptions {
+  margin: 10px 0;
+  padding-left: 36px;
+  color: rgba(0, 0, 0, 0.68);
+  li { margin: 5px 0; padding-left: 4px; }
+}
+.snapshotAnswer {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #fafafa;
+  color: rgba(0, 0, 0, 0.68);
+  line-height: 24px;
+}
 .pagination { margin-top: 26px; text-align: right; }
 .empty { padding: 68px 0; text-align: center; }
 
@@ -216,4 +265,7 @@
   .heroStat { display: none; }
   .surface { padding: 8px 18px 24px; }
   .grid { grid-template-columns: 1fr; }
+  .historyItem { align-items: flex-start; }
+  .recordActions { min-width: 116px; }
+  .snapshotQuestionTitle { flex-direction: column; gap: 8px; }
 }

@@ -223,7 +223,10 @@ export const LeftMenu: React.FC = () => {
     if (location.pathname.indexOf("/course/user") !== -1) {
       setSelectedKeys(["/course"]);
       setOpenKeys(openKeyMerge("/course"));
-    } else if (location.pathname.indexOf("/member/learn") !== -1) {
+    } else if (
+      location.pathname.indexOf("/member/learn") !== -1 ||
+      location.pathname.indexOf("/member/exam") !== -1
+    ) {
       setSelectedKeys(["/member/index"]);
       setOpenKeys(openKeyMerge("/member/index"));
     } else {

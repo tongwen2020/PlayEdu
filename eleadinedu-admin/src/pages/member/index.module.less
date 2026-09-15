@@ -1,0 +1,101 @@
+.toolbar {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.toolbarActions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 32px;
+}
+
+.toolbarButton {
+  white-space: nowrap;
+}
+
+.toolbarLink {
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+
+.filterBar {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.filterViewport {
+  min-width: 0;
+  flex: 1;
+  max-height: 32px;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.filterViewport.expanded {
+  max-height: 160px;
+}
+
+.filterFields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+}
+
+.filterItem {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 32px;
+}
+
+.filterLabel {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.filterInput {
+  width: 160px;
+}
+
+.filterActions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.expandSlot {
+  display: inline-flex;
+  flex: 0 0 56px;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 32px;
+}
+
+.expandButton {
+  padding-inline: 4px;
+  white-space: nowrap;
+}
+
+.expandButton :global(.anticon) {
+  transition: transform 0.2s ease;
+}
+
+.expandedIcon {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 1200px) {
+  .filterBar {
+    gap: 12px;
+  }
+
+  .filterFields {
+    gap: 16px;
+  }
+}
